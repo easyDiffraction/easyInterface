@@ -9,7 +9,7 @@ Please, visit <https://easyDiffraction.org> for more details.
 
 [![][45]][40] [![][55]][50]
 
-[![][28]][21]
+<!---[![][28]][21]--->
 
 <!---Travis CI Build Status--->
 
@@ -39,4 +39,4 @@ Please, visit <https://easyDiffraction.org> for more details.
 
 [21]: https://codecov.io/gh/easyDiffraction/easyInterface
 
-[28]: https://codecov.io/gh/easyDiffraction/easyInterface/branch/master/graph/badge.svg
+[28]: https://codecov.io/gh/easyDiffraction/easyInterface/branch/develop/graph/badge.svg
