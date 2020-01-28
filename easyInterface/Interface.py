@@ -3,11 +3,11 @@ import os
 from datetime import datetime
 from typing import List
 
-from EasyInterface.DataClasses.DataObj.Calculation import *
-from EasyInterface.DataClasses.DataObj.Experiment import *
-from EasyInterface.DataClasses.PhaseObj.Phase import *
-from EasyInterface.DataClasses.Utils.DictTools import UndoableDict
-from EasyInterface.DataClasses.Utils.InfoObjs import App, Calculator, Info
+from easyInterface.DataClasses.DataObj.Calculation import *
+from easyInterface.DataClasses.DataObj.Experiment import *
+from easyInterface.DataClasses.PhaseObj.Phase import *
+from easyInterface.DataClasses.Utils.DictTools import UndoableDict
+from easyInterface.DataClasses.Utils.InfoObjs import App, Calculator, Info
 
 
 class ProjectDict(UndoableDict):

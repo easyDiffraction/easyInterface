@@ -1,9 +1,9 @@
 import pytest
 
 # module for testing
-from EasyInterface.Calculators.CryspyCalculator import CryspyCalculator
-from EasyInterface.Calculators.CryspyCalculator import PHASE_SEGMENT, EXPERIMENT_SEGMENT
-from EasyInterface.Interface import CalculatorInterface
+from easyInterface.Calculators.CryspyCalculator import CryspyCalculator
+from easyInterface.Calculators.CryspyCalculator import PHASE_SEGMENT, EXPERIMENT_SEGMENT
+from easyInterface.Interface import CalculatorInterface
 
 file_path = "Tests/Data/main.cif"
 fitdata_data = [0, 2, 3, 5]

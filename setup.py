@@ -1,16 +1,16 @@
 from setuptools import setup
 
 setup(
-    name='EasyInterface',
+    name='easyInterface',
     version='0.0.2',
-    packages=['EasyInterface', 'EasyInterface.Utils', 'EasyInterface.Calculators', 'EasyInterface.DataClasses',
-              'EasyInterface.DataClasses.Utils', 'EasyInterface.DataClasses.DataObj',
-              'EasyInterface.DataClasses.PhaseObj'],
+    packages=['easyInterface', 'easyInterface.Utils', 'easyInterface.Calculators', 'easyInterface.DataClasses',
+              'easyInterface.DataClasses.Utils', 'easyInterface.DataClasses.DataObj',
+              'easyInterface.DataClasses.PhaseObj'],
     url='http://www.easydiffraction.org',
     license='GPL3',
     author='Simon Ward',
     author_email='',
-    description='Description  EasyInterface - The easy way to interface with crystallographic calculators ',
+    description='Description  easyInterface - The easy way to interface with crystallographic calculators ',
     install_requires=[
         'cryspy>=0.2.0',
         'dictdiffer',
