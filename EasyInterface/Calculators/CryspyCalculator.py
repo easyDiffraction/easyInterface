@@ -326,7 +326,7 @@ class CryspyCalculator:
             phase.setItemByPath(['sites', 'scat_length_neutron'], atom_site_list[3])
             phases.append(phase)
 
-        logging.info(phases)
+        # logging.info(phases)
         logging.info(Phases(phases))
 
         return Phases(phases)

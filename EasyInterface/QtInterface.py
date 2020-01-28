@@ -49,9 +49,9 @@ class QtCalculatorInterface(CalculatorInterface, QObject):
         CalculatorInterface.setDictByPath(self, keys, value)
         self.projectDictChanged.emit()
 
-    def refine(self):
+    def refine(self) -> dict:
         """refinement ..."""
-        refinement_res, scipy_refinement_res = CalculatorInterface.refine(self)
+        refinement_res = CalculatorInterface.refine(self)
         self.projectDictChanged.emit()
-        return refinement_res, scipy_refinement_res
+        return refinement_res
 
