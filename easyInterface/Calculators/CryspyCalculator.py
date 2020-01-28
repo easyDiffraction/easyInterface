@@ -6,14 +6,11 @@ from typing import Tuple
 import cryspy
 import pycifstar
 
-from ..DataClasses.PhaseObj.Atom import *
-from ..DataClasses.PhaseObj.Cell import *
-
-from ..DataClasses.PhaseObj.Phase import *
-from ..DataClasses.PhaseObj.SpaceGroup import *
-from ..DataClasses.DataObj.Calculation import *
-from ..DataClasses.DataObj.Experiment import *
-from ..DataClasses.Utils.BaseClasses import Base
+from easyInterface.DataClasses.PhaseObj.Phase import *
+from easyInterface.DataClasses.PhaseObj.SpaceGroup import *
+from easyInterface.DataClasses.DataObj.Calculation import *
+from easyInterface.DataClasses.DataObj.Experiment import *
+from easyInterface.DataClasses.Utils.BaseClasses import Base
 
 from cryspy.scripts.cl_rhochi import RhoChi
 
