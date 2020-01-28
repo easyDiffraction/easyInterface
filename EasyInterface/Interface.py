@@ -245,6 +245,7 @@ class CalculatorInterface:
     def setDictByPath(self, keys: list, value):
         self.project_dict.setItemByPath(keys, value)
         self.setCalculatorFromProject()
+        self.updateCalculations() # IT IS SLOW
         # self.projectDictChanged.emit()
 
     def phasesCount(self) -> int:
