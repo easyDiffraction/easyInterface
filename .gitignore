@@ -2,3 +2,5 @@
 .idea/
 
 *.pyc
+
+EasyInterface.egg-info/
