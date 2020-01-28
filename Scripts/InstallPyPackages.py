@@ -53,7 +53,7 @@ if __name__ == '__main__':
     installFromGit(owner='easyDiffraction', repo='easyInterface', branch='master', egg='easyInterface_0.0.2_beta')
 
     install(
-        'dictdiff',
+        'dictdiffer',
         'pytest==5.3.0',
         'pytest_mock==1.12.1',
         'pytest-cov==2.8.1',
