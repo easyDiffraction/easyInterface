@@ -4,8 +4,8 @@ from PySide2.QtCore import QObject, Signal
 
 class QtCalculatorInterface(CalculatorInterface, QObject):
     def __init__(self, calculator, parent=None):
-        super(QObject, self).__init__(parent)
-        super(CalculatorInterface, self).__init__(calculator)
+        QObject.__init__(self, parent)
+        CalculatorInterface.__init__(self, calculator)
 
     projectDictChanged = Signal()
 
