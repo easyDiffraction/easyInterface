@@ -4,7 +4,7 @@ from easyInterface.Calculators import CryspyCalculator
 from easyInterface.QtInterface import QtCalculatorInterface
 
 
-main_rcif = os.path.join('..', 'Examples', 'Fe3O4_powder-1d_neutrons-pol_5C1(LLB)', 'main.cif')
+main_rcif = os.path.join('Examples', 'Fe3O4_powder-1d_neutrons-pol_5C1(LLB)', 'main.cif')
 calculator = CryspyCalculator(main_rcif)
 
 interface = QtCalculatorInterface(calculator, None)

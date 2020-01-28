@@ -1,0 +1,105 @@
+language: shell                                                                 # 'language: python' is an error on Travis CI macOS
+sudo: required
+#cache: pip
+
+env:
+  global:
+    # terminal width
+    - COLUMNS=100
+    # dirs of python virtual environment and downloaded soft: Qt Installer Framework setup, Docker image for snapcraft
+    - VENV_DIR=$TRAVIS_BUILD_DIR/.venv
+    - SOFT_DIR=$TRAVIS_BUILD_DIR/.soft
+    # GITHUB_TOKEN
+    - secure: "scbwc6CuiVf7ryKROBNOdbRAr2RyF/rcquGYL5Gsf3CMXukGyT95NNP8KwZLH/MSWg5I9wItb9b0lMxqad3sz28jbr7ARKooC5vfT3A2m5aMN8Y+7QoG3myYirsOjpwDW9zjk7/vjGT1QZh1twr6fg10pLPfZWAGxAbKLTVzcDsvhPu9+9uzvkrZitPc1EhUmjhusF2dnSKqBjYE/dYrz/xHwNGKYSlqkl+CBVBi6T7LC3J6LHUFKNo0QfqkW0EW6hATAWeLXgu9pT917B6BPpwll2oAZT5J9oFbms/szAelzsWBAJedyEIkJ4EzPlk9qokOr61kWFZ+7hkAXfj+Mq7k4VQXorFPWub0sZ+nMtfbAoZ6PO+REpH9BLBQGFwvwpHlp5DvKh+XHtIxFnmm107+AS7vNI94bSbObWDuzbcrwiKZUXNkExjaGQtLI/RV2XeDXIYr6T6SPYW+Ayr7Uutmqv1oUkdqEt1yCxNpsWly09teTac7ZnxgWqewcvr9ayLRC/l9ffAP5PHCErMm67pv8bXEiTRuMzbNTgHxbKOEqtSoEgI1xoU/+J2r+bO6sJs8QzKPNKfQWKyZRu/+KPOkZmKt9yzBQe57frDoEgCaBMGYwFyUyrqBaWKi4xSwcKYfeT3mexQ6pvemfp7+umFU/HAVkHxYLm6MXnu584E="
+    # CODE_SIGN_PSWD_DICT
+    - secure: "MUGB3OUDTpB8ZN70aRBmsCEqeUXsxMgNR5aDrTzgaOR8UIrAhRs30GH8NnASe8VIO6L48SRqGoFeXA4ZZ9h8RFZxQBcPG88/bKzPvPni+WQC5QYF9zbK1mv5IzHfurK08eH05FVz9Mx1BA/L0gviwnP4S4+1ICou0EnnO+sxxGFcGw+ixUpDYPJ2A+R6Dz5OICd2yUVGj3tD2ZYUY+dfnWbTtysb29OMbSMLIMybJ0MOXJ1ozWJibWmyV1tqo4eJ6ZeZKEhH4vKnWtZAeZ6MHLzWLN++jAc3XqxZAJ2czMpsHMeGRx3rjnyGqTXoVFPdmDovRmFZdF7RLYOVWiOKqpc041OMouy2E/dEZ48qJTqkFWQnLqu5HTQCx98RAwIh2czJni0N9DAViv0W/Vj+20JL03hIKYDWXBbigPKFQMI04DobYakBGB/NR3iWhTU4jpG84ttWmtkRfvmPBgIP5zxpJf6xUK6IK02zlENVyzX/X4gZ0cNwGMA7qUpPeBKAVVf8XVf5rSrTPKmH87K1TTbuKn4yP/nx9XqpEcTbkF+LkoyAeCyPEwds3sG9he1uXUd9N+kK/tBC+g444bfHmPJy+6qLS3UK/egX1mweYNVZ6ljA5Aoy4kYlNOJc7XVamjF6aQtBx2yADx5jZJkIhK29Rfy28br4sMaaIDyOysM="
+
+matrix:
+  include:
+    # Linux
+    - name: "Python 3.6.9 on Linux Ubuntu 16.04 (Xenial)"
+      dist: xenial
+      install:
+        - sudo add-apt-repository -y ppa:deadsnakes/ppa                         # add python 3.6 repository
+        - sudo apt-get -y update                                                # update
+        - sudo apt-get -y install python3.6 python3.6-dev python3.6-venv        # install python 3.6
+        - python3.6 -m venv $VENV_DIR                                           # create virtual environment
+        - source $VENV_DIR/bin/activate                                         # activate virtual environment
+        - which python                                                          # show current python path
+      services:
+        - docker                                                                # for snap store
+      cache:
+        directories:
+          - $VENV_DIR
+          - $SOFT_DIR
+          - $HOME/Qt
+      env: BADGE=linux
+    # macOS
+    - name: "Python 3.7.5 on macOS 10.13 (High Sierra)"
+      os: osx
+      osx_image: xcode9.4                                                       # xcode11 --- Python 3.7.4 running on macOS 10.14.4
+      install:
+        - python3 -m venv $VENV_DIR                                             # create virtual environment
+        - source $VENV_DIR/bin/activate                                         # activate virtual environment
+        - which python                                                          # show current python path
+      cache:
+        directories:
+          - $VENV_DIR
+          - $SOFT_DIR
+          - $HOME/Qt
+      env: BADGE=osx
+    # Windows
+    - name: "Python 3.6.5 on Windows 10.0"
+      os: windows                                                               # Windows 10.0.17134 N/A Build 17134
+      filter_secrets: false
+      install:
+        - choco install python --version=3.6.5                                  # install python
+        - C:/Python36/python -m venv $VENV_DIR                                  # create virtual environment
+        #- curl -O https://www.python.org/ftp/python/3.7.5/python-3.7.5.exe
+        #- dir
+        #- python-3.7.5.exe /quiet InstallAllUsers=1 PrependPath=1 Include_test=0
+        #- python -m venv $VENV_DIR                                              # create virtual environment
+        - $VENV_DIR/Scripts/activate.bat                                        # activate virtual environment
+        - echo $PATH                                                            # show path variable
+      cache:
+        directories:
+          - $VENV_DIR
+          - $SOFT_DIR
+          - /C/Qt
+          - /C/Python36
+      env:
+        - BADGE=win
+        - PATH=$VENV_DIR/Scripts:$PATH                                          # Travis equivalent of 'update Windows PATH variable'
+
+#install:
+#  python -m pip install --upgrade pip
+
+before_script:
+  - python --version
+  - pip --version
+  - echo $TRAVIS_OS_NAME
+  - echo $TRAVIS_BRANCH
+  - echo $TRAVIS_PULL_REQUEST
+  - echo $TRAVIS_TAG
+  - echo $HOME
+
+script:
+  - python Scripts/InstallPyPackages.py
+  - python Scripts/RunTests.py
+#  - python Scripts/DeployToGithub.py # $GITHUB_TOKEN $TRAVIS_BRANCH $TRAVIS_PULL_REQUEST
+
+after_success:
+  - python Scripts/ReportComplexity.py
+  - codecov
+
+#after_deploy:
+#  -
+
+#notifications:
+#  slack:
+#    rooms:
+#      - secure: "t0nR618a2fr2EDpyfKWBBkcf5MJ549P732EGvN9gwXVYvl4z977KSSH6uPEw7/KmMec9BhMg882hJidoeh1XgvUQOiVan4jrlvn16z2INPWh/dloXOZN5YWz87tSLR1jn1tDaKSK7gaOF5HAosPbQ2/UriUaAG9d9GHJKJzCogNDAFwFge3K/b4KJr1kYpwS5Vd5K99peWnsrNYBz1M4+Xjc49cd5t5FKULtFduX0Zb25t3dQ25u9LfGQ5lyH65UNSqcu9DP4RZmX00KLYNnIOYtzuyWvehPhisoBozA+Fpuly2IaFPVswtHqO/h9kziyYBBcnEAvG0U+KHmkJy21vDHN5+yPoHlcuAr0Q95C7GEpUT/JVAeNggxWWF4WLYrcTbZXWGt69pBhuFUAZRnbzSV+wBF5ZAOK/5W9TvxYMM1uS9AqdLEmUQdtIGrj2VIDS1na0dielNMnOhBc0Xgap2as/Kb1aEkPuSA6kENDOGXrw1Vs0VjFK3iWOlyzHbfHdHWM1/WZOO2sZRNjdTgWS5x5UXJbozTcM5mzcAkZ21vVpVG5h7LQI3cMPpD45Hmtmnko6S+7FlaknesIeXXhZPwILxN12LtbBo7AkUqtdi/w4Do7CAA++hNJRQx2txa9Mfi6R9XhNccc9+3Mto6lw5hW9mDmb2b1TlrLksW5Ew="
+#    on_success: always
+#    on_failure: always
+
+#https://docs.travis-ci.com/user/job-lifecycle/
