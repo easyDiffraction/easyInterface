@@ -37,7 +37,7 @@ class Data(PathDict):
 
 class Base(PathDict):
     def __init__(self, value: object = None, unit: object = '') -> object:
-        super().__init__(header='Undefined', tooltip='', url='', store=Data(value, unit))
+        super().__init__(header='Undefined', tooltip='', url='', mapping=None, store=Data(value, unit))
 
     def __repr__(self) -> str:
         return '{} {}'.format(self.value, self.getItemByPath(['store', 'unit']))

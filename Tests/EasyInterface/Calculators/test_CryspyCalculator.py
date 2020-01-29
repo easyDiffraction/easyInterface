@@ -133,19 +133,19 @@ def test_setExperimentsDictFromCryspyObj(cal):
     assert len(experiment_dict) == 1
     assert len(experiment_dict['pd']) == 7
     # wavelength
-    assert len(experiment_dict['pd']['wavelength']) == 4
+    assert len(experiment_dict['pd']['wavelength']) == 5
     assert experiment_dict['pd']['wavelength'].value == 0.84
     assert experiment_dict['pd']['wavelength']['url'] == ''
 
     # offset
-    assert len(experiment_dict['pd']['offset']) == 4
+    assert len(experiment_dict['pd']['offset']) == 5
     assert experiment_dict['pd']['offset'].value == -0.385404
     assert experiment_dict['pd']['offset']['store']['error'] == 0.0
     assert experiment_dict['pd']['offset']['store']['refine'] is False
 
     # phase
     assert len(experiment_dict['pd']['phase']) == 1
-    assert len(experiment_dict['pd']['phase']['scale']) == 4
+    assert len(experiment_dict['pd']['phase']['scale']) == 5
     assert experiment_dict['pd']['phase']['scale'].value == 0.02381
     assert experiment_dict['pd']['phase']['scale']['store']['refine'] is False
     assert experiment_dict['pd']['phase']['scale']['store']['error'] == 0.0
@@ -153,18 +153,18 @@ def test_setExperimentsDictFromCryspyObj(cal):
     # background
     assert len(experiment_dict['pd']['background']) == 3
     assert experiment_dict['pd']['background']['4.5']['ttheta'] == 4.5
-    assert len(experiment_dict['pd']['background']['4.5']['intensity']) == 4
+    assert len(experiment_dict['pd']['background']['4.5']['intensity']) == 5
     assert experiment_dict['pd']['background']['4.5']['intensity'].value == 256.0
     assert experiment_dict['pd']['background']['80.0']['ttheta'] == 80.0
-    assert len(experiment_dict['pd']['background']['80.0']['intensity']) == 4
+    assert len(experiment_dict['pd']['background']['80.0']['intensity']) == 5
     assert experiment_dict['pd']['background']['80.0']['intensity'].value == 65.0
 
     # resolution
     assert len(experiment_dict['pd']['resolution']) == 5
-    assert len(experiment_dict['pd']['resolution']['u']) == 4
+    assert len(experiment_dict['pd']['resolution']['u']) == 5
     assert experiment_dict['pd']['resolution']['u'].value == 16.9776
     assert experiment_dict['pd']['resolution']['u']['store']['refine'] is False
-    assert len(experiment_dict['pd']['resolution']['y']) == 4
+    assert len(experiment_dict['pd']['resolution']['y']) == 5
     assert experiment_dict['pd']['resolution']['v'].value == -2.8357
     assert experiment_dict['pd']['resolution']['v']['store']['error'] == 0.0
     assert experiment_dict['pd']['resolution']['v']['store']['hide'] is False

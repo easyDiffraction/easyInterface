@@ -34,7 +34,7 @@ class QtCalculatorInterface(CalculatorInterface, QObject):
         self.projectDictChanged.emit()
 
     def __repr__(self) -> str:
-        return "EasyDiffraction QT interface with calculator: {} - {}".format(
+        return "easyInterface (QT) with calculator: {} - {}".format(
             self.project_dict['calculator']['name'],
             self.project_dict['calculator']['version'])
 

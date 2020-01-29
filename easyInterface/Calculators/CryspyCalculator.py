@@ -5,6 +5,7 @@ from typing import Tuple
 
 import cryspy
 import pycifstar
+from asteval import Interpreter
 
 from easyInterface.DataClasses.PhaseObj.Phase import *
 from easyInterface.DataClasses.PhaseObj.SpaceGroup import *
@@ -192,10 +193,13 @@ class CryspyCalculator:
         self._cryspy_obj.apply_constraint()
 
         # logging.info(self._cryspy_obj.crystals)
+        mapping_base = 'self._cryspy_obj.crystals'
 
-        for calculator_phase in self._cryspy_obj.crystals:
+
+        for i, calculator_phase in enumerate(self._cryspy_obj.crystals):
             calculator_phase_name = calculator_phase.data_name
             #logging.info(calculator_phase_name)
+            mapping_phase = mapping_base + '[{}]'.format(i)
 
             # Space group
             space_group = self._createProjItemFromObj(SpaceGroup.fromPars,
@@ -206,6 +210,12 @@ class CryspyCalculator:
                                                        calculator_phase.space_group.it_number,
                                                        calculator_phase.space_group.it_coordinate_system_code])
 
+            space_group['crystal_system']['mapping'] = mapping_phase + '.space_group.crystal_system'
+            space_group['space_group_name_HM_alt']['mapping'] = mapping_phase + '.space_group.name_hm_ref'
+            space_group['space_group_IT_number']['mapping'] = mapping_phase + '.space_group.it_number'
+            space_group['origin_choice']['mapping'] = mapping_phase + '.space_group.it_coordinate_system_code'
+
+
             # Unit cell parameters
             unit_cell = self._createProjItemFromObj(Cell.fromPars, ['length_a', 'length_b', 'length_c',
                                                                     'angle_alpha', 'angle_beta', 'angle_gamma'],
@@ -214,6 +224,13 @@ class CryspyCalculator:
                                                      calculator_phase.cell.angle_beta,
                                                      calculator_phase.cell.angle_gamma])
 
+            unit_cell['length_a']['mapping'] = mapping_phase + '.cell.length_a'
+            unit_cell['length_b']['mapping'] = mapping_phase + '.cell.length_b'
+            unit_cell['length_c']['mapping'] = mapping_phase + '.cell.length_c'
+            unit_cell['angle_alpha']['mapping'] = mapping_phase + '.cell.angle_alpha'
+            unit_cell['angle_beta']['mapping'] = mapping_phase + '.cell.angle_beta'
+            unit_cell['angle_gamma']['mapping'] = mapping_phase + '.cell.angle_gamma'
+
             phase = Phase.fromPars(calculator_phase_name, space_group, unit_cell)
             #logging.info(phase)
 
@@ -221,6 +238,7 @@ class CryspyCalculator:
             # Atom sites
             for i, label in enumerate(calculator_phase.atom_site.label):
                 calculator_atom_site = calculator_phase.atom_site
+                mapping_atom = mapping_phase + '.atom_site'
 
                 # Atom sites symbol
                 type_symbol = calculator_atom_site.type_symbol[i]
@@ -246,6 +264,9 @@ class CryspyCalculator:
                 adp = None
                 if calculator_phase.atom_site_aniso is not None:
                     if i <= len(calculator_phase.atom_site_aniso.u_11):
+
+                        mapping_adp = mapping_phase + '.atom_site_aniso'
+
                         adp = [calculator_phase.atom_site_aniso.u_11[i],
                                calculator_phase.atom_site_aniso.u_22[i],
                                calculator_phase.atom_site_aniso.u_33[i],
@@ -256,11 +277,21 @@ class CryspyCalculator:
                                                           ['u_11', 'u_22', 'u_33',
                                                            'u_12', 'u_13', 'u_23'],
                                                           adp)
+                        adp['u_11']['mapping'] = mapping_adp + '.u_11[{}]'.format(i)
+                        adp['u_22']['mapping'] = mapping_adp + '.u_22[{}]'.format(i)
+                        adp['u_33']['mapping'] = mapping_adp + '.u_33[{}]'.format(i)
+                        adp['u_12']['mapping'] = mapping_adp + '.u_12[{}]'.format(i)
+                        adp['u_13']['mapping'] = mapping_adp + '.u_13[{}]'.format(i)
+                        adp['u_23']['mapping'] = mapping_adp + '.u_23[{}]'.format(i)
 
                 # Atom site MSP
                 msp = None
                 if calculator_phase.atom_site_susceptibility is not None:
                     if i < len(calculator_phase.atom_site_susceptibility.chi_type):
+
+                        mapping_msp = mapping_phase + '.atom_site_susceptibility'
+
+
                         msp = [calculator_phase.atom_site_susceptibility.chi_type[i],
                                calculator_phase.atom_site_susceptibility.chi_11[i],
                                calculator_phase.atom_site_susceptibility.chi_22[i],
@@ -272,18 +303,35 @@ class CryspyCalculator:
                                                           ['MSPtype', 'chi_11', 'chi_22', 'chi_33',
                                                            'chi_12', 'chi_13', 'chi_23'],
                                                           msp)
+                        msp['type']['mapping'] = mapping_msp + '.chi_type[{}]'.format(i)
+                        msp['chi_11']['mapping'] = mapping_msp + '.chi_11[{}]'.format(i)
+                        msp['chi_22']['mapping'] = mapping_msp + '.chi_22[{}]'.format(i)
+                        msp['chi_33']['mapping'] = mapping_msp + '.chi_33[{}]'.format(i)
+                        msp['chi_12']['mapping'] = mapping_msp + '.chi_12[{}]'.format(i)
+                        msp['chi_13']['mapping'] = mapping_msp + '.chi_13[{}]'.format(i)
+                        msp['chi_23']['mapping'] = mapping_msp + '.chi_23[{}]'.format(i)
 
                 # Add an atom to atoms
-                atoms.append(self._createProjItemFromObj(
+                atom = self._createProjItemFromObj(
                     Atom.fromPars,
                     ['atom_site_label', 'type_symbol', 'scat_length_neutron',
                      'fract_x', 'fract_y', 'fract_z', 'occupancy', 'adp_type',
                      'U_iso_or_equiv'],
                     [label, type_symbol, scat_length_neutron,
                      fract_x, fract_y, fract_z, occupancy, adp_type,
-                     U_iso_or_equiv, adp, msp]))
-            atoms = Atoms(atoms)
+                     U_iso_or_equiv, adp, msp])
 
+                atom['scat_length_neutron']['mapping'] = mapping_atom + '.scat_length_neutron[{}]'.format(i)
+                atom['fract_x']['mapping'] = mapping_atom + '.fract_x[{}]'.format(i)
+                atom['fract_y']['mapping'] = mapping_atom + '.fract_y[{}]'.format(i)
+                atom['fract_z']['mapping'] = mapping_atom + '.fract_z[{}]'.format(i)
+                atom['occupancy']['mapping'] = mapping_atom + '.occupancy[{}]'.format(i)
+                atom['adp_type']['mapping'] = mapping_atom + '.adp_type[{}]'.format(i)
+                atom['U_iso_or_equiv']['mapping'] = mapping_atom + '.u_iso_or_equiv[{}]'.format(i)
+
+                atoms.append(atom)
+
+            atoms = Atoms(atoms)
             for key in atoms:
                 phase['atoms'][key] = atoms[key]
 
@@ -330,8 +378,13 @@ class CryspyCalculator:
 
     def getExperiments(self) -> Experiments:
         experiments = []
-        for calculator_experiment in self._cryspy_obj.experiments:
+
+        mapping_base = 'self._cryspy_obj.experiments'
+
+        for i, calculator_experiment in enumerate(self._cryspy_obj.experiments):
             calculator_experiment_name = calculator_experiment.data_name
+
+            mapping_exp = mapping_base + '[{}]'.format(i)
 
             # Experimental setup
             calculator_setup = calculator_experiment.setup
@@ -344,10 +397,10 @@ class CryspyCalculator:
             # Background
             calculator_background = calculator_experiment.background
             backgrounds = []
-            for ttheta, intensity in zip(calculator_background.ttheta, calculator_background.intensity):
-                backgrounds.append(self._createProjItemFromObj(Background.fromPars,
-                                                               ['ttheta', 'intensity'],
-                                                               [ttheta, intensity]))
+            for ii, (ttheta, intensity) in enumerate(zip(calculator_background.ttheta, calculator_background.intensity)):
+                background = self._createProjItemFromObj(Background.fromPars, ['ttheta', 'intensity'], [ttheta, intensity])
+                background['intensity']['mapping'] = mapping_exp + '.background.intensity[{}]'.format(ii)
+                backgrounds.append(background)
             backgrounds = Backgrounds(backgrounds)
 
             # Instrument resolution
@@ -359,6 +412,12 @@ class CryspyCalculator:
                                                       calculator_resolution.w,
                                                       calculator_resolution.x,
                                                       calculator_resolution.y])
+            resolution['u']['mapping'] = mapping_exp + '.resolution.u'
+            resolution['v']['mapping'] = mapping_exp + '.resolution.v'
+            resolution['w']['mapping'] = mapping_exp + '.resolution.w'
+            resolution['x']['mapping'] = mapping_exp + '.resolution.x'
+            resolution['y']['mapping'] = mapping_exp + '.resolution.y'
+
 
             # Measured data points
             x_obs = np.array(calculator_experiment.meas.ttheta).tolist()
@@ -384,10 +443,15 @@ class CryspyCalculator:
             data = MeasuredPattern(x_obs, y_obs, sy_obs, y_obs_up, sy_obs_up, y_obs_down, sy_obs_down)
 
             experiment = self._createProjItemFromObj(Experiment.fromPars,
-                                                     ['name', 'wavelength', 'offset', 'phase', 'background',
-                                                      'resolution', 'measured_pattern'],
+                                                     ['name', 'wavelength', 'offset', 'phase',
+                                                      'background', 'resolution', 'measured_pattern'],
                                                      [calculator_experiment_name, wavelength, offset, scale,
                                                       backgrounds, resolution, data])
+
+            experiment['wavelength']['mapping'] = mapping_exp + '.setup.wavelength'
+            experiment['offset']['mapping'] = mapping_exp + '.setup.offset_ttheta'
+            experiment['phase']['scale']['mapping'] = mapping_exp + '.phase.scale[0]'
+
             experiments.append(experiment)
 
         #logging.info(experiments)
@@ -487,6 +551,7 @@ class CryspyCalculator:
             if phase_name in cryspy_phase_names:
                 cryspy_phase_index = cryspy_phase_names.index(phase_name)
                 calculator_phase = self._cryspy_obj.crystals[cryspy_phase_index]
+
                 project_phase = phases[phase_name]
 
                 # Unit cell parameters
@@ -637,3 +702,13 @@ class CryspyCalculator:
     def final_chi_square(self) -> float:
         chi_sq, n_res = self.getChiSq()
         return chi_sq / n_res
+
+    def _mappedValueUpdater(self, itemStr, value):
+        aeval = Interpreter(usersyms=dict(self=self))
+        item = aeval(itemStr)
+        item.value = value
+
+    def _mappedRefineUpdater(self, itemStr, value):
+        aeval = Interpreter(usersyms=dict(self=self))
+        item = aeval(itemStr)
+        item.refinement = value

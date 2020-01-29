@@ -1,6 +1,7 @@
 import logging
 import os
 from datetime import datetime
+from copy import deepcopy
 from typing import List
 
 from easyInterface.DataClasses.DataObj.Calculation import *
@@ -83,12 +84,12 @@ class CalculatorInterface:
     # projectDictChanged = Signal()
 
     def __repr__(self) -> str:
-        return "EasyDiffraction interface with calculator: {} - {}".format(
+        return "easyInterface with calculator: {} - {}".format(
             self.project_dict['calculator']['name'],
             self.project_dict['calculator']['version'])
 
     def setProjectFromCalculator(self):
-        #TODO initiate buld update here
+        # TODO initiate buld update here
         self.updatePhases()
         self.updateExperiments()
         self.updateCalculations()
@@ -99,7 +100,7 @@ class CalculatorInterface:
         self.project_dict.setItemByPath(['info', 'refinement_datetime'], str(np.datetime64('now')))
 
         final_chi_square, n_res = self.calculator.getChiSq()
-        final_chi_square = final_chi_square/n_res
+        final_chi_square = final_chi_square / n_res
 
         self.project_dict.setItemByPath(['info', 'n_res', 'store', 'value'], n_res)
         self.project_dict.setItemByPath(['info', 'chi_squared', 'store', 'value'], final_chi_square)
@@ -142,7 +143,7 @@ class CalculatorInterface:
     def updatePhases(self):
         phases = self.calculator.getPhases()
 
-        #for key, val in phases.items():
+        # for key, val in phases.items():
         #    logging.info(key)
         #    logging.info(dict(val))
 
@@ -151,23 +152,12 @@ class CalculatorInterface:
         if not k:
             return
 
-        #logging.info(k)
-
-        #k = [key.insert(0, 'phases') for key in k]
         k = [['phases', *key] for key in k]
-        #logging.info(k)
 
         k.append(['info', 'phase_ids'])
         v.append(list(phases.keys()))
 
         self.project_dict.bulkUpdate(k, v, 'Bulk update of phases')
-
-        #logging.info(k)
-        #logging.info(v)
-
-        # This will notify the GUI models changed
-        # if emit:
-        #     self.projectDictChanged.emit()
 
     def updateExperiments(self):
         experiments = self.calculator.getExperiments()
@@ -183,47 +173,38 @@ class CalculatorInterface:
 
         self.project_dict.bulkUpdate(k, v, 'Bulk update of experiments')
 
-        # This will notify the GUI models changed
-        # if emit:
-        #     self.projectDictChanged.emit()
+    def getCalculations(self):
+        self.updateCalculations()
+        return self.project_dict['calculations']
 
     def updateCalculations(self):
         calculations = self.calculator.getCalculations()
-
-        k, v = self.project_dict['calculations'].dictComparison(calculations)
-
-        if not k:
-            return
-
-        k = [['calculations', *key] for key in k]
-        self.project_dict.bulkUpdate(k, v, 'Bulk update of calculations')
-
-        # This will notify the GUI models changed
-        # if emit:
-        #     self.projectDictChanged.emit()
+        self.project_dict.setItemByPath(['calculations'], calculations)
 
     def getPhase(self, phase) -> Phase:
         if phase in self.project_dict['phases']:
-            return self.project_dict['phases'][phase]
+            return deepcopy(self.project_dict['phases'][phase])
         else:
             raise KeyError
 
     def getExperiment(self, experiment):
         if experiment in self.project_dict['experiments']:
-            return self.project_dict['experiments'][experiment]
+            return deepcopy(self.project_dict['experiments'][experiment])
         else:
             raise KeyError
 
     def setPhases(self, phases=None):
         """Set phases (sample model tab in GUI)"""
         if isinstance(phases, Phase):
-            new_phase_name = phases['name']
-            self.project_dict.setItemByPath(['phases', new_phase_name], phases)
+            new_phase_name = phases['phasename']
+            k, v = self.project_dict.getItemByPath(['phases', new_phase_name]).dictComparison(phases)
+            k = [['phases', new_phase_name, *ik] for ik in k]
         elif isinstance(phases, Phases):
-            self.project_dict.bulkUpdate([['phases', item] for item in list(phases.keys())],
-                                         [phases[key] for key in phases.keys()],
-                                         "Setting new phases")
-        self.calculator.setPhases(self.project_dict['phases'])
+            k = [['phases', item] for item in list(phases.keys())]
+            v = [phases[key] for key in phases.keys()]
+        else:
+            raise TypeError
+        self._mappedBulkUpdate(self._mappedValueUpdater, k, v)
 
     def setExperiments(self, experiments=None):
         """Set experiments (Experimental data tab in GUI)"""
@@ -245,7 +226,7 @@ class CalculatorInterface:
     def setDictByPath(self, keys: list, value):
         self.project_dict.setItemByPath(keys, value)
         self.setCalculatorFromProject()
-        self.updateCalculations() # IT IS SLOW
+        self.updateCalculations()  # IT IS SLOW
         # self.projectDictChanged.emit()
 
     def phasesCount(self) -> int:
@@ -304,3 +285,44 @@ class CalculatorInterface:
     def final_chi_square(self) -> float:
         return self.calculator.final_chi_square
 
+    def setPhaseRefine(self, phase: str, key: list, value: bool = True):
+        if phase not in self.project_dict['phases'].keys():
+            raise KeyError
+        self.project_dict.setItemByPath(['phases', phase, *key, 'store', 'refine'], value)
+        self._mappedRefineUpdater(['phases', phase, *key], value)
+
+    def setPhaseValue(self, phase: str, key: list, value):
+        if phase not in self.project_dict['phases'].keys():
+            raise KeyError
+
+        self.project_dict.setItemByPath(['phases', phase, *key, 'store', 'value'], value)
+        self._mappedValueUpdater(['phases', phase, *key], value)
+
+    def setExperimentRefine(self, experiment: str, key: list, value: bool = True):
+        if experiment not in self.project_dict['experiments'].keys():
+            raise KeyError
+
+        self.project_dict.setItemByPath(['experiments', experiment, *key, 'store', 'refine'], value)
+        self._mappedRefineUpdater(['experiments', experiment, *key], value)
+
+    def setExperimentValue(self, experiment: str, key: list, value):
+        if experiment not in self.project_dict['experiments'].keys():
+            raise KeyError
+        self.project_dict.setItemByPath(['experiments', experiment, *key, 'store', 'value'], value)
+        self._mappedValueUpdater(['experiments', experiment, *key], value)
+
+    def _mappedBulkUpdate(self, func: Callable, keys: list, values:list):
+        self.project_dict.bulkUpdate(keys, values, 'Updating Dictionary')
+        for k, v in zip(keys, values):
+            if k[-2:] == ['store', 'value']:
+                k = k[:-2]
+            func(k, v)
+        self.updateCalculations()
+
+    def _mappedValueUpdater(self, key, value):
+        update_str = self.project_dict.getItemByPath(key)['mapping']
+        self.calculator._mappedValueUpdater(update_str, value)
+
+    def _mappedRefineUpdater(self, key, value):
+        update_str = self.project_dict.getItemByPath(key)['mapping']
+        self.calculator._mappedRefineUpdater(update_str, value)
