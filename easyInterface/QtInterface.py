@@ -1,5 +1,7 @@
+import logging
+
 from easyInterface.Interface import *
-from PySide2.QtCore import QObject, Signal
+from PySide2.QtCore import QObject, Signal, Slot
 
 
 class QtCalculatorInterface(CalculatorInterface, QObject):
@@ -8,6 +10,28 @@ class QtCalculatorInterface(CalculatorInterface, QObject):
         CalculatorInterface.__init__(self, calculator)
 
     projectDictChanged = Signal()
+
+    @Slot(result=bool)
+    def canUndo(self):
+        return self.project_dict.canUndo()
+
+    @Slot(result=bool)
+    def canRedo(self):
+        return self.project_dict.canRedo()
+
+    @Slot()
+    def clearUndoStack(self):
+        self.project_dict.clearUndoStack()
+
+    @Slot()
+    def undo(self):
+        self.project_dict.undo()
+        self.projectDictChanged.emit()
+
+    @Slot()
+    def redo(self):
+        self.project_dict.redo()
+        self.projectDictChanged.emit()
 
     def __repr__(self) -> str:
         return "EasyDiffraction QT interface with calculator: {} - {}".format(
