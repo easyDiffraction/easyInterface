@@ -10,13 +10,13 @@ EXPERIMENT_DETAILS = {
         'header': 'χ²',
         'tooltip': 'Goodness of fit as estimated by the Pearson''s chi-squared test.',
         'url': 'https://en.wikipedia.org/wiki/Chi-squared_test',
-        'default': (0, '')
+        'default': (0, 'ang')
     },
     'offset': {
         'header': '',
         'tooltip': 'Number of free parameters.',
         'url': '',
-        'default': (0, '')
+        'default': (0, 'deg')
     }
 }
 
