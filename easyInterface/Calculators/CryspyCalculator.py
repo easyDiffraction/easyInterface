@@ -469,11 +469,11 @@ class CryspyCalculator:
             calculator_experiment_index = self._cryspy_obj.experiments.index(calculator_experiment)
 
             # Calculated data
-            # logging.info("calc_profile start") # profiling
+            logging.info("+++++++++> start")
             calculated_pattern, calculated_bragg_peaks, _ = calculator_experiment.calc_profile(
                 np.array(calculator_experiment.meas.ttheta),
                 self._cryspy_obj.crystals)
-            # logging.info("calc_profile end") # profiling
+            logging.info("<+++++++++ end")
 
             # Bragg peaks
             offset = self._cryspy_obj.experiments[calculator_experiment_index].setup.offset_ttheta

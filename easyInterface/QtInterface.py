@@ -10,6 +10,7 @@ class QtCalculatorInterface(CalculatorInterface, QObject):
         CalculatorInterface.__init__(self, calculator)
 
     projectDictChanged = Signal()
+    canUndoOrRedoChanged = Signal()
 
     @Slot(result=bool)
     def canUndo(self):
@@ -34,7 +35,7 @@ class QtCalculatorInterface(CalculatorInterface, QObject):
         self.projectDictChanged.emit()
 
     def __repr__(self) -> str:
-        return "easyInterface (QT) with calculator: {} - {}".format(
+        return "easyDiffraction QT interface with calculator: {} - {}".format(
             self.project_dict['calculator']['name'],
             self.project_dict['calculator']['version'])
 
