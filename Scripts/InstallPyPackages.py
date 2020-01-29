@@ -61,6 +61,7 @@ if __name__ == '__main__':
         'codecov==2.0.15',
         'PySide2',
         'asteval',
+        'pyyaml==5.1.2',
         )
 
     if BasicFunctions.osName() == 'windows':

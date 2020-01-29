@@ -133,7 +133,7 @@ def test_setExperimentsDictFromCryspyObj(cal):
     assert len(experiment_dict) == 1
     assert len(experiment_dict['pd']) == 7
     # wavelength
-    assert len(experiment_dict['pd']['wavelength']) == 5
+    assert len(experiment_dict['pd']['wavelength']) == 4
     assert experiment_dict['pd']['wavelength'].value == 0.84
     assert experiment_dict['pd']['wavelength']['url'] == ''
 
