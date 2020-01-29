@@ -14,24 +14,26 @@ class QtCalculatorInterface(CalculatorInterface, QObject):
 
     @Slot(result=bool)
     def canUndo(self):
-        return self.project_dict.canUndo()
+        return CalculatorInterface.canUndo(self)
 
     @Slot(result=bool)
     def canRedo(self):
-        return self.project_dict.canRedo()
+        return CalculatorInterface.canRedo(self)
 
     @Slot()
     def clearUndoStack(self):
-        self.project_dict.clearUndoStack()
+        CalculatorInterface.clearUndoStack(self)
 
     @Slot()
     def undo(self):
-        self.project_dict.undo()
+        CalculatorInterface.undo(self)
+        self.setCalculatorFromProject()
         self.projectDictChanged.emit()
 
     @Slot()
     def redo(self):
-        self.project_dict.redo()
+        CalculatorInterface.redo(self)
+        self.setCalculatorFromProject()
         self.projectDictChanged.emit()
 
     def __repr__(self) -> str:

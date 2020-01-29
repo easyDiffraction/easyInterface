@@ -52,10 +52,12 @@ class _SetItemCommand(_EmptyCommand):
         self.setText("Setting: {} = {}".format(self._key, self._new_value))
 
     def undo(self) -> NoReturn:
-        self._dictionary._realSetItem(self._key, self._old_value)
+        if self._new_value is not self._old_value:
+            self._dictionary._realSetItem(self._key, self._old_value)
 
     def redo(self) -> NoReturn:
-        self._dictionary._realSetItem(self._key, self._new_value)
+        if self._new_value is not self._old_value:
+            self._dictionary._realSetItem(self._key, self._new_value)
 
 
 class PathDict(UserDict):

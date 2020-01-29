@@ -184,12 +184,16 @@ class CalculatorInterface:
     def getPhase(self, phase) -> Phase:
         if phase in self.project_dict['phases']:
             return deepcopy(self.project_dict['phases'][phase])
+        elif phase is None:
+            return deepcopy(self.project_dict['phases'])
         else:
             raise KeyError
 
     def getExperiment(self, experiment):
         if experiment in self.project_dict['experiments']:
             return deepcopy(self.project_dict['experiments'][experiment])
+        elif experiment is None:
+            return deepcopy(self.project_dict['experiments'])
         else:
             raise KeyError
 
@@ -332,3 +336,18 @@ class CalculatorInterface:
     def _mappedRefineUpdater(self, key, value):
         update_str = self.project_dict.getItemByPath(key)['mapping']
         self.calculator._mappedRefineUpdater(update_str, value)
+
+    def canUndo(self):
+        return self.project_dict.canUndo()
+
+    def canRedo(self):
+        return self.project_dict.canRedo()
+
+    def clearUndoStack(self):
+        self.project_dict.clearUndoStack()
+
+    def undo(self):
+        self.project_dict.undo()
+
+    def redo(self):
+        self.project_dict.redo()
