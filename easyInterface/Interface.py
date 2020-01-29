@@ -288,26 +288,32 @@ class CalculatorInterface:
     def setPhaseRefine(self, phase: str, key: list, value: bool = True):
         if phase not in self.project_dict['phases'].keys():
             raise KeyError
+        if key[-2:] == ['store', 'value']:
+            key = key[:-2]
         self.project_dict.setItemByPath(['phases', phase, *key, 'store', 'refine'], value)
         self._mappedRefineUpdater(['phases', phase, *key], value)
 
     def setPhaseValue(self, phase: str, key: list, value):
         if phase not in self.project_dict['phases'].keys():
             raise KeyError
-
+        if key[-2:] == ['store', 'value']:
+            key = key[:-2]
         self.project_dict.setItemByPath(['phases', phase, *key, 'store', 'value'], value)
         self._mappedValueUpdater(['phases', phase, *key], value)
 
     def setExperimentRefine(self, experiment: str, key: list, value: bool = True):
         if experiment not in self.project_dict['experiments'].keys():
             raise KeyError
-
+        if key[-2:] == ['store', 'value']:
+            key = key[:-2]
         self.project_dict.setItemByPath(['experiments', experiment, *key, 'store', 'refine'], value)
         self._mappedRefineUpdater(['experiments', experiment, *key], value)
 
     def setExperimentValue(self, experiment: str, key: list, value):
         if experiment not in self.project_dict['experiments'].keys():
             raise KeyError
+        if key[-2:] == ['store', 'value']:
+            key = key[:-2]
         self.project_dict.setItemByPath(['experiments', experiment, *key, 'store', 'value'], value)
         self._mappedValueUpdater(['experiments', experiment, *key], value)
 
