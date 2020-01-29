@@ -1,3 +1,4 @@
 cryspy>=0.2.0
 dictdiffer
 PySide2
+asteval

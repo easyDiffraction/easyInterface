@@ -60,6 +60,7 @@ if __name__ == '__main__':
         'wily==1.13.0',
         'codecov==2.0.15',
         'PySide2',
+        'asteval',
         )
 
     if BasicFunctions.osName() == 'windows':
