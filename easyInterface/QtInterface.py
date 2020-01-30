@@ -12,6 +12,16 @@ class QtCalculatorInterface(CalculatorInterface, QObject):
     projectDictChanged = Signal()
     canUndoOrRedoChanged = Signal()
 
+    @Slot(result=str)
+    def undoText(self):
+        logging.info("self.project_dict.undoText()")
+        return self.project_dict.undoText()
+
+    @Slot(result=str)
+    def redoText(self):
+        logging.info("self.project_dict.redoText()")
+        return self.project_dict.redoText()
+
     @Slot(result=bool)
     def canUndo(self):
         return CalculatorInterface.canUndo(self)

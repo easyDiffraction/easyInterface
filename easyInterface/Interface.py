@@ -277,7 +277,7 @@ class CalculatorInterface:
         """refinement ..."""
         refinement_res, scipy_refinement_res = self.calculator.refine()
 
-        self.project_dict.startBulkUpdate('Updating - refinement results')
+        self.project_dict.startBulkUpdate('Refinement')
         self.setProjectFromCalculator()
         self.project_dict.endBulkUpdate()
 
