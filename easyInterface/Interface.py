@@ -192,7 +192,7 @@ class CalculatorInterface:
 
     def updateCalculations(self):
         calculations = self.calculator.getCalculations()
-        self.project_dict.setItemByPath(['calculations'], calculations)
+        self.project_dict['calculations'] = calculations
 
     def getPhase(self, phase) -> Phase:
         if phase in self.project_dict['phases']:
