@@ -58,7 +58,7 @@ def test_setInfoDict(cal):
 def test_setPhasesDictFromCryspyObj(cal):
     # difficult test for creation of the phases dict
     cal.project_dict['phases'].clear() # enforce
-    assert cal.calculator._cryspy_obj.crystals != None
+    assert cal.calculator._cryspy_obj.crystals is not None
 
     cal.updatePhases()
 
@@ -124,7 +124,7 @@ def test_setPhasesDictFromCryspyObj(cal):
 def test_setExperimentsDictFromCryspyObj(cal):
     # difficult test for creation of the experiment dict
     cal.project_dict['experiments'].clear() # enforce
-    assert cal.calculator._cryspy_obj.experiments != None
+    assert cal.calculator._cryspy_obj.experiments is not None
 
     cal.updateExperiments()
 
@@ -133,7 +133,7 @@ def test_setExperimentsDictFromCryspyObj(cal):
     assert len(experiment_dict) == 1
     assert len(experiment_dict['pd']) == 7
     # wavelength
-    assert len(experiment_dict['pd']['wavelength']) == 4
+    assert len(experiment_dict['pd']['wavelength']) == 5
     assert experiment_dict['pd']['wavelength'].value == 0.84
     assert experiment_dict['pd']['wavelength']['url'] == ''
 
@@ -179,7 +179,7 @@ def test_setExperimentsDictFromCryspyObj(cal):
 def test_setCalculationsDictFromCryspyObj(cal):
     cal.project_dict['calculations'].clear()
 
-    assert cal.calculator._cryspy_obj.crystals != None
+    assert cal.calculator._cryspy_obj.crystals is not None
 
     cal.updateCalculations()
 
