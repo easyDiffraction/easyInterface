@@ -141,6 +141,7 @@ class CalculatorInterface:
         self.writeExpCif(save_dir)
 
     def updatePhases(self):
+        # logging.info('------->  start')
         phases = self.calculator.getPhases()
 
         # for key, val in phases.items():
@@ -157,9 +158,16 @@ class CalculatorInterface:
         k.append(['info', 'phase_ids'])
         v.append(list(phases.keys()))
 
-        self.project_dict.bulkUpdate(k, v, 'Bulk update of phases')
+        if self.project_dict._macroRunning:
+            for key, value in zip(k, v):
+                self.project_dict.setItemByPath(key, value)
+        else:
+            self.project_dict.bulkUpdate(k, v, 'Bulk update of phases')
+        # logging.info('<-------  end')
+
 
     def updateExperiments(self):
+        # logging.info('------->  start')
         experiments = self.calculator.getExperiments()
 
         k, v = self.project_dict['experiments'].dictComparison(experiments)
@@ -171,7 +179,12 @@ class CalculatorInterface:
         k.append(['info', 'experiment_ids'])
         v.append(list(experiments.keys()))
 
-        self.project_dict.bulkUpdate(k, v, 'Bulk update of experiments')
+        if self.project_dict._macroRunning:
+            for key, value in zip(k, v):
+                self.project_dict.setItemByPath(key, value)
+        else:
+            self.project_dict.bulkUpdate(k, v, 'Bulk update of experiments')
+        # logging.info('<-------  end')
 
     def getCalculations(self):
         self.updateCalculations()
@@ -264,7 +277,9 @@ class CalculatorInterface:
         """refinement ..."""
         refinement_res, scipy_refinement_res = self.calculator.refine()
 
+        self.project_dict.startBulkUpdate('Updating - refinement results')
         self.setProjectFromCalculator()
+        self.project_dict.endBulkUpdate()
 
         try:
             return {
