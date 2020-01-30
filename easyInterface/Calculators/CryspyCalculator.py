@@ -141,7 +141,7 @@ class CryspyCalculator:
         main_block = self._main_rcif
         if len(self._cryspy_obj.crystals) > 0:
             main_block["_phases"].value = 'phases.cif'
-        if len(self._cryspy_obj._RhoChi__experiments) > 0:
+        if len(self._cryspy_obj.experiments) > 0:
             main_block["_experiments"].value = 'experiments.cif'
         main_block.to_file(os.path.join(saveDir, 'main.cif'))
 
@@ -151,15 +151,15 @@ class CryspyCalculator:
         phases_block = pycifstar.Global()
         # TODO write output for multiple phases
         if len(self._cryspy_obj.crystals) > 0:
-            phases_block.take_from_string(self._cryspy_obj.crystals[0].to_cif)
+            phases_block.take_from_string(self._cryspy_obj.crystals[0].to_cif())
         phases_block.to_file(os.path.join(saveDir, 'phases.cif'))
 
     def writeExpCif(self, saveDir):
         if not isinstance(self._cryspy_obj, cryspy.scripts.cl_rhochi.RhoChi):
             return
         exp_block = pycifstar.Global()
-        if len(self._cryspy_obj._RhoChi__experiments) > 0:
-            exp_block.take_from_string(self._cryspy_obj._RhoChi__experiments[0].to_cif)
+        if len(self._cryspy_obj.experiments) > 0:
+            exp_block.take_from_string(self._cryspy_obj.experiments[0].to_cif())
         exp_block.to_file(os.path.join(saveDir, 'experiments.cif'))
 
     def saveCifs(self, saveDir):
