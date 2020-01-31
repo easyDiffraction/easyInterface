@@ -1,16 +1,18 @@
 from .DictTools import PathDict
 from .BaseClasses import Base
 from datetime import datetime
+from easyInterface.Utils.Helpers import getReleaseInfo
+from os.path import dirname, join
 
 APP_INFO = {
      'name': 'easyDiffraction',
-     'version': '0.3.9',
+     'version': '0.0.0',
      'url': 'http://easydiffraction.org'
 }
 
 CALCULATOR_INFO = {
     'name': 'CrysPy',
-    'version': '0.1.13',
+    'version': '0.0.0',
     'url': 'https://github.com/ikibalin/cryspy'
 }
 
@@ -29,11 +31,13 @@ INFO_DETAILS = {
     }
 }
 
+INTERFACE_INFO = getReleaseInfo(join(dirname(dirname(dirname(__file__))), 'Release.yml'))['release']
+
 
 class Info(PathDict):
     def __init__(self, phase_ids: list, experiment_ids: list, modified_datetime: str, refinement_datetime: str,
                  chi_squared: Base, n_res: Base):
-        super().__init__(phase_ids=phase_ids, experiment_ids=experiment_ids, modified_datetime=modified_datetime,
+        super().__init__(name='', phase_ids=phase_ids, experiment_ids=experiment_ids, modified_datetime=modified_datetime,
                          refinement_datetime=refinement_datetime, chi_squared=chi_squared, n_res=n_res)
 
         self.setItemByPath(['chi_squared', 'header'], INFO_DETAILS['chi_squared']['header'])
@@ -71,6 +75,11 @@ class _progInfo(PathDict):
 class Calculator(_progInfo):
     def __init__(self):
         super().__init__(**CALCULATOR_INFO)
+
+
+class Interface(_progInfo):
+    def __init__(self):
+        super().__init__(**INTERFACE_INFO)
 
 
 class App(_progInfo):

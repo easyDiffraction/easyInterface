@@ -56,12 +56,42 @@ class QtCalculatorInterface(CalculatorInterface, QObject):
         CalculatorInterface.setProjectFromCalculator(self)
         self.projectDictChanged.emit()
 
-    def updatePhaseDefinition(self, phases_path: str):
+    def setPhaseDefinition(self, phases_path: str):
         """
         Parse the relevant phases file and update the corresponding model
         """
-        CalculatorInterface.updatePhaseDefinition(self)
+        CalculatorInterface.setPhaseDefinition(self, phases_path)
         self.projectDictChanged.emit()
+
+    def addPhaseDefinition(self, phases_path: str):
+        """
+        Parse the relevant phases file and update the corresponding model
+        """
+        CalculatorInterface.addPhaseDefinition(self, phases_path)
+        self.projectDictChanged.emit()
+
+    def removePhase(self, phase_name):
+        CalculatorInterface.removePhase(phase_name)
+        self.projectDictChanged.emit()
+
+    def setExperimentDefinition(self, experiment_path: str):
+        """
+        Parse the relevant phases file and update the corresponding model
+        """
+        CalculatorInterface.setExperimentDefinition(self, experiment_path)
+        self.projectDictChanged.emit()
+
+    def addExperimentDefinition(self, experiment_path: str):
+        """
+        Parse the relevant phases file and update the corresponding model
+        """
+        CalculatorInterface.addExperimentDefinition(self, experiment_path)
+        self.projectDictChanged.emit()
+
+    def removeExperiment(self, experiment_name):
+        CalculatorInterface.removeExperiment(experiment_name)
+        self.projectDictChanged.emit()
+
 
     def updatePhases(self, emit: bool = True):
         CalculatorInterface.updatePhases(self)

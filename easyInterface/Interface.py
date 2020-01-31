@@ -8,7 +8,7 @@ from easyInterface.DataClasses.DataObj.Calculation import *
 from easyInterface.DataClasses.DataObj.Experiment import *
 from easyInterface.DataClasses.PhaseObj.Phase import *
 from easyInterface.DataClasses.Utils.DictTools import UndoableDict
-from easyInterface.DataClasses.Utils.InfoObjs import App, Calculator, Info
+from easyInterface.DataClasses.Utils.InfoObjs import App, Calculator, Info, Interface
 
 
 class ProjectDict(UndoableDict):
@@ -16,7 +16,7 @@ class ProjectDict(UndoableDict):
     This class deals with the creation and modification of the main project dictionary
     """
 
-    def __init__(self, app: App, calculator: Calculator, info: Info, phases: Phases, experiments: Experiments,
+    def __init__(self, interface: Interface, app: App, calculator: Calculator, info: Info, phases: Phases, experiments: Experiments,
                  calculations: Calculations):
         """
         Create the main project dictionary from base classes
@@ -26,8 +26,8 @@ class ProjectDict(UndoableDict):
         :param phases: Crystolographic phases in the system
         :param experiments: Experimental data store in the system
         """
-        super().__init__(app=app, calculator=calculator, info=info, phases=phases, experiments=experiments,
-                         calculations=calculations)
+        super().__init__(interface=interface, calculator=calculator, app=app, info=info, phases=phases,
+                         experiments=experiments, calculations=calculations)
 
     @classmethod
     def default(cls) -> 'ProjectDict':
@@ -38,10 +38,11 @@ class ProjectDict(UndoableDict):
         app = App.default()
         info = Info.default()
         calculator = Calculator.default()
+        interface = Interface.default()
         phases = Phases({})
         experiments = Experiments({})
         calculations = Calculations({})
-        return cls(app, calculator, info, phases, experiments, calculations)
+        return cls(interface, app, calculator, info, phases, experiments, calculations)
 
     @classmethod
     def fromPars(cls, experiments: Union[Experiments, Experiment, List[Experiment]],
@@ -56,13 +57,15 @@ class ProjectDict(UndoableDict):
         app = App.default()
         info = Info.default()
         calculator = Calculator.default()
+        interface = Interface.default()
+
         if not isinstance(experiments, Experiments):
             experiments = Experiments(experiments)
         if not isinstance(phases, Phases):
             phases = Phases(phases)
         if not isinstance(calculations, Calculations):
             calculations = Calculations(calculations)
-        return cls(app, calculator, info, phases, experiments, calculations)
+        return cls(interface, app, calculator, info, phases, experiments, calculations)
 
 
 class CalculatorInterface:
@@ -76,10 +79,9 @@ class CalculatorInterface:
         self.setProjectFromCalculator()
 
         # Set the calculator info
-        # TODO this should be a non-logged update
         CALCULATOR_INFO = self.calculator.calculatorInfo()
         for key in CALCULATOR_INFO.keys():
-            self.project_dict.setItemByPath(['calculator', key], CALCULATOR_INFO[key])
+            self.project_dict['calculator'][key] = CALCULATOR_INFO[key]
 
     # projectDictChanged = Signal()
 
@@ -97,6 +99,7 @@ class CalculatorInterface:
                                         datetime.fromtimestamp(
                                             os.path.getmtime(self.calculator._main_rcif_path)).strftime(
                                             '%d %b %Y, %H:%M:%S'))
+        self.project_dict.setItemByPath(['info', 'name'], self.calculator.getProjectName())
         self.project_dict.setItemByPath(['info', 'refinement_datetime'], str(np.datetime64('now')))
 
         final_chi_square, n_res = self.calculator.getChiSq()
@@ -108,23 +111,48 @@ class CalculatorInterface:
         # self.projectDictChanged.emit()
 
     #
-    def updateExpsDefinition(self, exp_path: str):
+    def setPhaseDefinition(self, exp_path: str):
         """
         Parse the relevant phases file and update the corresponding model
         """
-        self.calculator.updateExpsDefinition(exp_path)
+        self.calculator.setPhaseDefinition(exp_path)
         # This will re-create all local directories
         self.updateExperiments()
 
-    def updatePhaseDefinition(self, phases_path: str):
+    def addPhaseDefinition(self, phases_path: str):
         """
         Parse the relevant phases file and update the corresponding model
         """
-        self.calculator.updatePhaseDefinition(phases_path)
+        self.calculator.addPhaseDefinition(phases_path)
         self.updatePhases()
-
         # This will notify the GUI models changed
         # self.projectDictChanged.emit()
+
+    def removePhase(self, phase_name):
+        self.calculator.removePhaseDefinition(phase_name)
+        self.updatePhases()
+
+    def setExperimentDefinition(self, exp_path: str):
+        """
+        Parse the relevant phases file and update the corresponding model
+        """
+        self.calculator.setExpsDefinition(exp_path)
+        # This will re-create all local directories
+        self.updateExperiments()
+
+    def addExperimentDefinition(self, phases_path: str):
+        """
+        Parse the relevant phases file and update the corresponding model
+        """
+        self.calculator.addExpsDefinition(phases_path)
+        self.updateExperiments()
+        # This will notify the GUI models changed
+        # self.projectDictChanged.emit()
+
+    def removeExperiment(self, phase_name):
+        self.calculator.removeExpsDefinition(phase_name)
+        self.updateExperiments()
+
 
     def writeMainCif(self, save_dir: str):
         self.calculator.writeMainCif(save_dir)

@@ -55,3 +55,20 @@ def get_num_refine_pars(project_dict):
         if nested_get(project_dict, keys_list + ['refine']):
             numPars = numPars + 1
     return numPars
+
+
+def getReleaseInfo(file_path):
+
+    import yaml
+
+    default = {
+        'name': 'easyInterface',
+        'version': '0.0.0',
+        'url': 'http://easydiffraction.org'
+    }
+
+    if not os.path.isfile(file_path):
+        return default
+    with open(file_path, 'r') as file:
+        file_content = yaml.load(file, Loader=yaml.FullLoader)
+        return file_content
