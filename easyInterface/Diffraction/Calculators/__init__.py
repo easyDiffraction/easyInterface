@@ -1,1 +1,1 @@
-from easyInterface.Calculators.CryspyCalculator import CryspyCalculator
+from easyInterface.Diffraction.Calculators.CryspyCalculator import CryspyCalculator

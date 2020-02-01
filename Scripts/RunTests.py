@@ -6,7 +6,6 @@
 #
 
 import sys
-import os
 import pytest
 import warnings
 import BasicFunctions
@@ -22,7 +21,7 @@ warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
 # automatically discover and run all tests under ./Tests
 # files with names starting with `test_` are considered valid test files
 
-args = ['--cov=easyInterface', 'Tests']
+args = ['Tests']
 
 # add potential arguments like -k or -m
 if len(sys.argv) > 1:

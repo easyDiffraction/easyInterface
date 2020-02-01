@@ -1,0 +1,1 @@
+from easyInterface.Diffraction.Interface import Interface
