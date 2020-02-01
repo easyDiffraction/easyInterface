@@ -1,4 +1,4 @@
-from .DictTools import PathDict
+from easyInterface.Utils.DictTools import PathDict
 from .BaseClasses import Base
 from datetime import datetime
 from easyInterface.Utils.Helpers import getReleaseInfo

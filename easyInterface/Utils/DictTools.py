@@ -1,3 +1,6 @@
+__author__ = 'simonward'
+__version__ = "2020_02_01"
+
 from collections import deque, UserDict
 from copy import deepcopy
 from typing import Union, Any, NoReturn, Tuple, List
@@ -6,6 +9,9 @@ import dictdiffer
 
 
 class UndoStack:
+    """
+    Implement a version of QUndoStack without the QT
+    """
     def __init__(self, max_history=None) -> None:
         self._history = deque(maxlen=max_history)
         self._future = deque(maxlen=max_history)
@@ -18,6 +24,9 @@ class UndoStack:
         return self._history
 
     def push(self, command) -> None:
+        """
+        Add a command to the history stack
+        """
         if self._macro_running:
             self._macro['commands'].append(command)
         else:
@@ -26,12 +35,18 @@ class UndoStack:
         self._future = deque(maxlen=self._max_history)
 
     def clear(self):
+        """
+        Remove any commands on the stack and reset the state
+        """
         self._history = deque(maxlen=self._max_history)
         self._future = deque(maxlen=self._max_history)
         self._macro_running = False
         self._macro = dict(text="", commands=[])
 
     def undo(self):
+        """
+        Undo the last change to the stack
+        """
         if self.canUndo():
             command = self._history[0]
             self._future.appendleft(command)
@@ -43,6 +58,9 @@ class UndoStack:
                 command.undo()
 
     def redo(self):
+        """
+        Redo the last `undo` command on the stack
+        """
         if len(self._future) > 0:
             command = self._future[0]
             if not self._macro_running:
@@ -55,24 +73,39 @@ class UndoStack:
                 command.redo()
 
     def beginMacro(self, text: str):
+        """
+        Start a bulk update i.e. multiple commands under one undo/redo command
+        """
         if self._macro_running:
             raise AssertionError
         self._macro_running = True
         self._macro = dict(text=text, commands=[])
 
     def endMacro(self):
+        """
+        End a bulk update i.e. multiple commands under one undo/redo command
+        """
         if not self._macro_running:
             raise AssertionError
         self._macro_running = False
         self._history.appendleft(self._macro)
 
     def canUndo(self) -> bool:
+        """
+        Can the last command be undone?
+        """
         return len(self._history) > 0 and not self._macro_running
 
     def canRedo(self) -> bool:
+        """
+        Can we redo a command?
+        """
         return len(self._future) > 0 and not self._macro_running
 
     def redoText(self) -> str:
+        """
+        Text associated with a redo item.
+        """
         if self.canRedo():
             if isinstance(self._future[0], dict):
                 return self._future[0]['text']
@@ -82,6 +115,9 @@ class UndoStack:
             return ''
 
     def undoText(self) -> str:
+        """
+        Text associated with a undo item.
+        """
         if self.canUndo():
             if isinstance(self._history[0], dict):
                 return self._history[0]['text']
@@ -92,16 +128,24 @@ class UndoStack:
 
 
 class UndoCommand:
-    """The COMMAND interface"""
+    """
+    The Command interface pattern
+    """
 
     def __init__(self, obj) -> None:
         self._obj = obj
         self._text = None
 
     def undo(self):
+        """
+        Undo implementation which should be overwritten
+        """
         raise NotImplementedError
 
     def redo(self):
+        """
+        Redo implementation which should be overwritten
+        """
         raise NotImplementedError
 
     def setText(self, text: str):
@@ -111,7 +155,7 @@ class UndoCommand:
 class _EmptyCommand(UndoCommand):
     """
     The _EmptyCommand class is the custom base class of all undoable commands
-    stored on a QUndoStack.
+    stored on a UndoStack.
     """
 
     def __init__(self, dictionary: 'UndoableDict', key: Union[str, list], value: Any):

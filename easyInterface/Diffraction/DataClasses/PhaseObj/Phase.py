@@ -1,6 +1,5 @@
-from typing import Union, NoReturn
+from typing import NoReturn
 
-from ..Utils.DictTools import PathDict
 from .Atom import *
 from .SpaceGroup import *
 from .Cell import *

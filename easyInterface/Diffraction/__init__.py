@@ -1,1 +1,1 @@
-from easyInterface.Diffraction.Interface import Interface
+from easyInterface.Diffraction.Interface import CalculatorInterface

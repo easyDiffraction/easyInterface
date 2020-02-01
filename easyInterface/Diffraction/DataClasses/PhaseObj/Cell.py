@@ -1,4 +1,4 @@
-from ..Utils.DictTools import PathDict
+from easyInterface.Utils.DictTools import PathDict
 from ..Utils.BaseClasses import Base
 
 CELL_DETAILS = {

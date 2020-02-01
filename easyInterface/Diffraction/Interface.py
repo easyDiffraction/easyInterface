@@ -1,13 +1,16 @@
+__author__ = 'simonward'
+__version__ = "2020_02_01"
+
 import logging
 import os
 from datetime import datetime
 from copy import deepcopy
-from typing import List, Callable
+from typing import List, Callable, Any
 
 from easyInterface.Diffraction.DataClasses.DataObj.Calculation import *
 from easyInterface.Diffraction.DataClasses.DataObj.Experiment import Experiments, Experiment
 from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import Phases, Phase
-from easyInterface.Diffraction.DataClasses.Utils.DictTools import UndoableDict
+from easyInterface.Utils.DictTools import UndoableDict
 from easyInterface.Diffraction.DataClasses.Utils.InfoObjs import Interface, App, Calculator, Info
 
 
@@ -15,7 +18,6 @@ class ProjectDict(UndoableDict):
     """
     This class deals with the creation and modification of the main project dictionary
     """
-
     def __init__(self, interface: Interface, app: App, calculator: Calculator, info: Info, phases: Phases, experiments: Experiments,
                  calculations: Calculations):
         """
@@ -69,6 +71,9 @@ class ProjectDict(UndoableDict):
 
 
 class CalculatorInterface:
+    """
+    Interface to calculators in the easyInterface/Diffraction/Calculator folder
+    """
     def __init__(self, calculator):
         logging.info("---")
         self.project_dict = ProjectDict.default()
@@ -146,13 +151,10 @@ class CalculatorInterface:
         """
         self.calculator.addExpsDefinition(phases_path)
         self.updateExperiments()
-        # This will notify the GUI models changed
-        # self.projectDictChanged.emit()
 
     def removeExperiment(self, phase_name):
         self.calculator.removeExpsDefinition(phase_name)
         self.updateExperiments()
-
 
     def writeMainCif(self, save_dir: str):
         self.calculator.writeMainCif(save_dir)
@@ -169,12 +171,7 @@ class CalculatorInterface:
         self.writeExpCif(save_dir)
 
     def updatePhases(self):
-        # logging.info('------->  start')
         phases = self.calculator.getPhases()
-
-        # for key, val in phases.items():
-        #    logging.info(key)
-        #    logging.info(dict(val))
 
         k, v = self.project_dict['phases'].dictComparison(phases)
 
@@ -191,11 +188,9 @@ class CalculatorInterface:
                 self.project_dict.setItemByPath(key, value)
         else:
             self.project_dict.bulkUpdate(k, v, 'Bulk update of phases')
-        # logging.info('<-------  end')
 
 
     def updateExperiments(self):
-        # logging.info('------->  start')
         experiments = self.calculator.getExperiments()
 
         k, v = self.project_dict['experiments'].dictComparison(experiments)
@@ -212,7 +207,6 @@ class CalculatorInterface:
                 self.project_dict.setItemByPath(key, value)
         else:
             self.project_dict.bulkUpdate(k, v, 'Bulk update of experiments')
-        # logging.info('<-------  end')
 
     def getCalculations(self):
         self.updateCalculations()
@@ -222,7 +216,7 @@ class CalculatorInterface:
         calculations = self.calculator.getCalculations()
         self.project_dict['calculations'] = calculations
 
-    def getPhase(self, phase) -> Phase:
+    def getPhase(self, phase: Union[Phase, Phases, None]) -> Phase:
         if phase in self.project_dict['phases']:
             return deepcopy(self.project_dict['phases'][phase])
         elif phase is None:
@@ -230,7 +224,7 @@ class CalculatorInterface:
         else:
             raise KeyError
 
-    def getExperiment(self, experiment):
+    def getExperiment(self, experiment: Union[Experiment, Experiments, None]):
         if experiment in self.project_dict['experiments']:
             return deepcopy(self.project_dict['experiments'][experiment])
         elif experiment is None:
@@ -238,7 +232,7 @@ class CalculatorInterface:
         else:
             raise KeyError
 
-    def setPhases(self, phases=None):
+    def setPhases(self, phases: Union[Phase, Phases, None] = None):
         """Set phases (sample model tab in GUI)"""
         if isinstance(phases, Phase):
             new_phase_name = phases['phasename']
@@ -251,7 +245,7 @@ class CalculatorInterface:
             raise TypeError
         self._mappedBulkUpdate(self._mappedValueUpdater, k, v)
 
-    def setExperiments(self, experiments=None):
+    def setExperiments(self, experiments: Union[Experiment, Experiments, None] = None):
         """Set experiments (Experimental data tab in GUI)"""
         if isinstance(experiments, Experiment):
             new_exp_name = experiments['name']
@@ -268,11 +262,10 @@ class CalculatorInterface:
     def getDictByPath(self, keys: list):
         return self.project_dict.getItemByPath(keys)
 
-    def setDictByPath(self, keys: list, value):
+    def setDictByPath(self, keys: list, value: Any):
         self.project_dict.setItemByPath(keys, value)
         self.setCalculatorFromProject()
         self.updateCalculations()  # IT IS SLOW
-        # self.projectDictChanged.emit()
 
     def phasesCount(self) -> int:
         """Returns number of phases in the project."""

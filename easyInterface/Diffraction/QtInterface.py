@@ -1,4 +1,5 @@
-import logging
+__author__ = 'simonward'
+__version__ = "2020_02_01"
 
 from easyInterface.Diffraction.Interface import *
 from PySide2.QtCore import QObject, Signal, Slot

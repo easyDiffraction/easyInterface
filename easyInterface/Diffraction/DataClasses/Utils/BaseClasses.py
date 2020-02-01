@@ -1,7 +1,7 @@
 from typing import Union, Optional, Any, NoReturn
 
 from easyInterface.Utils.units import Unit
-from .DictTools import PathDict
+from easyInterface.Utils.DictTools import PathDict
 
 
 class Data(PathDict):
