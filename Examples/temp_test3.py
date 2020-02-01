@@ -1,7 +1,7 @@
 import os
 
-from easyInterface.Calculators import CryspyCalculator
-from easyInterface.Interface import CalculatorInterface
+from easyInterface.Diffraction.Calculators import CryspyCalculator
+from easyInterface.Diffraction.Interface import CalculatorInterface
 
 
 main_rcif = os.path.join('Examples', 'PbSO4_powder-1d_neutrons-unpol_D1A(ILL)', 'main.cif')

@@ -2,13 +2,13 @@ import logging
 import os
 from datetime import datetime
 from copy import deepcopy
-from typing import List
+from typing import List, Callable
 
-from easyInterface.DataClasses.DataObj.Calculation import *
-from easyInterface.DataClasses.DataObj.Experiment import *
-from easyInterface.DataClasses.PhaseObj.Phase import *
-from easyInterface.DataClasses.Utils.DictTools import UndoableDict
-from easyInterface.DataClasses.Utils.InfoObjs import App, Calculator, Info, Interface
+from easyInterface.Diffraction.DataClasses.DataObj.Calculation import *
+from easyInterface.Diffraction.DataClasses.DataObj.Experiment import Experiments, Experiment
+from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import Phases, Phase
+from easyInterface.Diffraction.DataClasses.Utils.DictTools import UndoableDict
+from easyInterface.Diffraction.DataClasses.Utils.InfoObjs import Interface, App, Calculator, Info
 
 
 class ProjectDict(UndoableDict):

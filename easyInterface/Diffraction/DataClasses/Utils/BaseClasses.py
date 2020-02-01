@@ -1,6 +1,6 @@
 from typing import Union, Optional, Any, NoReturn
 
-from ..units import Unit
+from easyInterface.Utils.units import Unit
 from .DictTools import PathDict
 
 

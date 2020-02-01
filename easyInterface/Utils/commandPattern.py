@@ -1,27 +1,126 @@
-import pytest
-import logging
-import dictdiffer
-from ast import literal_eval
-from typing import Union, Any, NoReturn, List, Iterable, Tuple
-from collections import UserDict
+from collections import deque, UserDict
 from copy import deepcopy
+from typing import Union, Any, NoReturn, Tuple, List
 
-from PySide2.QtWidgets import QUndoStack, QUndoCommand
+import dictdiffer
 
 
-class _EmptyCommand(QUndoCommand):
+class UndoStack:
+    def __init__(self, max_history=None) -> None:
+        self._history = deque(maxlen=max_history)
+        self._future = deque(maxlen=max_history)
+        self._macro_running = False
+        self._macro = dict(text="", commands=[])
+        self._max_history = max_history
+
+    @property
+    def history(self):
+        return self._history
+
+    def push(self, command) -> None:
+        if self._macro_running:
+            self._macro['commands'].append(command)
+        else:
+            self._history.appendleft(command)
+        command.redo()
+        self._future = deque(maxlen=self._max_history)
+
+    def clear(self):
+        self._history = deque(maxlen=self._max_history)
+        self._future = deque(maxlen=self._max_history)
+        self._macro_running = False
+        self._macro = dict(text="", commands=[])
+
+    def undo(self):
+        if self.canUndo():
+            command = self._history[0]
+            self._future.appendleft(command)
+            self._history.remove(command)
+            if isinstance(command, dict):
+                for item in command['commands'][::-1]:
+                    item.undo()
+            else:
+                command.undo()
+
+    def redo(self):
+        if len(self._future) > 0:
+            command = self._future[0]
+            if not self._macro_running:
+                self._history.appendleft(command)
+            self._future.remove(command)
+            if isinstance(command, dict):
+                for item in command['commands']:
+                    item.redo()
+            else:
+                command.redo()
+
+    def beginMacro(self, text: str):
+        if self._macro_running:
+            raise AssertionError
+        self._macro_running = True
+        self._macro = dict(text=text, commands=[])
+
+    def endMacro(self):
+        if not self._macro_running:
+            raise AssertionError
+        self._macro_running = False
+        self._history.appendleft(self._macro)
+
+    def canUndo(self) -> bool:
+        return len(self._history) > 0 and not self._macro_running
+
+    def canRedo(self) -> bool:
+        return len(self._future) > 0 and not self._macro_running
+
+    def redoText(self) -> str:
+        if self.canRedo():
+            if isinstance(self._future[0], dict):
+                return self._future[0]['text']
+            else:
+                return self._future[0]._text
+        else:
+            return ''
+
+    def undoText(self) -> str:
+        if self.canUndo():
+            if isinstance(self._history[0], dict):
+                return self._history[0]['text']
+            else:
+                return self._history[0]._text
+        else:
+            return ''
+
+
+class UndoCommand:
+    """The COMMAND interface"""
+
+    def __init__(self, obj) -> None:
+        self._obj = obj
+        self._text = None
+
+    def undo(self):
+        raise NotImplementedError
+
+    def redo(self):
+        raise NotImplementedError
+
+    def setText(self, text: str):
+        self._text = text
+
+
+class _EmptyCommand(UndoCommand):
     """
     The _EmptyCommand class is the custom base class of all undoable commands
     stored on a QUndoStack.
     """
 
     def __init__(self, dictionary: 'UndoableDict', key: Union[str, list], value: Any):
-        QUndoCommand.__init__(self)
+        super().__init__(self)
         self._dictionary = dictionary
         self._key = key
         self._new_value = value
         self._old_value = dictionary.getItem(key)
-        #print(f"dict: {id(self._dictionary)}, key: {id(self._key)}, new val: {id(self._old_value)}, old val: {id(self._old_value)}")
+        # print(f"dict: {id(self._dictionary)}, key: {id(self._key)}, new val: {id(self._old_value)}, old val: {id(self._old_value)}")
 
 
 class _AddItemCommand(_EmptyCommand):
@@ -193,7 +292,7 @@ class UndoableDict(PathDict):
     """
 
     def __init__(self, *args, **kwargs):
-        self.__stack = QUndoStack()
+        self.__stack = UndoStack()
         self._macroRunning = False
         super().__init__(*args, **kwargs)
 
@@ -298,7 +397,7 @@ class UndoableDict(PathDict):
 
 if __name__ == "__main__":
     # Run unit tests
-    #pytest.main(["-v"])
+    # pytest.main(["-v"])
 
     d1 = PathDict(dict(a=1, b=2, c=dict(d=3, e=dict(f=4, g=5))))
     d2 = PathDict(dict(a=1, b=2, c=dict(d=333, e=dict(f=4, g=555))))
@@ -316,28 +415,33 @@ if __name__ == "__main__":
     d2 = PathDict(dict(a=1, b=2, c=dict(d=3, e=dict(f=4, g=5))))
     print("E", d1.dictComparison(d2))
 
-    d1 = PathDict({ 'a': 1, 'b': 2, 'c': PathDict({ 'd': 3, 'e': PathDict({ 'f': 4 }) }) })
-    d2 = PathDict({ 'a': 1, 'b': 2, 'c': PathDict({ 'd': 3, 'e': PathDict({ 'f': 4, 'g': 5 }) }) })
+    d1 = PathDict({'a': 1, 'b': 2, 'c': PathDict({'d': 3, 'e': PathDict({'f': 4})})})
+    d2 = PathDict({'a': 1, 'b': 2, 'c': PathDict({'d': 3, 'e': PathDict({'f': 4, 'g': 5})})})
     print("F", d1.dictComparison(d2))
 
-    d1 = PathDict({ 'a': 1, 'b': 2 })
-    d2 = PathDict({ 'a': 1, 'b': 2, 'c': PathDict({ 'd': 3, 'e': PathDict({ 'f': 4, 'g': 5 }) }) })
+    d1 = PathDict({'a': 1, 'b': 2})
+    d2 = PathDict({'a': 1, 'b': 2, 'c': PathDict({'d': 3, 'e': PathDict({'f': 4, 'g': 5})})})
     print("G", d1.dictComparison(d2))
 
-    d1 = PathDict({ 'a': 1, 'b': 2, 'm': 0  })
-    d2 = PathDict({ 'a': 9, 'c': PathDict({ 'd': 3, 'e': PathDict({ 'f': 4, 'g': 5 }) }), 'm': 1 })
+    d1 = PathDict({'a': 1, 'b': 2, 'm': 0})
+    d2 = PathDict({'a': 9, 'c': PathDict({'d': 3, 'e': PathDict({'f': 4, 'g': 5})}), 'm': 1})
     print("H", d1.dictComparison(d2))
 
-    d1 = PathDict({ 'a': 9, 'c': { 'd': 3, 'e 1': { 'f': 4, 'g': 5 } }, 'm': 1, 'o': { 'p': { 'q': 8, 'r.2': 0 } } })
-    d2 = { 'a': 99, 'c': { 'd': 3, 'e 1': { 'f': 4, 'g': 55, 'h': 66 } }, 'm': 11, 'o': { 'p': { 'r.2': 2 } } }
+    d1 = PathDict({'a': 9, 'c': {'d': 3, 'e 1': {'f': 4, 'g': 5}}, 'm': 1, 'o': {'p': {'q': 8, 'r.2': 0}}})
+    d2 = {'a': 99, 'c': {'d': 3, 'e 1': {'f': 4, 'g': 55, 'h': 66}}, 'm': 11, 'o': {'p': {'r.2': 2}}}
     print("K", d1.dictComparison(d2))
 
-    d1 = PathDict({ 'a': 9, 'c': PathDict({ 'd': 3, 'e 1': PathDict({ 'f': 4, 'g': 5 }) }), 'm': 1, 'o': PathDict({ 'p': PathDict({ 'q': 8, 'r.2': 0 }) }) })
-    d2 = PathDict({ 'a': 99, 'c': PathDict({ 'd': 3, 'e 1': PathDict({ 'f': 4, 'g': 55, 'h': 66 }) }), 'm': 11, 'o': PathDict({ 'p': PathDict({ 'r.2': 2 }) }) })
+    d1 = PathDict({'a': 9, 'c': PathDict({'d': 3, 'e 1': PathDict({'f': 4, 'g': 5})}), 'm': 1,
+                   'o': PathDict({'p': PathDict({'q': 8, 'r.2': 0})})})
+    d2 = PathDict({'a': 99, 'c': PathDict({'d': 3, 'e 1': PathDict({'f': 4, 'g': 55, 'h': 66})}), 'm': 11,
+                   'o': PathDict({'p': PathDict({'r.2': 2})})})
     print("M", d1.dictComparison(d2))
 
-    d1 = PathDict({ 'a': 9, 'c': PathDict({ 'd': 3, 'e 1': PathDict({ 'f': 4, 'g': 5 }) }), 'm': 1, 'o': PathDict({ 'p': PathDict({ 'q': 8, 'r.2': 0 }) }) })
-    d2 = PathDict({ 'aa': PathDict(alpha=1, beta=2), 'a': 99, 'c': PathDict({ 'd': 3, 'e 1': PathDict({ 'f': 4, 'g': 55, 'h': 66 }) }), 'm': 11, 'o': PathDict({ 'p': PathDict({ 'r.2': 2 }) }) })
+    d1 = PathDict({'a': 9, 'c': PathDict({'d': 3, 'e 1': PathDict({'f': 4, 'g': 5})}), 'm': 1,
+                   'o': PathDict({'p': PathDict({'q': 8, 'r.2': 0})})})
+    d2 = PathDict(
+        {'aa': PathDict(alpha=1, beta=2), 'a': 99, 'c': PathDict({'d': 3, 'e 1': PathDict({'f': 4, 'g': 55, 'h': 66})}),
+         'm': 11, 'o': PathDict({'p': PathDict({'r.2': 2})})})
     print("N", d1.dictComparison(d2))
     k, v = d1.dictComparison(d2)
     for item in v:
@@ -348,4 +452,3 @@ if __name__ == "__main__":
     print("O", d1.dictComparison(d2))
     print(list(dictdiffer.diff(d1, d2)))
     # k, v = d1.dictComparison(d2)
-

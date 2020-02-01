@@ -1,6 +1,6 @@
 import logging
 
-from easyInterface.Interface import *
+from easyInterface.Diffraction.Interface import *
 from PySide2.QtCore import QObject, Signal, Slot
 
 

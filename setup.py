@@ -14,7 +14,6 @@ setup(
     install_requires=[
         'cryspy>=0.2.0',
         'dictdiffer',
-        'Pyside2',
         'asteval'
     ],
 

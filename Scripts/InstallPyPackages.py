@@ -59,7 +59,6 @@ if __name__ == '__main__':
         'pytest-cov==2.8.1',
         'wily==1.13.0',
         'codecov==2.0.15',
-        'PySide2',
         'asteval',
         'pyyaml==5.1.2',
         )

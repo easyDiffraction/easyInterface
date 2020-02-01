@@ -5,13 +5,13 @@ from typing import Tuple
 
 import cryspy
 import pycifstar
+
 from asteval import Interpreter
 
-from easyInterface.DataClasses.PhaseObj.Phase import *
-from easyInterface.DataClasses.PhaseObj.SpaceGroup import *
-from easyInterface.DataClasses.DataObj.Calculation import *
-from easyInterface.DataClasses.DataObj.Experiment import *
-from easyInterface.DataClasses.Utils.BaseClasses import Base
+from easyInterface.Diffraction.DataClasses.DataObj.Calculation import *
+from easyInterface.Diffraction.DataClasses.DataObj.Experiment import *
+from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import *
+from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import Base
 
 from cryspy.scripts.cl_rhochi import RhoChi
 from cryspy.cif_like.cl_crystal import Crystal
