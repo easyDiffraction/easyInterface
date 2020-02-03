@@ -5,8 +5,8 @@ env:
     # terminal width
     - COLUMNS=100
     # dirs of python virtual environment and downloaded soft: Qt Installer Framework setup, Docker image for snapcraft
-    - VENV_DIR=$TRAVIS_BUILD_DIR/.venv
-    - SOFT_DIR=$TRAVIS_BUILD_DIR/.soft
+#    - VENV_DIR=$TRAVIS_BUILD_DIR/.venv
+#    - SOFT_DIR=$TRAVIS_BUILD_DIR/.soft
 
 matrix:
   include:
@@ -22,11 +22,11 @@ matrix:
         - which python                                                          # show current python path
       services:
         - docker                                                                # for snap store
-      cache:
-        directories:
-          - $VENV_DIR
-          - $SOFT_DIR
-          - $HOME/Qt
+#      cache:
+#        directories:
+#          - $VENV_DIR
+#          - $SOFT_DIR
+#          - $HOME/Qt
       env: BADGE=linux
     # macOS
     - name: "Python 3.7.5 on macOS 10.13 (High Sierra)"
@@ -36,11 +36,11 @@ matrix:
         - python3 -m venv $VENV_DIR                                             # create virtual environment
         - source $VENV_DIR/bin/activate                                         # activate virtual environment
         - which python                                                          # show current python path
-      cache:
-        directories:
-          - $VENV_DIR
-          - $SOFT_DIR
-          - $HOME/Qt
+#      cache:
+#        directories:
+#          - $VENV_DIR
+#          - $SOFT_DIR
+#          - $HOME/Qt
       env: BADGE=osx
     # Windows
     - name: "Python 3.6.5 on Windows 10.0"
@@ -55,12 +55,12 @@ matrix:
         #- python -m venv $VENV_DIR                                              # create virtual environment
         - $VENV_DIR/Scripts/activate.bat                                        # activate virtual environment
         - echo $PATH                                                            # show path variable
-      cache:
-        directories:
-          - $VENV_DIR
-          - $SOFT_DIR
-          - /C/Qt
-          - /C/Python36
+#      cache:
+#        directories:
+#          - $VENV_DIR
+#          - $SOFT_DIR
+#          - /C/Qt
+#          - /C/Python36
       env:
         - BADGE=win
         - PATH=$VENV_DIR/Scripts:$PATH                                          # Travis equivalent of 'update Windows PATH variable'
