@@ -21,7 +21,7 @@ warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
 # automatically discover and run all tests under ./Tests
 # files with names starting with `test_` are considered valid test files
 
-args = ['Tests']
+args = ['--cov=easyInterface', 'Tests']
 
 # add potential arguments like -k or -m
 if len(sys.argv) > 1:
