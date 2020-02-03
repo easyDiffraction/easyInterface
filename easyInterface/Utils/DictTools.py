@@ -202,17 +202,15 @@ class _SetItemCommand(_EmptyCommand):
         if self._new_value is not self._old_value:
             self._dictionary._realSetItem(self._key, self._new_value)
 
-class _RemoveItemCommand(UndoCommand):
+
+class _RemoveItemCommand(_EmptyCommand):
     """
     The _SetItemCommand class implements a command to modify the value of
     the existing key in the UndoableDict-base_dict dictionary.
     """
 
     def __init__(self, dictionary: 'UndoableDict', key: Union[str, list]):
-        super().__init__(self)
-        self._dictionary = dictionary
-        self._key = key
-        self._old_value = dictionary.getItem(key)
+        super().__init__(dictionary, key, None)
         self.setText("Removing: {}".format(self._key))
 
     def undo(self) -> NoReturn:
@@ -220,6 +218,7 @@ class _RemoveItemCommand(UndoCommand):
 
     def redo(self) -> NoReturn:
         self._dictionary._realDelItem(self._key)
+
 
 class PathDict(UserDict):
     """
