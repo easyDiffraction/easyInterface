@@ -202,6 +202,24 @@ class _SetItemCommand(_EmptyCommand):
         if self._new_value is not self._old_value:
             self._dictionary._realSetItem(self._key, self._new_value)
 
+class _RemoveItemCommand(UndoCommand):
+    """
+    The _SetItemCommand class implements a command to modify the value of
+    the existing key in the UndoableDict-base_dict dictionary.
+    """
+
+    def __init__(self, dictionary: 'UndoableDict', key: Union[str, list]):
+        super().__init__(self)
+        self._dictionary = dictionary
+        self._key = key
+        self._old_value = dictionary.getItem(key)
+        self.setText("Removing: {}".format(self._key))
+
+    def undo(self) -> NoReturn:
+        self._dictionary._realSetItemByPath(self._key, self._old_value)
+
+    def redo(self) -> NoReturn:
+        self._dictionary._realDelItem(self._key)
 
 class PathDict(UserDict):
     """
@@ -222,9 +240,12 @@ class PathDict(UserDict):
         """Actually adds a key-value pair to dictionary."""
         super().__setitem__(key, value)
 
-    def _realDelItem(self, key: str) -> NoReturn:
+    def _realDelItem(self, key: Union[str, list]) -> NoReturn:
         """Actually deletes a key-value pair from dictionary."""
-        del self[key]
+        if isinstance(key, list):
+            del self.getItemByPath(key[:-1])[key[-1]]
+        else:
+            del self[key]
 
     def _realSetItemByPath(self, keys: list, value: Any) -> NoReturn:
         """Actually sets the value in a nested object by the key sequence."""
@@ -262,6 +283,9 @@ class PathDict(UserDict):
                 else:
                     return default
         return item
+
+    def rmItemByPath(self, keys: list):
+        self._realDelItem(keys)
 
     def getItem(self, key: Union[str, list], default=None):
         """Returns a value in a nested object. Key can be either a sequence
@@ -358,6 +382,9 @@ class UndoableDict(PathDict):
         by key sequence and pushes this command on the stack.
         """
         self.__stack.push(_SetItemCommand(self, keys, value))
+
+    def rmItemByPath(self, keys: list) -> NoReturn:
+        self.__stack.push(_RemoveItemCommand(self, keys))
 
     # Public methods: undo/redo-related
 
@@ -496,3 +523,11 @@ if __name__ == "__main__":
     print("O", d1.dictComparison(d2))
     print(list(dictdiffer.diff(d1, d2)))
     # k, v = d1.dictComparison(d2)
+    d2 = UndoableDict({'a': 9, 'c': PathDict({'d': 3, 'e': PathDict({'f': 4, 'g': 5})}), 'm': 1})
+    print(d2)
+    d2.rmItemByPath(['c', 'e', 'g'])
+    print(d2)
+    d2.undo()
+    print(d2)
+    d2.redo()
+    print(d2)

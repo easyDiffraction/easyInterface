@@ -16,6 +16,9 @@ phase_ids = interface.phasesIds()
 print(phase_ids)
 
 phase = interface.getPhase(phase_ids[0])
+phase['phasename'] = 'PbSO5'
+interface.addPhase(phase)
+interface.removePhase('PbSO5')
 
 phase['atoms']['Pb']['fract_x'].value = 0.18
 interface.setPhases(phase)

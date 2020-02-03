@@ -361,3 +361,6 @@ class Experiments(PathDict):
 
     def __repr__(self) -> str:
         return '{} Experiments'.format(len(self))
+
+    def getNames(self) -> list:
+        return list(self.keys())

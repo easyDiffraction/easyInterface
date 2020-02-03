@@ -17,6 +17,13 @@ from cryspy.scripts.cl_rhochi import RhoChi
 from cryspy.cif_like.cl_crystal import Crystal
 from cryspy.cif_like.cl_pd import Pd
 
+from cryspy.corecif.cl_cell import Cell as cpCell
+from cryspy.corecif.cl_atom_site import AtomSite, AtomSiteL
+from cryspy.corecif.cl_atom_site_aniso import AtomSiteAniso, AtomSiteAnisoL
+from cryspy.magneticcif.cl_atom_site_susceptibility import AtomSiteSusceptibility, AtomSiteSusceptibilityL
+
+from cryspy.symcif.cl_space_group import SpaceGroup as cpSpaceGroup
+
 PHASE_SEGMENT = "_phases"
 EXPERIMENT_SEGMENT = "_experiments"
 
@@ -101,7 +108,7 @@ class CryspyCalculator:
 
         experiment = Pd.from_cif(exp_rcif_content)
         if self._cryspy_obj.experiments is not None:
-            self._cryspy_obj.experiments = [*self._cryspy_obj.experiments,  experiment]
+            self._cryspy_obj.experiments = [*self._cryspy_obj.experiments, experiment]
         else:
             print(self._cryspy_obj.crystals)
             self._experiment_name.append(experiment.data_name)
@@ -110,7 +117,6 @@ class CryspyCalculator:
             print(self._cryspy_obj.crystals)
             if self._cryspy_obj.crystals is not None:
                 self._cryspy_obj.experiments[0].phase.items[0] = (self._phase_name[0])
-
 
     def removeExpsDefinition(self, name: str):
         if name in self._experiment_name:
@@ -167,7 +173,7 @@ class CryspyCalculator:
         # find the name of the new phase
         phase = Crystal().from_cif(phases_rcif_content)
         if self._cryspy_obj.crystals is not None:
-            self._cryspy_obj.crystals = [*self._cryspy_obj.crystals,  phase]
+            self._cryspy_obj.crystals = [*self._cryspy_obj.crystals, phase]
         else:
             self._cryspy_obj.crystals = [phase]
         self._phase_name.append(phase.data_name)
@@ -176,7 +182,7 @@ class CryspyCalculator:
         if name in self._phase_name:
             index = self._phase_name.index(name)
             self._phase_name.pop(index)
-            phases = self._cryspy_obj.crystals
+            phases = list(self._cryspy_obj.crystals)
             phases.pop(index)
             self._cryspy_obj.crystals = phases
         else:
@@ -244,7 +250,7 @@ class CryspyCalculator:
 
         for i, calculator_phase in enumerate(self._cryspy_obj.crystals):
             calculator_phase_name = calculator_phase.data_name
-            #logging.info(calculator_phase_name)
+            # logging.info(calculator_phase_name)
             mapping_phase = mapping_base + '[{}]'.format(i)
 
             # Space group
@@ -260,7 +266,6 @@ class CryspyCalculator:
             space_group['space_group_name_HM_alt']['mapping'] = mapping_phase + '.space_group.name_hm_ref'
             space_group['space_group_IT_number']['mapping'] = mapping_phase + '.space_group.it_number'
             space_group['origin_choice']['mapping'] = mapping_phase + '.space_group.it_coordinate_system_code'
-
 
             # Unit cell parameters
             unit_cell = self._createProjItemFromObj(Cell.fromPars, ['length_a', 'length_b', 'length_c',
@@ -278,7 +283,7 @@ class CryspyCalculator:
             unit_cell['angle_gamma']['mapping'] = mapping_phase + '.cell.angle_gamma'
 
             phase = Phase.fromPars(calculator_phase_name, space_group, unit_cell)
-            #logging.info(phase)
+            # logging.info(phase)
 
             atoms = []
             # Atom sites
@@ -310,7 +315,6 @@ class CryspyCalculator:
                 adp = None
                 if calculator_phase.atom_site_aniso is not None:
                     if i <= len(calculator_phase.atom_site_aniso.u_11):
-
                         mapping_adp = mapping_phase + '.atom_site_aniso'
 
                         adp = [calculator_phase.atom_site_aniso.u_11[i],
@@ -334,9 +338,7 @@ class CryspyCalculator:
                 msp = None
                 if calculator_phase.atom_site_susceptibility is not None:
                     if i < len(calculator_phase.atom_site_susceptibility.chi_type):
-
                         mapping_msp = mapping_phase + '.atom_site_susceptibility'
-
 
                         msp = [calculator_phase.atom_site_susceptibility.chi_type[i],
                                calculator_phase.atom_site_susceptibility.chi_11[i],
@@ -446,8 +448,10 @@ class CryspyCalculator:
             # Background
             calculator_background = calculator_experiment.background
             backgrounds = []
-            for ii, (ttheta, intensity) in enumerate(zip(calculator_background.ttheta, calculator_background.intensity)):
-                background = self._createProjItemFromObj(Background.fromPars, ['ttheta', 'intensity'], [ttheta, intensity])
+            for ii, (ttheta, intensity) in enumerate(
+                    zip(calculator_background.ttheta, calculator_background.intensity)):
+                background = self._createProjItemFromObj(Background.fromPars, ['ttheta', 'intensity'],
+                                                         [ttheta, intensity])
                 background['intensity']['mapping'] = mapping_exp + '.background.intensity[{}]'.format(ii)
                 backgrounds.append(background)
             backgrounds = Backgrounds(backgrounds)
@@ -466,7 +470,6 @@ class CryspyCalculator:
             resolution['w']['mapping'] = mapping_exp + '.resolution.w'
             resolution['x']['mapping'] = mapping_exp + '.resolution.x'
             resolution['y']['mapping'] = mapping_exp + '.resolution.y'
-
 
             # Measured data points
             x_obs = np.array(calculator_experiment.meas.ttheta).tolist()
@@ -503,7 +506,7 @@ class CryspyCalculator:
 
             experiments.append(experiment)
 
-        #logging.info(experiments)
+        # logging.info(experiments)
         logging.info(Experiments(experiments))
 
         return Experiments(experiments)
@@ -664,7 +667,7 @@ class CryspyCalculator:
                         self._setCalculatorObjFromProjectDict(calculator_atom_site.chi_23[i],
                                                               project_atom_site['chi_23'])
             else:
-                raise NotImplementedError
+                self.addPhase(phases[phase_name])
         logging.info('<- end')
 
     def setExperiments(self, experiments: Experiments):
@@ -769,3 +772,54 @@ class CryspyCalculator:
 
     def getPhaseNames(self) -> list:
         return self._phase_name
+
+    def addPhase(self, phase: Phase):
+
+        thisCell = cpCell(length_a=phase['cell']['length_a'].value,
+                          length_b=phase['cell']['length_b'].value,
+                          length_c=phase['cell']['length_c'].value,
+                          angle_alpha=phase['cell']['angle_alpha'].value,
+                          angle_beta=phase['cell']['angle_beta'].value,
+                          angle_gamma=phase['cell']['angle_gamma'].value)
+
+        thisSpaceGroup = cpSpaceGroup(name_hm_alt=phase['spacegroup']['space_group_name_HM_alt'].value,
+                                      it_number=phase['spacegroup']['space_group_IT_number'].value,
+                                      it_coordinate_system_code=phase['spacegroup']['origin_choice'].value,
+                                      crystal_system=phase['spacegroup']['crystal_system'].value)
+
+        thisAtoms = []
+        thisADP = []
+        thisMSP = []
+        for atomLabel in phase['atoms'].keys():
+            atom = phase['atoms'][atomLabel]
+            thisAtoms.append(
+                AtomSite(label=atomLabel, type_symbol=atom['type_symbol'],
+                         fract_x=atom['fract_x'].value, fract_y=atom['fract_y'].value, fract_z=atom['fract_z'].value,
+                         occupancy=atom['occupancy'].value, adp_type=atom['adp_type'].value,
+                         u_iso_or_equiv=atom['U_iso_or_equiv'].value)
+            )
+            if atom['ADP']['u_11'].value is not None:
+                thisADP.append(
+                    AtomSiteAniso(label=atomLabel, u_11=atom['ADP']['u_11'].value,
+                                  u_22=atom['ADP']['u_22'].value, u_33=atom['ADP']['u_33'].value,
+                                  u_12=atom['ADP']['u_12'].value, u_13=atom['ADP']['u_13'].value,
+                                  u_23=atom['ADP']['u_23'].value)
+                )
+            if atom['MSP']['type'].value is not None:
+                thisMSP.append(
+                    AtomSiteSusceptibility(label=atomLabel, chi_type=atom['MSP']['type'].value,
+                                           chi_11=atom['MSP']['chi_11'].value,
+                                           chi_22=atom['MSP']['chi_22'].value, chi_33=atom['MSP']['chi_33'].value,
+                                           chi_12=atom['MSP']['chi_12'].value, chi_13=atom['MSP']['chi_13'].value,
+                                           chi_23=atom['MSP']['chi_23'].value)
+                )
+
+        thisAtoms = AtomSiteL(thisAtoms)
+        thisADP = AtomSiteAnisoL(thisADP)
+        thisMSP = AtomSiteSusceptibilityL(thisMSP)
+
+        phaseObj = Crystal(data_name=phase['phasename'], cell=thisCell, space_group=thisSpaceGroup, atom_site=thisAtoms,
+                           atom_site_aniso=thisADP, atom_site_susceptibility=thisMSP)
+
+        self._cryspy_obj.crystals = [phaseObj, *self._cryspy_obj.crystals]
+        self._phase_name = [phase.data_name for phase in self._cryspy_obj.crystals]

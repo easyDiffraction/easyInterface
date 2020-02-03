@@ -50,6 +50,14 @@ class Base(PathDict):
     def value(self, value: Any) -> NoReturn:
         self.setItemByPath(['store', 'value'], value)
 
+    @property
+    def refine(self) -> bool:
+        return self.getItemByPath(['store', 'refine'])
+
+    @refine.setter
+    def refine(self, value: bool) -> NoReturn:
+        self.setItemByPath(['store', 'refine'], value)
+
     def get(self, item: str) -> Any:
         return self.getItemByPath(['store', item])
 

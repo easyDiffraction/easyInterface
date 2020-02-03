@@ -138,9 +138,16 @@ class CalculatorInterface:
         # This will notify the GUI models changed
         # self.projectDictChanged.emit()
 
+    def addPhase(self, phase: Phase):
+        if phase['phasename'] in self.project_dict['phases'].keys():
+            self.setPhase(phase)
+        else:
+            self.project_dict.setItemByPath(['phases', phase['phasename']], phase)
+            self.calculator.addPhase(phase)
+
     def removePhase(self, phase_name):
         self.calculator.removePhaseDefinition(phase_name)
-        self.updatePhases()
+        self.project_dict.rmItemByPath(['phases', phase_name])
 
     # Experiment section
     def setExperimentDefinition(self, exp_path: str):
@@ -158,8 +165,15 @@ class CalculatorInterface:
         self.calculator.addExpsDefinition(phases_path)
         self.updateExperiments()
 
-    def removeExperiment(self, phase_name):
-        self.calculator.removeExpsDefinition(phase_name)
+    def addExperiment(self, experiment: Experiment):
+        if experiment['name'] in self.project_dict['experiments'].keys():
+            self.setExperiment(experiment)
+        else:
+            self.project_dict.setItemByPath(['experiments', experiment['name']], experiment)
+            self.calculator.setExperiments(self.project_dict['experiments'])
+
+    def removeExperiment(self, experiment_name):
+        self.calculator.removeExpsDefinition(experiment_name)
         self.updateExperiments()
 
     # Output section
@@ -200,7 +214,7 @@ class CalculatorInterface:
         else:
             self.project_dict.bulkUpdate(k, v, 'Bulk update of phases')
 
-    def getPhase(self, phase: Union[Phase, Phases, None]) -> Phase:
+    def getPhase(self, phase: Union[str, None]) -> Phase:
         if phase in self.project_dict['phases']:
             return deepcopy(self.project_dict['phases'][phase])
         elif phase is None:
@@ -227,7 +241,7 @@ class CalculatorInterface:
         else:
             self.project_dict.bulkUpdate(k, v, 'Bulk update of experiments')
 
-    def getExperiment(self, experiment: Union[Experiment, Experiments, None]) -> Experiment:
+    def getExperiment(self, experiment: Union[str, None]) -> Experiment:
         if experiment in self.project_dict['experiments']:
             return deepcopy(self.project_dict['experiments'][experiment])
         elif experiment is None:
@@ -242,6 +256,25 @@ class CalculatorInterface:
     def getCalculations(self) -> Calculations:
         self.updateCalculations()
         return self.project_dict['calculations']
+
+    def getCalculation(self, calculation) -> Calculation:
+        self.updateCalculations()
+        return self.project_dict['calculations'][calculation]
+
+
+    def setPhase(self, phase: Phase):
+        """Set phases (sample model tab in GUI)"""
+        if isinstance(phase, Phase):
+            new_phase_name = phase['phasename']
+            if new_phase_name in self.project_dict['phases'].keys():
+                k, v = self.project_dict.getItemByPath(['phases', new_phase_name]).dictComparison(phase)
+                k = [['phases', new_phase_name, *ik] for ik in k]
+                self._mappedBulkUpdate(self._mappedValueUpdater, k, v)
+            else:
+                self.addPhase(phase)
+        else:
+            raise TypeError
+
 
     def setPhases(self, phases: Union[Phase, Phases, None] = None):
         """Set phases (sample model tab in GUI)"""
@@ -411,3 +444,16 @@ class CalculatorInterface:
     def _mappedRefineUpdater(self, key, value):
         update_str = self.project_dict.getItemByPath(key)['mapping']
         self.calculator._mappedRefineUpdater(update_str, value)
+
+    def setExperiment(self, experiment):
+        """Set phases (sample model tab in GUI)"""
+        if isinstance(experiment, Experiment):
+            new_phase_name = experiment['name']
+            if new_phase_name in self.project_dict['experiments'].keys():
+                k, v = self.project_dict.getItemByPath(['experiments', new_phase_name]).dictComparison(experiment)
+                k = [['experiments', new_phase_name, *ik] for ik in k]
+                self._mappedBulkUpdate(self._mappedValueUpdater, k, v)
+            else:
+                self.addExperiment(experiment)
+        else:
+            raise TypeError
