@@ -1,7 +1,6 @@
 import pytest
 
 # module for testing
-from PySide2.QtCore import QUrl
 from easyInterface.Diffraction.Calculators import CryspyCalculator
 from easyInterface.Diffraction.Interface import CalculatorInterface
 
@@ -43,8 +42,8 @@ def test_updatePhases(cal):
     """
     Load another phase file and check if the content is correctly updated
     """
-    NEW_PHASE_FILE = "file:Tests/Data/phases_2.cif"
-    file_path = QUrl(NEW_PHASE_FILE).toLocalFile()
+    NEW_PHASE_FILE = "Tests/Data/phases_2.cif"
+    file_path = NEW_PHASE_FILE
 
     cal.setPhaseDefinition(file_path)
 
