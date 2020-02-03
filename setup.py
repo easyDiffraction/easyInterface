@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='easyInterface',
-    version='0.0.2',
+    version='0.0.4',
     packages=['easyInterface', 'easyInterface.Utils', 'easyInterface.Diffraction',
               'easyInterface.Diffraction.Calculators', 'easyInterface.Diffraction.DataClasses',
               'easyInterface.Diffraction.DataClasses.Utils', 'easyInterface.Diffraction.DataClasses.DataObj',
