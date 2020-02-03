@@ -18,7 +18,7 @@ setup(
         'cryspy>=0.2.0',
         'dictdiffer',
         'asteval',
-        'pyaml'
+        'pyyaml'
     ],
 
     classifiers=[

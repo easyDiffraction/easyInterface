@@ -201,12 +201,12 @@ class MeasuredPattern(PathDict):
         :param sy_obs_down: Polarised DOWN intensity error. None if non-polarised
         """
         # 1d polarised powder diffraction data
-        if y_obs_up is not None and sy_obs_up is not None and y_obs_down is not None and sy_obs_down is not None:
-            super().__init__(x=x, y_obs=y_obs, sy_obs=sy_obs, y_obs_up=y_obs_up, sy_obs_up=sy_obs_up,
-                             y_obs_down=y_obs_down, sy_obs_down=sy_obs_down)
-        # 1d unpolarised powder diffraction data
-        else:
-            super().__init__(x=x, y_obs=y_obs, sy_obs=sy_obs)
+        # if y_obs_up is not None and sy_obs_up is not None and y_obs_down is not None and sy_obs_down is not None:
+        super().__init__(x=x, y_obs=y_obs, sy_obs=sy_obs, y_obs_up=y_obs_up, sy_obs_up=sy_obs_up,
+                         y_obs_down=y_obs_down, sy_obs_down=sy_obs_down)
+        # # 1d unpolarised powder diffraction data
+        # else:
+        #     super().__init__(x=x, y_obs=y_obs, sy_obs=sy_obs)
 
     @property
     def isPolarised(self) -> bool:

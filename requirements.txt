@@ -1,4 +1,4 @@
 git+git://github.com/ikibalin/cryspy.git@transition-to-version-0.2#egg=cryspy-develop
 dictdiffer
 asteval
-pyaml
+pyyaml
