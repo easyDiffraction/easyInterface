@@ -17,7 +17,8 @@ setup(
     install_requires=[
         'cryspy>=0.2.0',
         'dictdiffer',
-        'asteval'
+        'asteval',
+        'pyaml'
     ],
 
     classifiers=[
