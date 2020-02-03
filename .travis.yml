@@ -5,8 +5,8 @@ env:
     # terminal width
     - COLUMNS=100
     # dirs of python virtual environment and downloaded soft: Qt Installer Framework setup, Docker image for snapcraft
-#    - VENV_DIR=$TRAVIS_BUILD_DIR/.venv
-#    - SOFT_DIR=$TRAVIS_BUILD_DIR/.soft
+    - VENV_DIR=$TRAVIS_BUILD_DIR/.venv
+    - SOFT_DIR=$TRAVIS_BUILD_DIR/.soft
 
 matrix:
   include:
