@@ -528,6 +528,7 @@ class CryspyCalculator:
             offset = self._cryspy_obj.experiments[calculator_experiment_index].setup.offset_ttheta
             bragg_peaks = []
             for index, crystal in enumerate(self._cryspy_obj.crystals):
+                # TODO We need to check that each phase is in each experiment
                 bragg_peaks.append(CrystalBraggPeaks(crystal.data_name,
                                                      calculated_bragg_peaks[index].index_h,
                                                      calculated_bragg_peaks[index].index_k,

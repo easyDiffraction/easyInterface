@@ -88,12 +88,15 @@ class CalculatorInterface:
         for key in CALCULATOR_INFO.keys():
             self.project_dict['calculator'][key] = CALCULATOR_INFO[key]
 
-    # projectDictChanged = Signal()
-
     def __repr__(self) -> str:
-        return "easyInterface with calculator: {} - {}".format(
+        return "easyInterface ({}) with calculator: {} - {}".format(
+            self.project_dict['interface']['version'],
             self.project_dict['calculator']['name'],
             self.project_dict['calculator']['version'])
+
+    @property
+    def final_chi_square(self) -> float:
+        return self.calculator.final_chi_square
 
     def setProjectFromCalculator(self):
         # TODO initiate buld update here
@@ -113,9 +116,11 @@ class CalculatorInterface:
         self.project_dict.setItemByPath(['info', 'n_res', 'store', 'value'], n_res)
         self.project_dict.setItemByPath(['info', 'chi_squared', 'store', 'value'], final_chi_square)
 
-        # self.projectDictChanged.emit()
+    ###
+    # Setting of Calculator
+    ###
 
-    #
+    # Phase section
     def setPhaseDefinition(self, exp_path: str):
         """
         Parse the relevant phases file and update the corresponding model
@@ -137,6 +142,7 @@ class CalculatorInterface:
         self.calculator.removePhaseDefinition(phase_name)
         self.updatePhases()
 
+    # Experiment section
     def setExperimentDefinition(self, exp_path: str):
         """
         Parse the relevant phases file and update the corresponding model
@@ -156,6 +162,7 @@ class CalculatorInterface:
         self.calculator.removeExpsDefinition(phase_name)
         self.updateExperiments()
 
+    # Output section
     def writeMainCif(self, save_dir: str):
         self.calculator.writeMainCif(save_dir)
 
@@ -169,6 +176,10 @@ class CalculatorInterface:
         self.writeMainCif(save_dir)
         self.writePhaseCif(save_dir)
         self.writeExpCif(save_dir)
+
+    ###
+    # Syncing between Calculator/Dict
+    ###
 
     def updatePhases(self):
         phases = self.calculator.getPhases()
@@ -189,6 +200,14 @@ class CalculatorInterface:
         else:
             self.project_dict.bulkUpdate(k, v, 'Bulk update of phases')
 
+    def getPhase(self, phase: Union[Phase, Phases, None]) -> Phase:
+        if phase in self.project_dict['phases']:
+            return deepcopy(self.project_dict['phases'][phase])
+        elif phase is None:
+            return deepcopy(self.project_dict['phases'])
+        else:
+            raise KeyError
+
 
     def updateExperiments(self):
         experiments = self.calculator.getExperiments()
@@ -208,29 +227,21 @@ class CalculatorInterface:
         else:
             self.project_dict.bulkUpdate(k, v, 'Bulk update of experiments')
 
-    def getCalculations(self):
-        self.updateCalculations()
-        return self.project_dict['calculations']
-
-    def updateCalculations(self):
-        calculations = self.calculator.getCalculations()
-        self.project_dict['calculations'] = calculations
-
-    def getPhase(self, phase: Union[Phase, Phases, None]) -> Phase:
-        if phase in self.project_dict['phases']:
-            return deepcopy(self.project_dict['phases'][phase])
-        elif phase is None:
-            return deepcopy(self.project_dict['phases'])
-        else:
-            raise KeyError
-
-    def getExperiment(self, experiment: Union[Experiment, Experiments, None]):
+    def getExperiment(self, experiment: Union[Experiment, Experiments, None]) -> Experiment:
         if experiment in self.project_dict['experiments']:
             return deepcopy(self.project_dict['experiments'][experiment])
         elif experiment is None:
             return deepcopy(self.project_dict['experiments'])
         else:
             raise KeyError
+
+    def updateCalculations(self):
+        calculations = self.calculator.getCalculations()
+        self.project_dict['calculations'] = calculations
+
+    def getCalculations(self) -> Calculations:
+        self.updateCalculations()
+        return self.project_dict['calculations']
 
     def setPhases(self, phases: Union[Phase, Phases, None] = None):
         """Set phases (sample model tab in GUI)"""
@@ -245,6 +256,22 @@ class CalculatorInterface:
             raise TypeError
         self._mappedBulkUpdate(self._mappedValueUpdater, k, v)
 
+    def setPhaseRefine(self, phase: str, key: list, value: bool = True):
+        if phase not in self.project_dict['phases'].keys():
+            raise KeyError
+        if key[-2:] == ['store', 'value']:
+            key = key[:-2]
+        self.project_dict.setItemByPath(['phases', phase, *key, 'store', 'refine'], value)
+        self._mappedRefineUpdater(['phases', phase, *key], value)
+
+    def setPhaseValue(self, phase: str, key: list, value):
+        if phase not in self.project_dict['phases'].keys():
+            raise KeyError
+        if key[-2:] == ['store', 'value']:
+            key = key[:-2]
+        self.project_dict.setItemByPath(['phases', phase, *key, 'store', 'value'], value)
+        self._mappedValueUpdater(['phases', phase, *key], value)
+
     def setExperiments(self, experiments: Union[Experiment, Experiments, None] = None):
         """Set experiments (Experimental data tab in GUI)"""
         if isinstance(experiments, Experiment):
@@ -256,16 +283,37 @@ class CalculatorInterface:
                                          "Setting new experiments")
         self.calculator.setExperiments(self.project_dict['experiments'])
 
+    def setExperimentRefine(self, experiment: str, key: list, value: bool = True):
+        if experiment not in self.project_dict['experiments'].keys():
+            raise KeyError
+        if key[-2:] == ['store', 'value']:
+            key = key[:-2]
+        self.project_dict.setItemByPath(['experiments', experiment, *key, 'store', 'refine'], value)
+        self._mappedRefineUpdater(['experiments', experiment, *key], value)
+
+    def setExperimentValue(self, experiment: str, key: list, value):
+        if experiment not in self.project_dict['experiments'].keys():
+            raise KeyError
+        if key[-2:] == ['store', 'value']:
+            key = key[:-2]
+        self.project_dict.setItemByPath(['experiments', experiment, *key, 'store', 'value'], value)
+        self._mappedValueUpdater(['experiments', experiment, *key], value)
+
     def setCalculatorFromProject(self):
         self.calculator.setObjFromProjectDicts(self.project_dict['phases'], self.project_dict['experiments'])
 
-    def getDictByPath(self, keys: list):
+    def getDictByPath(self, keys: list) -> Any:
         return self.project_dict.getItemByPath(keys)
 
     def setDictByPath(self, keys: list, value: Any):
         self.project_dict.setItemByPath(keys, value)
         self.setCalculatorFromProject()
         self.updateCalculations()  # IT IS SLOW
+
+
+    ###
+    # Project Information
+    ###
 
     def phasesCount(self) -> int:
         """Returns number of phases in the project."""
@@ -294,6 +342,10 @@ class CalculatorInterface:
         """..."""
         return self.calculator.asCifDict()
 
+    ###
+    # Refinement
+    ###
+
     def refine(self):
         """refinement ..."""
         refinement_res, scipy_refinement_res = self.calculator.refine()
@@ -321,41 +373,28 @@ class CalculatorInterface:
                     "refinement_message": "Unknown problems during refinement"
                 }
 
-    @property
-    def final_chi_square(self) -> float:
-        return self.calculator.final_chi_square
+    ###
+    # Undo/Redo logic
+    ###
 
-    def setPhaseRefine(self, phase: str, key: list, value: bool = True):
-        if phase not in self.project_dict['phases'].keys():
-            raise KeyError
-        if key[-2:] == ['store', 'value']:
-            key = key[:-2]
-        self.project_dict.setItemByPath(['phases', phase, *key, 'store', 'refine'], value)
-        self._mappedRefineUpdater(['phases', phase, *key], value)
+    def canUndo(self):
+        return self.project_dict.canUndo()
 
-    def setPhaseValue(self, phase: str, key: list, value):
-        if phase not in self.project_dict['phases'].keys():
-            raise KeyError
-        if key[-2:] == ['store', 'value']:
-            key = key[:-2]
-        self.project_dict.setItemByPath(['phases', phase, *key, 'store', 'value'], value)
-        self._mappedValueUpdater(['phases', phase, *key], value)
+    def canRedo(self):
+        return self.project_dict.canRedo()
 
-    def setExperimentRefine(self, experiment: str, key: list, value: bool = True):
-        if experiment not in self.project_dict['experiments'].keys():
-            raise KeyError
-        if key[-2:] == ['store', 'value']:
-            key = key[:-2]
-        self.project_dict.setItemByPath(['experiments', experiment, *key, 'store', 'refine'], value)
-        self._mappedRefineUpdater(['experiments', experiment, *key], value)
+    def clearUndoStack(self):
+        self.project_dict.clearUndoStack()
 
-    def setExperimentValue(self, experiment: str, key: list, value):
-        if experiment not in self.project_dict['experiments'].keys():
-            raise KeyError
-        if key[-2:] == ['store', 'value']:
-            key = key[:-2]
-        self.project_dict.setItemByPath(['experiments', experiment, *key, 'store', 'value'], value)
-        self._mappedValueUpdater(['experiments', experiment, *key], value)
+    def undo(self):
+        self.project_dict.undo()
+
+    def redo(self):
+        self.project_dict.redo()
+
+    ###
+    # Hidden internal logic
+    ###
 
     def _mappedBulkUpdate(self, func: Callable, keys: list, values:list):
         self.project_dict.bulkUpdate(keys, values, 'Updating Dictionary')
@@ -372,18 +411,3 @@ class CalculatorInterface:
     def _mappedRefineUpdater(self, key, value):
         update_str = self.project_dict.getItemByPath(key)['mapping']
         self.calculator._mappedRefineUpdater(update_str, value)
-
-    def canUndo(self):
-        return self.project_dict.canUndo()
-
-    def canRedo(self):
-        return self.project_dict.canRedo()
-
-    def clearUndoStack(self):
-        self.project_dict.clearUndoStack()
-
-    def undo(self):
-        self.project_dict.undo()
-
-    def redo(self):
-        self.project_dict.redo()
