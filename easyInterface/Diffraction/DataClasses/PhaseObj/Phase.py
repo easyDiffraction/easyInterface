@@ -1,5 +1,5 @@
 from typing import NoReturn
-
+from easyInterface.Utils.Logging import Logger
 from .Atom import *
 from .SpaceGroup import *
 from .Cell import *
@@ -23,6 +23,8 @@ class Phase(PathDict):
             }
         atoms = Atoms(atoms)
         super().__init__(phasename=name, spacegroup=spacegroup, cell=cell, atoms=atoms, sites=sites)
+        self.__log = Logger().getLogger(__name__)
+        self.__log.debug('Phase created: %s', self)
 
     @classmethod
     def default(cls, name: str) -> 'Phase':
@@ -68,6 +70,8 @@ class Phases(PathDict):
                 thesePhases[phase['phasename']] = phase
             phases = thesePhases
         super().__init__(**phases)
+        self.__log = Logger().getLogger(__name__)
+        self.__log.debug('Phases created: %s', self)
 
     def renamePhase(self, oldPhaseName: str, newPhaseName: str) -> NoReturn:
         """

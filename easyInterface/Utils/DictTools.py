@@ -360,7 +360,6 @@ class UndoableDict(PathDict):
 
     def __init__(self, *args, **kwargs):
         self.__stack = UndoStack()
-        self._macroRunning = False
         super().__init__(*args, **kwargs)
 
     # Public methods: dictionary-related
@@ -374,6 +373,10 @@ class UndoableDict(PathDict):
             self.__stack.push(_SetItemCommand(self, key, val))
         else:
             self.__stack.push(_AddItemCommand(self, key, val))
+            
+    @property
+    def macro_running(self) -> bool:
+        return self.__stack._macro_running
 
     def setItemByPath(self, keys: list, value: Any) -> NoReturn:
         """
@@ -436,21 +439,19 @@ class UndoableDict(PathDict):
         """
         Begins composition of a macro command with the given text description.
         """
-        if self._macroRunning:
+        if self.macro_running:
             print('Macro already running')
             return
         self.__stack.beginMacro(text)
-        self._macroRunning = True
 
     def endBulkUpdate(self) -> NoReturn:
         """
         Ends composition of a macro command.
         """
-        if not self._macroRunning:
+        if not self.macro_running:
             print('Macro not running')
             return
         self.__stack.endMacro()
-        self._macroRunning = False
 
     def bulkUpdate(self, key_list: list, item_list: list, text='Bulk update') -> NoReturn:
         """

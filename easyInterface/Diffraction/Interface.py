@@ -81,7 +81,10 @@ class CalculatorInterface:
         logging.info("self.calculator:")
         logging.info(type(self.calculator))
         logging.info(self.calculator)
+        self.__lastupdated = datetime.max
+        self.__lastcalculated = datetime.min
         self.setProjectFromCalculator()
+
 
         # Set the calculator info
         CALCULATOR_INFO = self.calculator.calculatorInfo()
@@ -115,6 +118,7 @@ class CalculatorInterface:
 
         self.project_dict.setItemByPath(['info', 'n_res', 'store', 'value'], n_res)
         self.project_dict.setItemByPath(['info', 'chi_squared', 'store', 'value'], final_chi_square)
+        self.__lastupdated = datetime.now()
 
     ###
     # Setting of Calculator
@@ -144,10 +148,14 @@ class CalculatorInterface:
         else:
             self.project_dict.setItemByPath(['phases', phase['phasename']], phase)
             self.calculator.addPhase(phase)
+        self.__lastupdated = datetime.now()
+
 
     def removePhase(self, phase_name):
         self.calculator.removePhaseDefinition(phase_name)
         self.project_dict.rmItemByPath(['phases', phase_name])
+        self.__lastupdated = datetime.now()
+
 
     # Experiment section
     def setExperimentDefinition(self, exp_path: str):
@@ -157,6 +165,7 @@ class CalculatorInterface:
         self.calculator.setExpsDefinition(exp_path)
         # This will re-create all local directories
         self.updateExperiments()
+
 
     def addExperimentDefinition(self, phases_path: str):
         """
@@ -171,10 +180,14 @@ class CalculatorInterface:
         else:
             self.project_dict.setItemByPath(['experiments', experiment['name']], experiment)
             self.calculator.setExperiments(self.project_dict['experiments'])
+        self.__lastupdated = datetime.now()
+
 
     def removeExperiment(self, experiment_name):
         self.calculator.removeExpsDefinition(experiment_name)
         self.updateExperiments()
+        self.__lastupdated = datetime.now()
+
 
     # Output section
     def writeMainCif(self, save_dir: str):
@@ -208,11 +221,12 @@ class CalculatorInterface:
         k.append(['info', 'phase_ids'])
         v.append(list(phases.keys()))
 
-        if self.project_dict._macroRunning:
+        if self.project_dict.macro_running:
             for key, value in zip(k, v):
                 self.project_dict.setItemByPath(key, value)
         else:
             self.project_dict.bulkUpdate(k, v, 'Bulk update of phases')
+        self.__lastupdated = datetime.now()
 
     def getPhase(self, phase: Union[str, None]) -> Phase:
         if phase in self.project_dict['phases']:
@@ -235,11 +249,13 @@ class CalculatorInterface:
         k.append(['info', 'experiment_ids'])
         v.append(list(experiments.keys()))
 
-        if self.project_dict._macroRunning:
+        if self.project_dict.macro_running:
             for key, value in zip(k, v):
                 self.project_dict.setItemByPath(key, value)
         else:
             self.project_dict.bulkUpdate(k, v, 'Bulk update of experiments')
+        self.__lastupdated = datetime.now()
+
 
     def getExperiment(self, experiment: Union[str, None]) -> Experiment:
         if experiment in self.project_dict['experiments']:
@@ -250,8 +266,10 @@ class CalculatorInterface:
             raise KeyError
 
     def updateCalculations(self):
-        calculations = self.calculator.getCalculations()
-        self.project_dict['calculations'] = calculations
+        if self.__lastupdated > self.__lastcalculated:
+            calculations = self.calculator.getCalculations()
+            self.project_dict['calculations'] = calculations
+            self.__lastcalculated = datetime.now()
 
     def getCalculations(self) -> Calculations:
         self.updateCalculations()
@@ -260,7 +278,6 @@ class CalculatorInterface:
     def getCalculation(self, calculation) -> Calculation:
         self.updateCalculations()
         return self.project_dict['calculations'][calculation]
-
 
     def setPhase(self, phase: Phase):
         """Set phases (sample model tab in GUI)"""
@@ -272,9 +289,9 @@ class CalculatorInterface:
                 self._mappedBulkUpdate(self._mappedValueUpdater, k, v)
             else:
                 self.addPhase(phase)
+            self.__lastupdated = datetime.now()
         else:
             raise TypeError
-
 
     def setPhases(self, phases: Union[Phase, Phases, None] = None):
         """Set phases (sample model tab in GUI)"""
@@ -288,6 +305,7 @@ class CalculatorInterface:
         else:
             raise TypeError
         self._mappedBulkUpdate(self._mappedValueUpdater, k, v)
+        self.__lastupdated = datetime.now()
 
     def setPhaseRefine(self, phase: str, key: list, value: bool = True):
         if phase not in self.project_dict['phases'].keys():
@@ -315,6 +333,7 @@ class CalculatorInterface:
                                          [experiments[key] for key in experiments.keys()],
                                          "Setting new experiments")
         self.calculator.setExperiments(self.project_dict['experiments'])
+        self.__lastupdated = datetime.now()
 
     def setExperimentRefine(self, experiment: str, key: list, value: bool = True):
         if experiment not in self.project_dict['experiments'].keys():
@@ -334,6 +353,7 @@ class CalculatorInterface:
 
     def setCalculatorFromProject(self):
         self.calculator.setObjFromProjectDicts(self.project_dict['phases'], self.project_dict['experiments'])
+        self.__lastupdated = datetime.now()
 
     def getDictByPath(self, keys: list) -> Any:
         return self.project_dict.getItemByPath(keys)
@@ -379,7 +399,7 @@ class CalculatorInterface:
     # Refinement
     ###
 
-    def refine(self):
+    def refine(self) -> dict:
         """refinement ..."""
         refinement_res, scipy_refinement_res = self.calculator.refine()
 
@@ -388,7 +408,7 @@ class CalculatorInterface:
         self.project_dict.endBulkUpdate()
 
         try:
-            return {
+            data= {
                 "num_refined_parameters": len(scipy_refinement_res.x),
                 "refinement_message": scipy_refinement_res.message,
                 "nfev": scipy_refinement_res.nfev,
@@ -396,6 +416,9 @@ class CalculatorInterface:
                 "njev": scipy_refinement_res.njev,
                 "final_chi_sq": float(self.final_chi_square)
             }
+            self.updateCalculations()
+            return data
+
         except:
             if scipy_refinement_res is None:
                 return {
@@ -405,6 +428,7 @@ class CalculatorInterface:
                 return {
                     "refinement_message": "Unknown problems during refinement"
                 }
+
 
     ###
     # Undo/Redo logic
@@ -435,11 +459,13 @@ class CalculatorInterface:
             if k[-2:] == ['store', 'value']:
                 k = k[:-2]
             func(k, v)
+        self.__lastupdated = datetime.now()
         self.updateCalculations()
 
     def _mappedValueUpdater(self, key, value):
         update_str = self.project_dict.getItemByPath(key)['mapping']
         self.calculator._mappedValueUpdater(update_str, value)
+        self.__lastupdated = datetime.now()
 
     def _mappedRefineUpdater(self, key, value):
         update_str = self.project_dict.getItemByPath(key)['mapping']
@@ -457,3 +483,4 @@ class CalculatorInterface:
                 self.addExperiment(experiment)
         else:
             raise TypeError
+        self.__lastupdated = datetime.now()

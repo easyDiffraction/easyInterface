@@ -1,6 +1,6 @@
 import os
 
-from easyInterface.DiffractionDiffraction.Calculators import CryspyCalculator
+from easyInterface.Diffraction.Calculators import CryspyCalculator
 from easyInterface.Diffraction.Interface import CalculatorInterface
 
 

@@ -1,6 +1,6 @@
 from easyInterface.Utils.DictTools import PathDict
 from ..Utils.BaseClasses import Base
-
+from easyInterface.Utils.Logging import Logger
 CELL_DETAILS = {
     'length': {
         'header': '',
@@ -36,6 +36,8 @@ class Cell(PathDict):
 
         super().__init__(length_a=length_a, length_b=length_b, length_c=length_c,
                          angle_alpha=angle_alpha, angle_beta=angle_beta, angle_gamma=angle_gamma)
+        self.__log = Logger().getLogger(__name__)
+        self.__log.debug('Cell created: %s', self)
 
         self.setItemByPath(['length_a', 'header'], 'a (Å)')
         self.setItemByPath(['length_a', 'tooltip'], CELL_DETAILS['length']['tooltip'])

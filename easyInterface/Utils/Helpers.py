@@ -41,7 +41,7 @@ def open_url(url=""):
     try:
         webbrowser.open('file://' + os.path.realpath(url))
     except Exception as ex:
-        logging.info("Report viewing failed: "+ str(ex))
+        logging.info("Report viewing failed: " + str(ex))
 
 
 def get_num_refine_pars(project_dict):
@@ -58,7 +58,6 @@ def get_num_refine_pars(project_dict):
 
 
 def getReleaseInfo(file_path):
-
     import yaml
 
     default = {
@@ -72,3 +71,12 @@ def getReleaseInfo(file_path):
     with open(file_path, 'r') as file:
         file_content = yaml.load(file, Loader=yaml.FullLoader)
         return file_content
+
+
+def counted(f):
+    def wrapped(*args, **kwargs):
+        wrapped.calls += 1
+        return f(*args, **kwargs)
+
+    wrapped.calls = 0
+    return wrapped

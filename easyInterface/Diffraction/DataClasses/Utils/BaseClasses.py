@@ -2,16 +2,26 @@ from typing import Union, Optional, Any, NoReturn
 
 from easyInterface.Utils.units import Unit
 from easyInterface.Utils.DictTools import PathDict
+from easyInterface.Utils.Logging import Logger
+from easyInterface import VERBOSE
 
 
 class Data(PathDict):
     """
-    
+    Data class which contains the value, error, constraint, hidden and refine attributes
     """
     def __init__(self, value: Optional[Any] = None, unit: Optional[Union[str, Unit]] = ''):
+        """
+        Create a data class from a value with a unit. Can be left blank
+        :param value: default value for the data
+        :param unit: default unit for the data in the form of a easyInterface.Untils.unit
+        """
         if not isinstance(unit, Unit):
+            # Try to convert the unit to a string
             unit = Unit(unit)
         super().__init__(value=value, unit=unit, error=0, constraint=None, hide=True, refine=False)
+        self.__log = Logger().getLogger(__name__)
+        self.__log.log(VERBOSE, 'Data object created with default value %s, unit %s', value, unit)
 
     def __repr__(self) -> str:
         return '{}'.format(self['value'])
