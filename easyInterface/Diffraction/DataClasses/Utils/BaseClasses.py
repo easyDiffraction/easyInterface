@@ -71,9 +71,9 @@ class Base(PathDict):
 
     def convertUnits(self, newUnit: str) -> NoReturn:
         cf = self.unitConversionFactor(newUnit)
-        self.setItemByPath(['store', 'value'], cf * self['value'])
+        self.setItemByPath(['store', 'value'], cf * self.value)
         self.setItemByPath(['store', 'unit'], Unit(newUnit))
 
     def valueInUnit(self, newUnit: str) -> float:
         cf = self.unitConversionFactor(newUnit)
-        return cf * self['value']
+        return cf * self.value
