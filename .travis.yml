@@ -82,7 +82,6 @@ script:
 #  - python Scripts/DeployToGithub.py # $GITHUB_TOKEN $TRAVIS_BRANCH $TRAVIS_PULL_REQUEST
 
 after_success:
-  - python Scripts/ReportComplexity.py
   - codecov
 
 #after_deploy:

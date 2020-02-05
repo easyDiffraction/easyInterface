@@ -4,7 +4,7 @@
 
 
 import numpy as np
-import collections
+from collections.abc import Mapping
 from numbers import Number
 import numbers
 from functools import partial
@@ -196,7 +196,7 @@ def check_mappings(u):
     return u
 
 
-class Unit(collections.abc.Mapping):
+class Unit(Mapping):
     """
     Represents a unit, e.g., "m" for meters, etc. Supports compound units.
     Only integer powers are supported for units.

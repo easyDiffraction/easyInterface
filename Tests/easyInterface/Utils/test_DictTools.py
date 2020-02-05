@@ -1,8 +1,8 @@
 import pytest
 from easyInterface.Utils.DictTools import PathDict, UndoableDict
 
-def test_PathDict():
 
+def test_PathDict():
     d = PathDict(dict(a=1, b=2, c=dict(d=3, e=dict(f=4, g=5))))
     assert d == {'a': 1, 'b': 2, 'c': {'d': 3, 'e': {'f': 4, 'g': 5}}}
 
@@ -14,9 +14,9 @@ def test_PathDict():
     d2 = "string"
     with pytest.raises(TypeError):
         d1.dictComparison(d2)
-        
-def test_non_nested_dict():
 
+
+def test_non_nested_dict():
     d = UndoableDict()
 
     # Add item
@@ -96,7 +96,6 @@ def test_non_nested_dict():
 
 
 def test_nested_dict():
-
     # Add item
 
     d = UndoableDict(dict(a=1, b=2, c=dict(d=3, e=dict(f=4, g=5))))
@@ -136,7 +135,6 @@ def test_nested_dict():
 
 
 def test_bulk_update():
-
     # Add item
 
     d = UndoableDict(dict(a=1, b=2, c=dict(d=3, e=dict(f=4, g=5))))
@@ -193,3 +191,65 @@ def test_bulk_update():
     assert d == {'a': '---', 'b': 2, 'c': {'d': 3, 'e': {'f': 4, 'g': '***'}}}
     assert d.undoText() == "Bulk update"
     assert d.redoText() == ""
+
+# d1 = PathDict(dict(a=1, b=2, c=dict(d=3, e=dict(f=4, g=5))))
+#   d2 = PathDict(dict(a=1, b=2, c=dict(d=333, e=dict(f=4, g=555))))
+#   print("A", d1.dictComparison(d2))
+# 
+#   d1 = PathDict(dict(a=1, b=2, c=dict(d=3, e=dict(f=4, g=5))))
+#   d2 = {'a': 1, 'b': 2, 'c': {'d': 333, 'e': {'f': 4, 'g': 555}}}
+#   print("c", d1.dictComparison(d2))
+# 
+#   d1 = PathDict(dict(a=1, b=2, c=dict(d=3, e=dict(f=4, g=5))))
+#   d2 = PathDict(dict(a=1, b=2, c=dict(d=3, e=dict(f=4))))
+#   print("D", d1.dictComparison(d2))
+# 
+#   d1 = PathDict(dict(a=1, b=2, c=dict(d=3, e=dict(g=5))))
+#   d2 = PathDict(dict(a=1, b=2, c=dict(d=3, e=dict(f=4, g=5))))
+#   print("E", d1.dictComparison(d2))
+# 
+#   d1 = PathDict({'a': 1, 'b': 2, 'c': PathDict({'d': 3, 'e': PathDict({'f': 4})})})
+#   d2 = PathDict({'a': 1, 'b': 2, 'c': PathDict({'d': 3, 'e': PathDict({'f': 4, 'g': 5})})})
+#   print("F", d1.dictComparison(d2))
+# 
+#   d1 = PathDict({'a': 1, 'b': 2})
+#   d2 = PathDict({'a': 1, 'b': 2, 'c': PathDict({'d': 3, 'e': PathDict({'f': 4, 'g': 5})})})
+#   print("G", d1.dictComparison(d2))
+# 
+#   d1 = PathDict({'a': 1, 'b': 2, 'm': 0})
+#   d2 = PathDict({'a': 9, 'c': PathDict({'d': 3, 'e': PathDict({'f': 4, 'g': 5})}), 'm': 1})
+#   print("H", d1.dictComparison(d2))
+# 
+#   d1 = PathDict({'a': 9, 'c': {'d': 3, 'e 1': {'f': 4, 'g': 5}}, 'm': 1, 'o': {'p': {'q': 8, 'r.2': 0}}})
+#   d2 = {'a': 99, 'c': {'d': 3, 'e 1': {'f': 4, 'g': 55, 'h': 66}}, 'm': 11, 'o': {'p': {'r.2': 2}}}
+#   print("K", d1.dictComparison(d2))
+# 
+#   d1 = PathDict({'a': 9, 'c': PathDict({'d': 3, 'e 1': PathDict({'f': 4, 'g': 5})}), 'm': 1,
+#                  'o': PathDict({'p': PathDict({'q': 8, 'r.2': 0})})})
+#   d2 = PathDict({'a': 99, 'c': PathDict({'d': 3, 'e 1': PathDict({'f': 4, 'g': 55, 'h': 66})}), 'm': 11,
+#                  'o': PathDict({'p': PathDict({'r.2': 2})})})
+#   print("M", d1.dictComparison(d2))
+# 
+#   d1 = PathDict({'a': 9, 'c': PathDict({'d': 3, 'e 1': PathDict({'f': 4, 'g': 5})}), 'm': 1,
+#                  'o': PathDict({'p': PathDict({'q': 8, 'r.2': 0})})})
+#   d2 = PathDict(
+#       {'aa': PathDict(alpha=1, beta=2), 'a': 99, 'c': PathDict({'d': 3, 'e 1': PathDict({'f': 4, 'g': 55, 'h': 66})}),
+#        'm': 11, 'o': PathDict({'p': PathDict({'r.2': 2})})})
+#   print("N", d1.dictComparison(d2))
+#   k, v = d1.dictComparison(d2)
+#   for item in v:
+#       print(item, type(item))
+# 
+#   d1 = PathDict(a=[1, 2, 3], b={'c': 2})
+#   d2 = PathDict(a=[1, 2, 3, 4], b={'c': 2, 'd': 4, 3: 5})
+#   print("O", d1.dictComparison(d2))
+#   print(list(dictdiffer.diff(d1, d2)))
+#   # k, v = d1.dictComparison(d2)
+#   d2 = UndoableDict({'a': 9, 'c': PathDict({'d': 3, 'e': PathDict({'f': 4, 'g': 5})}), 'm': 1})
+#   print(d2)
+#   d2.rmItemByPath(['c', 'e', 'g'])
+#   print(d2)
+#   d2.undo()
+#   print(d2)
+#   d2.redo()
+#   print(d2)

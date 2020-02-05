@@ -7,6 +7,7 @@ from easyInterface.Diffraction.Interface import CalculatorInterface
 file_path = "Tests/Data/main.cif"
 fitdata_data = [0, 2, 3, 5]
 
+
 @pytest.fixture
 def cal():
     calc = CryspyCalculator(file_path)
@@ -28,7 +29,6 @@ def test_init(cal):
 
 
 def test_setAppDict(cal):
-
     assert 'name' in cal.project_dict['app'].keys()
     assert cal.project_dict['app']['name'] == 'easyDiffraction'
     assert 'version' in cal.project_dict['app'].keys()
@@ -36,7 +36,6 @@ def test_setAppDict(cal):
 
 
 def test_setCalculatorDict(cal):
-
     assert 'name' in cal.project_dict['calculator'].keys()
     assert cal.project_dict['calculator']['name'] == 'CrysPy'
     assert 'version' in cal.project_dict['calculator'].keys()
@@ -44,7 +43,6 @@ def test_setCalculatorDict(cal):
 
 
 def test_setInfoDict(cal):
-
     assert len(cal.project_dict['info']) == 7
     assert 'refinement_datetime' in cal.project_dict['info']
     assert 'modified_datetime' in cal.project_dict['info']
@@ -57,7 +55,7 @@ def test_setInfoDict(cal):
 
 def test_setPhasesDictFromCryspyObj(cal):
     # difficult test for creation of the phases dict
-    cal.project_dict['phases'].clear() # enforce
+    cal.project_dict['phases'].clear()  # enforce
     assert cal.calculator._cryspy_obj.crystals is not None
 
     cal.updatePhases()
@@ -121,9 +119,10 @@ def test_setPhasesDictFromCryspyObj(cal):
     assert phase_dict['Fe3O4']['atoms']['Fe3B']['MSP']['chi_23'].value == 0.0
     assert phase_dict['Fe3O4']['atoms']['Fe3B']['MSP']['chi_23']['store']['refine'] is False
 
+
 def test_setExperimentsDictFromCryspyObj(cal):
     # difficult test for creation of the experiment dict
-    cal.project_dict['experiments'].clear() # enforce
+    cal.project_dict['experiments'].clear()  # enforce
     assert cal.calculator._cryspy_obj.experiments is not None
 
     cal.updateExperiments()
@@ -169,12 +168,12 @@ def test_setExperimentsDictFromCryspyObj(cal):
     assert experiment_dict['pd']['resolution']['v']['store']['error'] == 0.0
     assert experiment_dict['pd']['resolution']['v']['store']['hide'] is False
 
-
     # measured_pattern
     assert len(experiment_dict['pd']['measured_pattern']) == 7
     assert 5.0 in experiment_dict['pd']['measured_pattern']['x']
     assert len(experiment_dict['pd']['measured_pattern'].y_obs_lower) == 381
     assert experiment_dict['pd']['measured_pattern'].y_obs_lower[380] == pytest.approx(762.959046)
+
 
 def test_setCalculationsDictFromCryspyObj(cal):
     cal.project_dict['calculations'].clear()
@@ -205,23 +204,30 @@ def test_setCalculationsDictFromCryspyObj(cal):
     assert calculation_dict['pd']['limits']['difference']['y_min'] == pytest.approx(-4087.48283)
     assert calculation_dict['pd']['limits']['difference']['y_max'] == pytest.approx(4601.62523)
 
+
 def test_phasesCount(cal):
     assert cal.phasesCount() == 1
+
 
 def test_experimentsCount(cal):
     assert cal.experimentsCount() == 1
 
+
 def test_phasesIds(cal):
     assert cal.phasesIds() == ['Fe3O4']
+
 
 def test_experimentsIds(cal):
     assert cal.experimentsIds() == ['pd']
 
+
 def test_asDict(cal):
     assert isinstance(cal.asDict(), dict)
 
+
 def test_name(cal):
     assert cal.name() == 'Fe3O4'
+
 
 def test_asCifDict(cal):
     d = cal.asCifDict()
@@ -230,3 +236,11 @@ def test_asCifDict(cal):
     assert 'data_Fe3O4' in d['phases']
     assert 'data_pd' in d['experiments']
     assert '_refln_index_h' in d['calculations']
+
+
+def test_default():
+    assert False
+
+
+def test_from_pars():
+    assert False
