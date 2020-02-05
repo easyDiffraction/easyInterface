@@ -4,8 +4,10 @@ import webbrowser
 import logging
 from functools import reduce
 
+from easyInterface import logger
 
-def nested_get(dictionary, keys_list):
+
+def nested_get(dictionary: dict, keys_list: list):
     """Access a nested object in root by key sequence."""
     try:
         return reduce(operator.getitem, keys_list, dictionary)
@@ -13,13 +15,13 @@ def nested_get(dictionary, keys_list):
         return ""
 
 
-def nested_set(dictionary, keys_list, value):
+def nested_set(dictionary: dict, keys_list: list, value):
     """Get a value in a nested object in root by key sequence."""
     nested_get(dictionary, keys_list[:-1])[keys_list[-1]] = value
 
 
-def find_in_obj(obj, condition, path=None):
-    """..."""
+def find_in_obj(obj: dict, condition, path=None):
+    """Find the path to an dict object"""
     if path is None:
         path = []
     if isinstance(obj, dict):

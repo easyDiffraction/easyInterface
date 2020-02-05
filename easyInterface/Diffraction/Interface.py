@@ -1,12 +1,12 @@
 __author__ = 'simonward'
 __version__ = "2020_02_01"
 
-import logging
 import os
 from datetime import datetime
 from copy import deepcopy
 from typing import List, Callable, Any
 
+from easyInterface import logger as logging
 from easyInterface.Diffraction.DataClasses.DataObj.Calculation import *
 from easyInterface.Diffraction.DataClasses.DataObj.Experiment import Experiments, Experiment
 from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import Phases, Phase
@@ -30,6 +30,7 @@ class ProjectDict(UndoableDict):
         """
         super().__init__(interface=interface, calculator=calculator, app=app, info=info, phases=phases,
                          experiments=experiments, calculations=calculations)
+        self._log = logging.getLogger(__name__)
 
     @classmethod
     def default(cls) -> 'ProjectDict':
@@ -75,21 +76,17 @@ class CalculatorInterface:
     Interface to calculators in the easyInterface/Diffraction/Calculator folder
     """
     def __init__(self, calculator):
-        logging.info("---")
+        self._log = logging.getLogger(__name__)
         self.project_dict = ProjectDict.default()
         self.calculator = calculator
-        logging.info("self.calculator:")
-        logging.info(type(self.calculator))
-        logging.info(self.calculator)
-        self.__lastupdated = datetime.max
-        self.__lastcalculated = datetime.min
-        self.setProjectFromCalculator()
-
-
         # Set the calculator info
         CALCULATOR_INFO = self.calculator.calculatorInfo()
         for key in CALCULATOR_INFO.keys():
             self.project_dict['calculator'][key] = CALCULATOR_INFO[key]
+        self.__lastupdated = datetime.max
+        self.__lastcalculated = datetime.min
+        self.setProjectFromCalculator()
+        self._log.info("Created: %s", self)
 
     def __repr__(self) -> str:
         return "easyInterface ({}) with calculator: {} - {}".format(

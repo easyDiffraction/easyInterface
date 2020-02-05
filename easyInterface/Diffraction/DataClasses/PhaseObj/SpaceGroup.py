@@ -1,6 +1,6 @@
 from easyInterface.Utils.DictTools import PathDict
 from ..Utils.BaseClasses import Base
-from easyInterface.Utils.Logging import Logger
+from easyInterface import logger as logging
 
 SG_DETAILS = {
     'crystal_system': {
@@ -34,8 +34,8 @@ class SpaceGroup(PathDict):
     def __init__(self, crystal_system: Base, space_group_name_HM_alt: Base, space_group_IT_number: Base, origin_choice: Base):
         super().__init__(crystal_system=crystal_system, space_group_name_HM_alt=space_group_name_HM_alt,
                          space_group_IT_number=space_group_IT_number, origin_choice=origin_choice)
-        self.__log = Logger().getLogger(__name__)
-        self.__log.debug('Spacegroup created: %s', self)
+        self._log = logging.getLogger(__name__)
+        self._log.debug('Spacegroup created: %s', self)
 
         self.setItemByPath(['crystal_system', 'header'], SG_DETAILS['crystal_system']['header'])
         self.setItemByPath(['crystal_system', 'tooltip'], SG_DETAILS['crystal_system']['tooltip'])

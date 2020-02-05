@@ -20,8 +20,8 @@ class Data(PathDict):
             # Try to convert the unit to a string
             unit = Unit(unit)
         super().__init__(value=value, unit=unit, error=0, constraint=None, hide=True, refine=False)
-        self.__log = Logger().getLogger(__name__)
-        self.__log.log(VERBOSE, 'Data object created with default value %s, unit %s', value, unit)
+        self._log = Logger().getLogger(__name__)
+        self._log.log(VERBOSE, 'Data object created with default value %s, unit %s', value, unit)
 
     def __repr__(self) -> str:
         return '{}'.format(self['value'])

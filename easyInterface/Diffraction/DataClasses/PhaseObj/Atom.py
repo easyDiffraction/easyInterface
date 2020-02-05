@@ -2,7 +2,7 @@ from typing import Union
 
 from easyInterface.Utils.DictTools import PathDict
 from ..Utils.BaseClasses import Base
-from easyInterface.Utils.Logging import Logger
+from easyInterface import logger as logging
 
 ATOM_DETAILS = {
     'type_symbol': {
@@ -82,7 +82,7 @@ class Atom(PathDict):
         super().__init__(atom_site_label=atom_site_label, type_symbol=type_symbol,
                          scat_length_neutron=scat_length_neutron, fract_x=fract_x, fract_y=fract_y, fract_z=fract_z,
                          occupancy=occupancy, adp_type=adp_type, U_iso_or_equiv=U_iso_or_equiv, ADP=ADp, MSP=MSp)
-        self.__log = Logger().getLogger(__name__)
+        self._log = logging.getLogger(__name__)
 
 
         self.setItemByPath(['type_symbol', 'header'], ATOM_DETAILS['type_symbol']['header'])
@@ -117,7 +117,7 @@ class Atom(PathDict):
         self.setItemByPath(['U_iso_or_equiv', 'tooltip'], ATOM_DETAILS['U_iso_or_equiv']['tooltip'])
         self.setItemByPath(['U_iso_or_equiv', 'url'], ATOM_DETAILS['U_iso_or_equiv']['url'])
 
-        self.__log.debug('Atom created: %s', self)
+        self._log.debug('Atom created: %s', self)
 
     def __repr__(self) -> str:
         return 'Atom {}'.format(self['type_symbol'])
@@ -228,8 +228,8 @@ class Atoms(PathDict):
             atoms = theseAtoms
 
         super().__init__(**atoms)
-        self.__log = Logger().getLogger(__name__)
-        self.__log.debug('Atoms created: %s', self)
+        self._log = logging.getLogger(__name__)
+        self._log.debug('Atoms created: %s', self)
 
 
     def __repr__(self) -> str:
@@ -245,8 +245,8 @@ class ADP(PathDict):
                  u_12: Base, u_13: Base, u_23: Base):
         super().__init__(u_11=u_11, u_22=u_22, u_33=u_33,
                          u_12=u_12, u_13=u_13, u_23=u_23)
-        self.__log = Logger().getLogger(__name__)
-        self.__log.debug('ADP created: %s', self)
+        self._log = logging.getLogger(__name__)
+        self._log.debug('ADP created: %s', self)
 
         self.setItemByPath(['u_11', 'header'], 'U11')
         self.setItemByPath(['u_11', 'tooltip'], ATOM_DETAILS['ADP']['tooltip'])
@@ -314,8 +314,8 @@ class MSP(PathDict):
                  chi_12: Base, chi_13: Base, chi_23: Base):
         super().__init__(type=MSPtype, chi_11=chi_11, chi_22=chi_22, chi_33=chi_33,
                          chi_12=chi_12, chi_13=chi_13, chi_23=chi_23)
-        self.__log = Logger().getLogger(__name__)
-        self.__log.debug('MSP created: %s', self)
+        self._log = logging.getLogger(__name__)
+        self._log.debug('MSP created: %s', self)
 
         self.setItemByPath(['type', 'header'], 'Type')
 
@@ -351,15 +351,12 @@ class MSP(PathDict):
         chi_12 = Base(*ATOM_DETAILS['MSP']['default'])
         chi_13 = Base(*ATOM_DETAILS['MSP']['default'])
 
-        chi_21 = Base(*ATOM_DETAILS['MSP']['default'])
         chi_22 = Base(*ATOM_DETAILS['MSP']['default'])
         chi_23 = Base(*ATOM_DETAILS['MSP']['default'])
 
-        chi_31 = Base(*ATOM_DETAILS['MSP']['default'])
-        chi_32 = Base(*ATOM_DETAILS['MSP']['default'])
         chi_33 = Base(*ATOM_DETAILS['MSP']['default'])
 
-        return cls(MSPtype, chi_11, chi_22, chi_33, chi_12, chi_13, chi_33)
+        return cls(MSPtype, chi_11, chi_22, chi_33, chi_12, chi_13, chi_23)
 
     @classmethod
     def fromPars(cls, MSPtype: str, chi_11: float, chi_22: float, chi_33: float, chi_12: float, chi_13: float,

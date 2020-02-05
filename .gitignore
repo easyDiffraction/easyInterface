@@ -4,3 +4,5 @@
 *.pyc
 
 easyInterface.egg-info/
+
+.coverage

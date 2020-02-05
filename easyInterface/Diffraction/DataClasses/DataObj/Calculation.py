@@ -3,6 +3,7 @@ from typing import Union
 import numpy as np
 
 from easyInterface.Utils.DictTools import PathDict
+from easyInterface import logger as logging
 
 
 class Limits(PathDict):
@@ -18,11 +19,13 @@ class Limits(PathDict):
                               y_max=np.amax(y_diff_upper).item())
 
         super().__init__(main=main, difference=difference)
+        self._log = logging.getLogger(__name__)
 
 
 class CrystalBraggPeaks(PathDict):
     def __init__(self, name:str, h: list, k: list, l: list, ttheta: list):
         super().__init__(name=name, h=h, k=k, l=l, ttheta=ttheta)
+        self._log = logging.getLogger(__name__)
 
     def __repr__(self) -> str:
         return "{} Bragg peaks in phase {}".format(len(self['h']), self['name'])
@@ -47,6 +50,7 @@ class BraggPeaks(PathDict):
                 theseCalculations[bragg_peak['name']] = bragg_peak
             bragg_peaks = theseCalculations
         super().__init__(**bragg_peaks)
+        self._log = logging.getLogger(__name__)
 
     def __repr__(self) -> str:
         return '{} Calculations'.format(len(self))
@@ -55,11 +59,13 @@ class BraggPeaks(PathDict):
 class CalculatedPattern(PathDict):
     def __init__(self, x: list, y_calc: list, y_diff_lower: list , y_diff_upper: list):
         super().__init__(x=x, y_calc=y_calc, y_diff_lower=y_diff_lower, y_diff_upper=y_diff_upper)
+        self._log = logging.getLogger(__name__)
 
 
 class Calculation(PathDict):
     def __init__(self, name: str, bragg_peaks: BraggPeaks, calculated_pattern: CalculatedPattern, limits: Limits):
         super().__init__(name=name, bragg_peaks=bragg_peaks, calculated_pattern=calculated_pattern, limits=limits)
+        self._log = logging.getLogger(__name__)
 
     @classmethod
     def default(cls, name: str):
@@ -101,6 +107,7 @@ class Calculations(PathDict):
                 theseCalculations[calculation['name']] = calculation
             calculations = theseCalculations
         super().__init__(**calculations)
+        self._log = logging.getLogger(__name__)
 
     def __repr__(self) -> str:
         return '{} Calculations'.format(len(self))

@@ -1,6 +1,4 @@
 import os
-from easyInterface import VERBOSE
-from easyInterface.Utils.Logging import Logger
 
 from typing import Tuple
 
@@ -14,6 +12,8 @@ from easyInterface.Diffraction.DataClasses.DataObj.Experiment import *
 from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import *
 from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import Base
 
+from easyInterface.Utils.Logging import time_it
+
 # Imports needed to create a cryspyObj
 from cryspy.scripts.cl_rhochi import RhoChi
 from cryspy.cif_like.cl_crystal import Crystal
@@ -25,6 +25,8 @@ from cryspy.corecif.cl_atom_site import AtomSite, AtomSiteL
 from cryspy.corecif.cl_atom_site_aniso import AtomSiteAniso, AtomSiteAnisoL
 from cryspy.magneticcif.cl_atom_site_susceptibility import AtomSiteSusceptibility, AtomSiteSusceptibilityL
 from cryspy.symcif.cl_space_group import SpaceGroup as cpSpaceGroup
+
+from easyInterface import logger as logging
 
 PHASE_SEGMENT = "_phases"
 EXPERIMENT_SEGMENT = "_experiments"
@@ -38,7 +40,7 @@ CALCULATOR_INFO = {
 
 class CryspyCalculator:
     def __init__(self, main_rcif_path: str):
-        self.__log = Logger.getLogger(__name__)
+        self._log = logging.getLogger(__name__)
         self._experiment_name = []
         self._main_rcif_path = main_rcif_path
         self._main_rcif = None
@@ -46,59 +48,67 @@ class CryspyCalculator:
         self._phase_name = []
         self._experiments_path = ""
         self._cryspy_obj = self._createCryspyObj()
-        self.__log.info('Created cryspy calculator interface')
+        self._log.info('Created cryspy calculator interface')
 
     @staticmethod
     def calculatorInfo() -> dict:
         return CALCULATOR_INFO
-
+    
+    @time_it
     def _createCryspyObj(self):
-        """Create cryspy object from separate rcif files"""
-        self.__log.debug('----> Start')
-        self.__log.info('Creating cryspy object')
+        """
+        Create cryspy object from separate rcif files
+        """
+        
+        self._log.debug('----> Start')
+        self._log.info('Creating cryspy object')
         phase_segment = self._parseSegment(PHASE_SEGMENT)
         full_rcif_content = self._parseSegment(EXPERIMENT_SEGMENT) + phase_segment
         # update the phase name global
-        self.__log.debug('Calling RhoChi')
+        self._log.debug('Calling RhoChi')
         rho_chi = RhoChi().from_cif(full_rcif_content)
         if rho_chi is None:
-            self.__log.debug('Main CIF is empty')
+            self._log.debug('Main CIF is empty')
             rho_chi = RhoChi()
         else:
-            self.__log.debug('Populating _phase_name with cryspy phase names')
+            self._log.debug('Populating _phase_name with cryspy phase names')
             self._phase_name = [phase.data_name for phase in rho_chi.crystals]
-        self.__log.debug('<---- End')
+        self._log.debug('<---- End')
         return rho_chi
 
     def _parseSegment(self, segment: str = "") -> str:
-        """Parse the given segment info from the main rcif file"""
-        self.__log.debug('----> Start')
-        self.__log.info('Reading main cif file')
+        """
+        Parse the given segment info from the main rcif file
+        :param segment: 
+        :return: Parsed cif file content
+        """
+        self._log.debug('----> Start')
+        self._log.info('Reading main cif file')
         if not segment:
-            self.__log.debug('segment is empty')
+            self._log.debug('segment is empty')
             return ""
         if segment not in (PHASE_SEGMENT, EXPERIMENT_SEGMENT):
-            self.__log.debug('segment not in phase or experiment')
+            self._log.debug('segment not in phase or experiment')
             return ""
         rcif_dir_name = os.path.dirname(self._main_rcif_path)
         try:
             self._main_rcif = pycifstar.read_star_file(self._main_rcif_path)
         except FileNotFoundError:
-            self.__log.warning('Main cif can not be found')
+            self._log.warning('Main cif can not be found')
         rcif_content = ""
         if segment in str(self._main_rcif):
-            self.__log.debug('segment in main cif')
+            self._log.debug('segment in main cif')
             segment_rcif_path = os.path.join(rcif_dir_name, self._main_rcif[segment].value)
             if os.path.isfile(segment_rcif_path):
                 with open(segment_rcif_path, 'r') as f:
-                    self.__log.debug('Reading cif segment')
+                    self._log.debug('Reading cif segment')
                     segment_rcif_content = f.read()
                     rcif_content += segment_rcif_content
-        self.__log.debug('<---- End')
+        self._log.debug('<---- End')
         return rcif_content
 
     def setExpsDefinition(self, exp_path: str):
-        self.__log.debug('----> Start')
+        self._log.debug('----> Start')
         """
         Set cryspy.experiments from a single file. *Removes all others*
         """
@@ -108,21 +118,21 @@ class CryspyCalculator:
         # This will read the CIF file
         if os.path.isfile(self._experiments_path):
             with open(self._experiments_path, 'r') as f:
-                self.__log.debug('Reading experiment cif file')
+                self._log.debug('Reading experiment cif file')
                 exp_rcif_content = f.read()
                 rcif_content += exp_rcif_content
         else:
-            self.__log.warning('Experiment cif can not be found')
+            self._log.warning('Experiment cif can not be found')
 
         experiment = Pd.from_cif(exp_rcif_content)
         self._cryspy_obj.experiments = [experiment]
-        self.__log.info('Setting cryspy experiments from cif content')
+        self._log.info('Setting cryspy experiments from cif content')
         if self._cryspy_obj.crystals is not None:
             self._cryspy_obj.experiments[0].phase.items[0] = (self._phase_name[0])
-        self.__log.debug('<---- End')
+        self._log.debug('<---- End')
 
     def addExpsDefinition(self, exp_path: str):
-        self.__log.debug('----> Start')
+        self._log.debug('----> Start')
         """
         Add an experiment to cryspy.experiments
         """
@@ -132,28 +142,28 @@ class CryspyCalculator:
         # This will read the CIF file
         if os.path.isfile(self._experiments_path):
             with open(self._experiments_path, 'r') as f:
-                self.__log.debug('Reading cif content for experiment definintion')
+                self._log.debug('Reading cif content for experiment definintion')
                 exp_rcif_content = f.read()
         else:
-            self.__log.warning('Experiment cif can not be found')
+            self._log.warning('Experiment cif can not be found')
 
         experiment = Pd.from_cif(exp_rcif_content)
         if self._cryspy_obj.experiments is not None:
-            self.__log.info('Adding experiment to cryspy experiments')
+            self._log.info('Adding experiment to cryspy experiments')
             self._cryspy_obj.experiments = [*self._cryspy_obj.experiments, experiment]
         else:
-            self.__log.info('Experiment set from cif content')
+            self._log.info('Experiment set from cif content')
             self._experiment_name.append(experiment.data_name)
             self._cryspy_obj.experiments = [experiment]
             if self._cryspy_obj.crystals is not None:
-                self.__log.debug('Setting Experiment to be the pattern for the first phase')
+                self._log.debug('Setting Experiment to be the pattern for the first phase')
                 self._cryspy_obj.experiments[0].phase.items[0] = (self._phase_name[0])
-        self.__log.debug('<---- End')
+        self._log.debug('<---- End')
 
     def removeExpsDefinition(self, name: str):
-        self.__log.debug('----> Start')
+        self._log.debug('----> Start')
         if name in self._experiment_name:
-            self.__log.info('Experiment found, removing')
+            self._log.info('Experiment found, removing')
             index = self._experiment_name.index(name)
             self._experiment_name.pop(index)
             experiments = self._cryspy_obj.experiments
@@ -161,11 +171,11 @@ class CryspyCalculator:
             self._cryspy_obj.experiments = experiments
         else:
             raise KeyError
-        self.__log.debug('<---- End')
+        self._log.debug('<---- End')
 
 
     def setPhaseDefinition(self, phases_path: str):
-        self.__log.debug('----> Start')
+        self._log.debug('----> Start')
 
         """
         Parse the relevant phases file and update the corresponding model
@@ -179,10 +189,10 @@ class CryspyCalculator:
                 phases_rcif_content = f.read()
                 rcif_content += phases_rcif_content
         else:
-            self.__log.warning('Phase cif can not be found')
+            self._log.warning('Phase cif can not be found')
 
         # find the name of the new phase
-        self.__log.info('Setting phase to cryspy crystals')
+        self._log.info('Setting phase to cryspy crystals')
         phase = Crystal().from_cif(phases_rcif_content)
         new_phase_name = phase.data_name
         self._cryspy_obj.crystals = [phase]
@@ -198,12 +208,12 @@ class CryspyCalculator:
             self._cryspy_obj.from_cif(rcif_content)
             #
 
-            self.__log.info('Setting phase to existing experiment')
+            self._log.info('Setting phase to existing experiment')
             self._cryspy_obj.experiments[0].phase.items[0] = (new_phase_name)
-        self.__log.debug('<---- End')
+        self._log.debug('<---- End')
 
     def addPhaseDefinition(self, phases_path: str):
-        self.__log.debug('----> Start')
+        self._log.debug('----> Start')
         """
         Parse the relevant phases file and update the corresponding model
         """
@@ -215,36 +225,36 @@ class CryspyCalculator:
             with open(phases_path, 'r') as f:
                 phases_rcif_content = f.read()
         else:
-            self.__log.warning('Phase cif can not be found')
+            self._log.warning('Phase cif can not be found')
 
         # find the name of the new phase
         phase = Crystal().from_cif(phases_rcif_content)
         if self._cryspy_obj.crystals is not None:
-            self.__log.info('Adding phase to existing phases')
+            self._log.info('Adding phase to existing phases')
             self._cryspy_obj.crystals = [*self._cryspy_obj.crystals, phase]
         else:
-            self.__log.info('Setting cryspy crystal to phase')
+            self._log.info('Setting cryspy crystal to phase')
             self._cryspy_obj.crystals = [phase]
         self._phase_name.append(phase.data_name)
-        self.__log.debug('<---- End')
+        self._log.debug('<---- End')
 
     def removePhaseDefinition(self, name: str):
-        self.__log.debug('----> Start')
+        self._log.debug('----> Start')
         if name in self._phase_name:
             index = self._phase_name.index(name)
             self._phase_name.pop(index)
             phases = list(self._cryspy_obj.crystals)
             phases.pop(index)
             self._cryspy_obj.crystals = phases
-            self.__log.info('Removing phase %s', name)
+            self._log.info('Removing phase %s', name)
         else:
-            self.__log.warning('Phase not found in cryspy crystals')
+            self._log.warning('Phase not found in cryspy crystals')
             raise KeyError
-        self.__log.debug('<---- End')
+        self._log.debug('<---- End')
 
     def writeMainCif(self, save_dir: str):
-        self.__log.debug('----> Start')
-        self.__log.info('Writing main cif file')
+        self._log.debug('----> Start')
+        self._log.info('Writing main cif file')
         if not isinstance(self._cryspy_obj, cryspy.scripts.cl_rhochi.RhoChi):
             return
         main_block = self._main_rcif
@@ -255,21 +265,21 @@ class CryspyCalculator:
         try:
             main_block.to_file(os.path.join(save_dir, 'main.cif'))
         except PermissionError:
-            self.__log.warning('No permission to write to %s', save_dir)
-        self.__log.debug('<---- End')
+            self._log.warning('No permission to write to %s', save_dir)
+        self._log.debug('<---- End')
 
     def writePhaseCif(self, saveDir: str):
-        self.__log.debug('----> Start')
+        self._log.debug('----> Start')
         if not isinstance(self._cryspy_obj, cryspy.scripts.cl_rhochi.RhoChi):
             return
         phases_block = pycifstar.Global()
         # TODO write output for multiple phases
         if self._cryspy_obj.crystals is not None:
-            self.__log.info('Writing phase cif files')
+            self._log.info('Writing phase cif files')
             phases_block.take_from_string(self._cryspy_obj.crystals[0].to_cif())
         # TODO this should have a try catch?
         phases_block.to_file(os.path.join(saveDir, 'phases.cif'))
-        self.__log.debug('<---- End')
+        self._log.debug('<---- End')
 
     def writeExpCif(self, save_dir: str):
         if not isinstance(self._cryspy_obj, cryspy.scripts.cl_rhochi.RhoChi):
@@ -484,7 +494,7 @@ class CryspyCalculator:
             phases.append(phase)
 
         # logging.info(phases)
-        self.__log.info(Phases(phases))
+        self._log.info(Phases(phases))
 
         return Phases(phases)
 
@@ -571,7 +581,7 @@ class CryspyCalculator:
             experiments.append(experiment)
 
         # logging.info(experiments)
-        self.__log.info(Experiments(experiments))
+        self._log.info(Experiments(experiments))
 
         return Experiments(experiments)
 
@@ -585,11 +595,11 @@ class CryspyCalculator:
             calculator_experiment_index = self._cryspy_obj.experiments.index(calculator_experiment)
 
             # Calculated data
-            self.__log.info("+++++++++> start")
+            self._log.info("+++++++++> start")
             calculated_pattern, calculated_bragg_peaks, _ = calculator_experiment.calc_profile(
                 np.array(calculator_experiment.meas.ttheta),
                 self._cryspy_obj.crystals)
-            self.__log.info("<+++++++++ end")
+            self._log.info("<+++++++++ end")
 
             # Bragg peaks
             offset = self._cryspy_obj.experiments[calculator_experiment_index].setup.offset_ttheta
@@ -644,7 +654,7 @@ class CryspyCalculator:
                                             bragg_peaks, calculated_pattern, limits))
         calculations = Calculations(calculations)
 
-        self.__log.info(calculations)
+        self._log.info(calculations)
 
         return calculations
 
@@ -670,7 +680,7 @@ class CryspyCalculator:
     def setPhases(self, phases: Phases):
         """Set phases (sample model tab in GUI)"""
 
-        self.__log.info('-> start')
+        self._log.info('-> start')
 
         for phase_name in phases.keys():
             cryspy_phase_names = [crystal.data_name for crystal in self._cryspy_obj.crystals]
@@ -741,11 +751,11 @@ class CryspyCalculator:
                                                               project_atom_site['chi_23'])
             else:
                 self.addPhase(phases[phase_name])
-        self.__log.info('<- end')
+        self._log.info('<- end')
 
     def setExperiments(self, experiments: Experiments):
         """Set experiments (Experimental data tab in GUI)"""
-        self.__log.info('-> start')
+        self._log.info('-> start')
 
         for experiment_name in experiments.keys():
             cryspy_experiment_names = [experiment.data_name for experiment in self._cryspy_obj.experiments]
@@ -782,7 +792,7 @@ class CryspyCalculator:
                 self._setCalculatorObjFromProjectDict(calculator_resolution.y, project_resolution['y'])
             else:
                 raise NotImplementedError
-        self.__log.info('<- end')
+        self._log.info('<- end')
 
     def setObjFromProjectDicts(self, phases: Phases, experiments: Experiments):
         """Set all the cryspy parameters from project dictionary"""
