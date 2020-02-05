@@ -30,14 +30,14 @@ def cal():
     calc = CryspyCalculator(file_path)
     return calc
 
-@pytest.skip
+@pytest.mark.skip
 def test_setExpsDefinition(cal):
     file = "Tests/Data/experiments.cif"
     cal.setExpsDefinition(file)
     assert len(cal._cryspy_obj.experiments) == 1
     assert cal._experiments_path == file
 
-@pytest.skip
+@pytest.mark.skip
 def test_addExpsDefinition(cal):
     file = "Tests/Data/experiments2.cif"
     cal.addExpsDefinition(file)
