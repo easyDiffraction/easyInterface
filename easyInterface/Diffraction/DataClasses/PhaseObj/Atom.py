@@ -63,7 +63,7 @@ class Atom(PathDict):
     Storage for details about an atom
     """
     def __init__(self, atom_site_label: str, type_symbol: Base, scat_length_neutron: Base,
-                 fract_x: Base, fract_y: Base, fract_z: Base, occupancy, adp_type, U_iso_or_equiv: Base,
+                 fract_x: Base, fract_y: Base, fract_z: Base, occupancy: Base, adp_type: Base, U_iso_or_equiv: Base,
                  ADp: 'ADP', MSp: 'MSP'):
         """
         Constructor for an atom
@@ -82,7 +82,7 @@ class Atom(PathDict):
         super().__init__(atom_site_label=atom_site_label, type_symbol=type_symbol,
                          scat_length_neutron=scat_length_neutron, fract_x=fract_x, fract_y=fract_y, fract_z=fract_z,
                          occupancy=occupancy, adp_type=adp_type, U_iso_or_equiv=U_iso_or_equiv, ADP=ADp, MSP=MSp)
-        self._log = logging.getLogger(__name__)
+        self._log = logging.getLogger(__class__.__module__)
 
 
         self.setItemByPath(['type_symbol', 'header'], ATOM_DETAILS['type_symbol']['header'])
@@ -159,10 +159,11 @@ class Atom(PathDict):
         :return: Atom with name type and position filled in
         """
         obj = cls.default(atom_site_label)
-        obj.setItem('type_symbol', Base(type_symbol, ATOM_DETAILS['type_symbol']['default'][1]))
-        obj.setItem('fract_x', Base(x, ATOM_DETAILS['fract']['default'][1]))
-        obj.setItem('fract_y', Base(y, ATOM_DETAILS['fract']['default'][1]))
-        obj.setItem('fract_z', Base(z, ATOM_DETAILS['fract']['default'][1]))
+        obj.setItemByPath(['type_symbol', 'store', 'value'], type_symbol)
+        obj.setItemByPath(['fract_x', 'store', 'value'], x)
+        obj.setItemByPath(['fract_y', 'store', 'value'], y)
+        obj.setItemByPath(['fract_z', 'store', 'value'], z)
+
         return obj
 
     @classmethod
@@ -228,7 +229,7 @@ class Atoms(PathDict):
             atoms = theseAtoms
 
         super().__init__(**atoms)
-        self._log = logging.getLogger(__name__)
+        self._log = logging.getLogger(__class__.__module__)
         self._log.debug('Atoms created: %s', self)
 
 
@@ -245,7 +246,7 @@ class ADP(PathDict):
                  u_12: Base, u_13: Base, u_23: Base):
         super().__init__(u_11=u_11, u_22=u_22, u_33=u_33,
                          u_12=u_12, u_13=u_13, u_23=u_23)
-        self._log = logging.getLogger(__name__)
+        self._log = logging.getLogger(__class__.__module__)
         self._log.debug('ADP created: %s', self)
 
         self.setItemByPath(['u_11', 'header'], 'U11')
@@ -314,7 +315,7 @@ class MSP(PathDict):
                  chi_12: Base, chi_13: Base, chi_23: Base):
         super().__init__(type=MSPtype, chi_11=chi_11, chi_22=chi_22, chi_33=chi_33,
                          chi_12=chi_12, chi_13=chi_13, chi_23=chi_23)
-        self._log = logging.getLogger(__name__)
+        self._log = logging.getLogger(__class__.__module__)
         self._log.debug('MSP created: %s', self)
 
         self.setItemByPath(['type', 'header'], 'Type')

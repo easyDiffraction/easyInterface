@@ -12,7 +12,7 @@ from easyInterface.Diffraction.DataClasses.DataObj.Experiment import *
 from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import *
 from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import Base
 
-from easyInterface.Utils.Logging import time_it
+from easyInterface.Utils.Helpers import time_it
 
 # Imports needed to create a cryspyObj
 from cryspy.scripts.cl_rhochi import RhoChi
@@ -37,10 +37,9 @@ CALCULATOR_INFO = {
     'url': 'https://github.com/ikibalin/cryspy'
 }
 
-
 class CryspyCalculator:
     def __init__(self, main_rcif_path: str):
-        self._log = logging.getLogger(__name__)
+        self._log = logging.getLogger(__class__.__module__)
         self._experiment_name = []
         self._main_rcif_path = main_rcif_path
         self._main_rcif = None
@@ -818,6 +817,7 @@ class CryspyCalculator:
             'calculations': calculations
         }
 
+    @time_it
     def refine(self):
         """refinement ..."""
         refinement_res = self._cryspy_obj.refine()

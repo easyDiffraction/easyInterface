@@ -3,6 +3,8 @@ import operator
 import webbrowser
 import logging
 from functools import reduce
+from time import time
+from functools import wraps
 
 from easyInterface import logger
 
@@ -82,3 +84,24 @@ def counted(f):
 
     wrapped.calls = 0
     return wrapped
+
+
+def time_it(func):
+    """
+    Times a function and reports the time either to the class' log or the base logger
+    :param func: function to be timed
+    :return: callable function with timer
+    """
+    name = func.__module__ + '.' + func.__name__
+    time_logger = logger.getLogger('timer.' + name)
+
+    @wraps(func)
+    def _time_it(*args, **kwargs):
+        start = int(round(time() * 1000))
+        try:
+            return func(*args, **kwargs)
+        finally:
+            end_ = int(round(time() * 1000)) - start
+            time_logger.debug(f"\033[1;34;49mExecution time: {end_ if end_ > 0 else 0} ms\033[0m")
+
+    return _time_it

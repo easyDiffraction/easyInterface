@@ -2,8 +2,8 @@ import os
 
 from easyInterface import logger, logging
 logger.setLevel(logging.DEBUG)
-logger.addSysOutput()
-logger.addNameFilter('easyInterface.Diffraction.Calculators')
+# logger.addSysOutput()
+# logger.addNameFilter('timer')
 
 from easyInterface.Diffraction.Calculators import CryspyCalculator
 from easyInterface.Diffraction.Interface import CalculatorInterface

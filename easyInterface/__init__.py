@@ -4,7 +4,7 @@ import logging
 LEVEL = logging.INFO
 
 # Logging format
-FORMAT = "\033[1;32;49m%(asctime)s  |  %(name)s — %(levelname)s | %(lineno)-4d |  %(funcName)-5s  |  %(" \
+FORMAT = "\033[1;{};49m%(asctime)s  |  %(name)s — %(levelname)s | %(lineno)-4d |  %(funcName)-5s  |  %(" \
          "message)s\033[0m "
 
 # Add a logging level

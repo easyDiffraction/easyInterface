@@ -1,10 +1,8 @@
 # coding: utf-8
 # Copyright (c) Pymatgen Development Team.
 # Distributed under the terms of the MIT License.
-
-
+from collections import defaultdict, Sequence, Mapping
 import numpy as np
-from collections.abc import Mapping
 from numbers import Number
 import numbers
 from functools import partial
@@ -216,7 +214,7 @@ class Unit(Mapping):
         """
 
         if isinstance(unit_def, str):
-            unit = collections.defaultdict(int)
+            unit = defaultdict(int)
             import re
             for m in re.finditer(r"([A-Za-z]+)\s*\^*\s*([\-0-9]*)", unit_def):
                 p = m.group(2)
@@ -228,7 +226,7 @@ class Unit(Mapping):
         self._unit = check_mappings(unit)
 
     def __mul__(self, other):
-        new_units = collections.defaultdict(int)
+        new_units = defaultdict(int)
         for k, v in self.items():
             new_units[k] += v
         for k, v in other.items():
@@ -239,7 +237,7 @@ class Unit(Mapping):
         return self.__mul__(other)
 
     def __div__(self, other):
-        new_units = collections.defaultdict(int)
+        new_units = defaultdict(int)
         for k, v in self.items():
             new_units[k] += v
         for k, v in other.items():
@@ -280,7 +278,7 @@ class Unit(Mapping):
             (base_units_dict, scaling factor). base_units_dict will not
             contain any constants, which are gathered in the scaling factor.
         """
-        b = collections.defaultdict(int)
+        b = defaultdict(int)
         factor = 1
         for k, v in self.items():
             derived = False
@@ -860,13 +858,13 @@ def unitized(unit):
             if isinstance(val, FloatWithUnit) or isinstance(val, ArrayWithUnit):
                 return val.to(unit)
 
-            elif isinstance(val, collections.abc.Sequence):
+            elif isinstance(val, Sequence):
                 # TODO: why don't we return a ArrayWithUnit?
                 # This complicated way is to ensure the sequence type is
                 # preserved (list or tuple).
                 return val.__class__([FloatWithUnit(i, unit_type=unit_type,
                                                     unit=unit) for i in val])
-            elif isinstance(val, collections.Mapping):
+            elif isinstance(val, Mapping):
                 for k, v in val.items():
                     val[k] = FloatWithUnit(v, unit_type=unit_type, unit=unit)
             elif isinstance(val, numbers.Number):

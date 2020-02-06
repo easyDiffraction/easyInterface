@@ -37,7 +37,7 @@ class Cell(PathDict):
 
         super().__init__(length_a=length_a, length_b=length_b, length_c=length_c,
                          angle_alpha=angle_alpha, angle_beta=angle_beta, angle_gamma=angle_gamma)
-        self._log = logging.getLogger(__name__)
+        self._log = logging.getLogger(__class__.__module__)
         self._log.debug('Cell created: %s', self)
 
         self.setItemByPath(['length_a', 'header'], 'a (Å)')

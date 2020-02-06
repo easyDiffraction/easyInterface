@@ -6,13 +6,13 @@ from datetime import datetime
 from copy import deepcopy
 from typing import List, Callable, Any
 
-from easyInterface import logger as logging
 from easyInterface.Diffraction.DataClasses.DataObj.Calculation import *
 from easyInterface.Diffraction.DataClasses.DataObj.Experiment import Experiments, Experiment
 from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import Phases, Phase
 from easyInterface.Utils.DictTools import UndoableDict
 from easyInterface.Diffraction.DataClasses.Utils.InfoObjs import Interface, App, Calculator, Info
-
+from easyInterface.Utils.Helpers import time_it
+from easyInterface import logger as logging
 
 class ProjectDict(UndoableDict):
     """
@@ -30,7 +30,7 @@ class ProjectDict(UndoableDict):
         """
         super().__init__(interface=interface, calculator=calculator, app=app, info=info, phases=phases,
                          experiments=experiments, calculations=calculations)
-        self._log = logging.getLogger(__name__)
+        self._log = logging.getLogger(__class__.__module__)
 
     @classmethod
     def default(cls) -> 'ProjectDict':
@@ -76,7 +76,7 @@ class CalculatorInterface:
     Interface to calculators in the easyInterface/Diffraction/Calculator folder
     """
     def __init__(self, calculator):
-        self._log = logging.getLogger(__name__)
+        self._log = logging.getLogger(__class__.__module__)
         self.project_dict = ProjectDict.default()
         self.calculator = calculator
         # Set the calculator info
@@ -204,7 +204,7 @@ class CalculatorInterface:
     ###
     # Syncing between Calculator/Dict
     ###
-
+    @time_it
     def updatePhases(self):
         phases = self.calculator.getPhases()
 
@@ -233,7 +233,7 @@ class CalculatorInterface:
         else:
             raise KeyError
 
-
+    @time_it
     def updateExperiments(self):
         experiments = self.calculator.getExperiments()
 
@@ -262,6 +262,7 @@ class CalculatorInterface:
         else:
             raise KeyError
 
+    @time_it
     def updateCalculations(self):
         if self.__lastupdated > self.__lastcalculated:
             calculations = self.calculator.getCalculations()
@@ -304,6 +305,7 @@ class CalculatorInterface:
         self._mappedBulkUpdate(self._mappedValueUpdater, k, v)
         self.__lastupdated = datetime.now()
 
+    @time_it
     def setPhaseRefine(self, phase: str, key: list, value: bool = True):
         if phase not in self.project_dict['phases'].keys():
             raise KeyError
@@ -413,7 +415,6 @@ class CalculatorInterface:
                 "njev": scipy_refinement_res.njev,
                 "final_chi_sq": float(self.final_chi_square)
             }
-            self.updateCalculations()
             return data
 
         except:

@@ -144,7 +144,7 @@ class Background(PathDict):
         Default constructor for a background point
         :return: Default background data object
         """
-        ttheta = 0
+        ttheta = 0.0
         intensity = Base(*INTENSITY_DETAILS['intensity']['default'])
         return cls(ttheta, intensity)
 

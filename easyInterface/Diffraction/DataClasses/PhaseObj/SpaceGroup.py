@@ -34,8 +34,7 @@ class SpaceGroup(PathDict):
     def __init__(self, crystal_system: Base, space_group_name_HM_alt: Base, space_group_IT_number: Base, origin_choice: Base):
         super().__init__(crystal_system=crystal_system, space_group_name_HM_alt=space_group_name_HM_alt,
                          space_group_IT_number=space_group_IT_number, origin_choice=origin_choice)
-        self._log = logging.getLogger(__name__)
-        self._log.debug('Spacegroup created: %s', self)
+        self._log = logging.getLogger(__class__.__module__)
 
         self.setItemByPath(['crystal_system', 'header'], SG_DETAILS['crystal_system']['header'])
         self.setItemByPath(['crystal_system', 'tooltip'], SG_DETAILS['crystal_system']['tooltip'])
@@ -52,6 +51,7 @@ class SpaceGroup(PathDict):
         self.setItemByPath(['origin_choice', 'header'], SG_DETAILS['origin_choice']['header'])
         self.setItemByPath(['origin_choice', 'tooltip'], SG_DETAILS['origin_choice']['tooltip'])
         self.setItemByPath(['origin_choice', 'url'], SG_DETAILS['origin_choice']['url'])
+        self._log.debug('Spacegroup created: %s', self)
 
     def __repr__(self) -> str:
         return 'SpaceGroup: {} {} '.format(self['space_group_name_HM_alt'], self['origin_choice'])

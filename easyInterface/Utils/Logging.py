@@ -1,7 +1,5 @@
 import sys
 from typing import Union
-from time import time
-from functools import wraps
 
 from easyInterface import LEVEL, FORMAT, logging
 
@@ -30,29 +28,6 @@ class Whitelist(logging.Filter):
         return any(f.filter(record) for f in self.whitelist)
 
 
-def time_it(func):
-    """
-    Times a function and reports the time either to the class' log or the base logger
-    :param func: function to be timed
-    :return: callable function with timer
-    """
-    name = func.__name__
-
-    @wraps(func)
-    def _time_it(*args, **kwargs):
-        start = int(round(time() * 1000))
-        try:
-            return func(*args, **kwargs)
-        finally:
-            end_ = int(round(time() * 1000)) - start
-            if hasattr(args[0], '_log'):
-                args[0]._log.debug(f"Function '{name}' execution time: {end_ if end_ > 0 else 0} ms")
-            else:
-                logging.debug(f"Function '{name}' execution time: {end_ if end_ > 0 else 0} ms")
-
-    return _time_it
-
-
 class Logger:
     """
     Enhancement of the default logger
@@ -66,17 +41,21 @@ class Logger:
         self.FORMAT = log_format
         self.LEVEL = level
         self.logging_level = level
-        self.output_format = log_format
+        self.output_format = self._makeColorText()
         self._handlers = dict(sys=[], file=[])
         self._loggers = []
         self._filters = []
 
         # Gets or creates a logger
         self.logger = logging.getLogger(__name__)
+
         self._loggers.append(self.logger)
 
         # set log level
         self.setLevel(self.logging_level)
+
+    def _makeColorText(self, color: str = '32'):
+        return self.FORMAT.format(color)
 
     def setLevel(self, level):
         """
@@ -172,9 +151,10 @@ class Logger:
         if log_type in self._handlers.keys():
             return self._handlers[log_type]
 
-    def getLogger(self, logger_name, defaults: bool = True) -> logging:
+    def getLogger(self, logger_name, color: str = '32', defaults: bool = True) -> logging:
         """
         Create a logger
+        :param color:
         :param logger_name: logger name. Usually __name__ on creation
         :param defaults: Do you want to associate any current file loggers with this logger
         :return: A logger
@@ -184,6 +164,7 @@ class Logger:
         for handler_type in self._handlers:
             for handler in self._handlers[handler_type]:
                 if handler_type == 'sys' or defaults:
+                    handler.formatter._fmt = self._makeColorText(color)
                     logger.addHandler(handler)
         logger.propagate = False
         self._loggers.append(logger)
