@@ -393,7 +393,12 @@ class CalculatorInterface:
 
     def asDict(self) -> dict:
         """Return data dict."""
-        return self.project_dict.asDict()
+        project_dict = {}
+        try:
+            project_dict = self.project_dict.asDict()
+        except TypeError:
+            self._log.error('Error on copying `project_dict`. It is a python problem')
+        return project_dict
 
     def name(self) -> str:
         return self.project_dict["info"]["name"]

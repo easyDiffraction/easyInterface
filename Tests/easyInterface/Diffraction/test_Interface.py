@@ -1,7 +1,6 @@
 from copy import deepcopy
 
 import pytest
-import time
 
 # module for testing
 from Tests.easyInterface.Diffraction.DataClasses.Utils.Helpers import PathDictDerived
@@ -17,7 +16,6 @@ file_path = "Tests/Data/main.cif"
 
 @pytest.fixture
 def cal():
-    time.sleep(1)
     calc = CryspyCalculator(file_path)
     interface = CalculatorInterface(calc)
     return interface
