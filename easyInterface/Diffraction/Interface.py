@@ -208,7 +208,10 @@ class CalculatorInterface:
         phases = self.calculator.getPhases()
 
         if len(self.project_dict['phases']) == 0:
+            self.project_dict.startBulkUpdate('Bulk update of phases')
             self.project_dict.setItemByPath(['phases'], phases)
+            self.project_dict.setItemByPath(['info', 'phase_ids'], list(phases.keys()))
+            self.project_dict.endBulkUpdate()
         else:
             k, v = self.project_dict['phases'].dictComparison(phases)
             if not k:
@@ -239,7 +242,10 @@ class CalculatorInterface:
         experiments = self.calculator.getExperiments()
 
         if len(self.project_dict['experiments']) == 0:
+            self.project_dict.startBulkUpdate('Bulk update of experiments')
             self.project_dict.setItemByPath(['experiments'], experiments)
+            self.project_dict.setItemByPath(['info', 'experiment_ids'], list(experiments.keys()))
+            self.project_dict.endBulkUpdate()
         else:
             k, v = self.project_dict['experiments'].dictComparison(experiments)
 
@@ -256,6 +262,7 @@ class CalculatorInterface:
             else:
                 self.project_dict.bulkUpdate(k, v, 'Bulk update of experiments')
         self.__lastupdated = datetime.now()
+
 
     def getExperiment(self, experiment: Union[str, None]) -> Experiment:
         if experiment in self.project_dict['experiments']:

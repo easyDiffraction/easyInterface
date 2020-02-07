@@ -85,7 +85,7 @@ class Phases(PathDict):
             raise KeyError
         self[newPhaseName] = self.pop(oldPhaseName)
         self[newPhaseName]['phasename'] = newPhaseName
-        self._log.debug('Phasename changed {} -> {}', oldPhaseName, newPhaseName)
+        self._log.debug('Phasename changed {} -> {}'.format(oldPhaseName, newPhaseName))
 
     def __repr__(self):
         return '{} Phases'.format(len(self))
