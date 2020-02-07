@@ -238,20 +238,23 @@ class CalculatorInterface:
     def updateExperiments(self):
         experiments = self.calculator.getExperiments()
 
-        k, v = self.project_dict['experiments'].dictComparison(experiments)
-
-        if not k:
-            return
-        k = [['experiments', *key] for key in k]
-
-        k.append(['info', 'experiment_ids'])
-        v.append(list(experiments.keys()))
-
-        if self.project_dict.macro_running:
-            for key, value in zip(k, v):
-                self.project_dict.setItemByPath(key, value)
+        if len(self.project_dict['experiments']) == 0:
+            self.project_dict.setItemByPath(['experiments'], experiments)
         else:
-            self.project_dict.bulkUpdate(k, v, 'Bulk update of experiments')
+            k, v = self.project_dict['experiments'].dictComparison(experiments)
+
+            if not k:
+                return
+            k = [['experiments', *key] for key in k]
+
+            k.append(['info', 'experiment_ids'])
+            v.append(list(experiments.keys()))
+
+            if self.project_dict.macro_running:
+                for key, value in zip(k, v):
+                    self.project_dict.setItemByPath(key, value)
+            else:
+                self.project_dict.bulkUpdate(k, v, 'Bulk update of experiments')
         self.__lastupdated = datetime.now()
 
     def getExperiment(self, experiment: Union[str, None]) -> Experiment:
