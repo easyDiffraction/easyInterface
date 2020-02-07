@@ -20,8 +20,6 @@ matrix:
         - python3.6 -m venv $VENV_DIR                                           # create virtual environment
         - source $VENV_DIR/bin/activate                                         # activate virtual environment
         - which python                                                          # show current python path
-      services:
-        - docker                                                                # for snap store
 #      cache:
 #        directories:
 #          - $VENV_DIR

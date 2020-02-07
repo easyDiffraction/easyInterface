@@ -203,24 +203,27 @@ class CalculatorInterface:
     ###
     # Syncing between Calculator/Dict
     ###
+    @time_it
     def updatePhases(self):
         phases = self.calculator.getPhases()
 
-        k, v = self.project_dict['phases'].dictComparison(phases)
-
-        if not k:
-            return
-
-        k = [['phases', *key] for key in k]
-
-        k.append(['info', 'phase_ids'])
-        v.append(list(phases.keys()))
-
-        if self.project_dict.macro_running:
-            for key, value in zip(k, v):
-                self.project_dict.setItemByPath(key, value)
+        if len(self.project_dict['phases']) == 0:
+            self.project_dict.setItemByPath(['phases'], phases)
         else:
-            self.project_dict.bulkUpdate(k, v, 'Bulk update of phases')
+            k, v = self.project_dict['phases'].dictComparison(phases)
+            if not k:
+                return
+
+            k = [['phases', *key] for key in k]
+
+            k.append(['info', 'phase_ids'])
+            v.append(list(phases.keys()))
+
+            if self.project_dict.macro_running:
+                for key, value in zip(k, v):
+                    self.project_dict.setItemByPath(key, value)
+            else:
+                self.project_dict.bulkUpdate(k, v, 'Bulk update of phases')
         self.__lastupdated = datetime.now()
 
     def getPhase(self, phase: Union[str, None]) -> Phase:
@@ -231,6 +234,7 @@ class CalculatorInterface:
         else:
             raise KeyError
 
+    @time_it
     def updateExperiments(self):
         experiments = self.calculator.getExperiments()
 
@@ -258,6 +262,7 @@ class CalculatorInterface:
         else:
             raise KeyError
 
+    @time_it
     def updateCalculations(self):
         if self.__lastupdated > self.__lastcalculated:
             calculations = self.calculator.getCalculations()
