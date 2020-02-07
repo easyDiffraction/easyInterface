@@ -1,7 +1,8 @@
 # coding: utf-8
 # Copyright (c) Pymatgen Development Team.
 # Distributed under the terms of the MIT License.
-from collections import defaultdict, Sequence, Mapping
+from collections import defaultdict
+from collections.abc import Sequence, Mapping
 import numpy as np
 from numbers import Number
 import numbers

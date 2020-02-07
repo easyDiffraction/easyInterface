@@ -1,11 +1,17 @@
+from copy import deepcopy
+
 import pytest
 
 # module for testing
+from Tests.easyInterface.Diffraction.DataClasses.Utils.Helpers import PathDictDerived
 from easyInterface.Diffraction.Calculators import CryspyCalculator
-from easyInterface.Diffraction.Interface import CalculatorInterface
+from easyInterface.Diffraction.Interface import CalculatorInterface, ProjectDict
+from easyInterface.Diffraction.DataClasses.Utils.InfoObjs import Interface, App, Calculator, Info
+from easyInterface.Diffraction.DataClasses.DataObj.Calculation import Calculation, Calculations
+from easyInterface.Diffraction.DataClasses.DataObj.Experiment import Experiments, Experiment
+from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import Phases, Phase
 
 file_path = "Tests/Data/main.cif"
-fitdata_data = [0, 2, 3, 5]
 
 
 @pytest.fixture
@@ -238,9 +244,74 @@ def test_asCifDict(cal):
     assert '_refln_index_h' in d['calculations']
 
 
-def test_default():
-    assert False
+def genericTestProjectDict(constructor, *args):
+    expected = ['interface', 'calculator', 'app', 'info', 'phases', 'experiments', 'calculations']
+    expected_type = [Interface, Calculator, App, Info, Phases, Experiments, Calculations]
+    PathDictDerived(constructor, expected, expected_type, *args)
+    return constructor(*args)
 
 
-def test_from_pars():
-    assert False
+def test_ProjectDict_default():
+    pd = genericTestProjectDict(ProjectDict.default)
+    assert len(pd['experiments']) == 0
+    assert len(pd['phases']) == 0
+    assert len(pd['calculations']) == 0
+
+
+def test_ProjectDict_from_pars():
+    exp = Experiment.default('boo')
+    phase = Phase.default('woo')
+    calc = Calculation.default('foo')
+    
+    pd = genericTestProjectDict(ProjectDict.fromPars, exp, phase, calc)
+    assert len(pd['experiments']) == 1
+    assert len(pd['phases']) == 1
+    assert len(pd['calculations']) == 1
+    assert pd['experiments']['boo'] == exp
+    assert pd['phases']['woo'] == phase
+    assert pd['calculations']['foo'] == calc
+
+
+def refineHelper(cal):
+    assert cal.project_dict['phases']['Fe3O4']['cell']['length_a'].refine
+    assert pytest.approx(cal.project_dict['phases']['Fe3O4']['cell']['length_a'].value, 8.36212)
+    r = cal.refine()
+    rr = {'num_refined_parameters': 1,
+          'refinement_message': 'Optimization terminated successfully.',
+          'nfev': 27,
+          'nit': 5,
+          'njev': 9,
+          'final_chi_sq': 3.3723747910939683
+          }
+    assert r == rr
+    assert pytest.approx(cal.project_dict['phases']['Fe3O4']['cell']['length_a'].value, 8.561673117085581)
+
+
+def test_refine(cal):
+    refineHelper(cal)
+
+
+def test_Undo(cal):
+    refineHelper(cal)
+    assert cal.canUndo()
+    assert cal.project_dict.undoText() == 'Refinement'
+    cal.undo()
+    assert pytest.approx(cal.project_dict['phases']['Fe3O4']['cell']['length_a'].value, 8.36212)
+
+
+def test_Redo(cal):
+    refineHelper(cal)
+    assert cal.canUndo()
+    assert cal.project_dict.undoText() == 'Refinement'
+    cal.undo()
+    assert pytest.approx(cal.project_dict['phases']['Fe3O4']['cell']['length_a'].value, 8.36212)
+    assert cal.project_dict.redoText() == 'Refinement'
+    assert cal.canRedo()
+    cal.redo()
+    assert pytest.approx(cal.project_dict['phases']['Fe3O4']['cell']['length_a'].value, 8.561673117085581)
+
+
+def test_clearUndoStack(cal):
+    assert cal.canUndo()
+    cal.clearUndoStack()
+    assert not cal.canUndo()

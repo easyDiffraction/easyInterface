@@ -1,7 +1,6 @@
 import os
 import operator
 import webbrowser
-import logging
 from functools import reduce
 from time import time
 from functools import wraps
@@ -45,7 +44,7 @@ def open_url(url=""):
     try:
         webbrowser.open('file://' + os.path.realpath(url))
     except Exception as ex:
-        logging.info("Report viewing failed: " + str(ex))
+        logger.logger.info("Report viewing failed: " + str(ex))
 
 
 def get_num_refine_pars(project_dict):
@@ -77,10 +76,18 @@ def getReleaseInfo(file_path):
         return file_content
 
 
-def counted(f):
+# Useful decorators
+
+
+def counted(func):
+    """
+    Counts how many times a function has been called and adds a `func.calls` to it's properties
+    :param func: Function to be counted
+    :return: Results from function call
+    """
     def wrapped(*args, **kwargs):
         wrapped.calls += 1
-        return f(*args, **kwargs)
+        return func(*args, **kwargs)
 
     wrapped.calls = 0
     return wrapped

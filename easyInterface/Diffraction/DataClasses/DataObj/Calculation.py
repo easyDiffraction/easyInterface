@@ -7,10 +7,17 @@ from easyInterface import logger as logging
 
 
 class Limits(PathDict):
+    """
+    Generator for limits of a dataset
+    """
+
     def __init__(self, y_obs_lower=-np.Inf, y_obs_upper=np.Inf,
                  y_diff_upper=np.Inf, y_diff_lower=-np.Inf,
-                 x_calc: list=0, y_calc:list=0):
-
+                 x_calc=None, y_calc=None):
+        if y_calc is None:
+            y_calc = [0.0]
+        if x_calc is None:
+            x_calc = [0.0]
         main = PathDict(x_min=np.amin(x_calc).item(), x_max=np.amax(x_calc).item(),
                         y_min=(np.amin([np.amin(y_calc), np.amin(y_obs_lower)]).item()),
                         y_max=(np.amax([np.amax(y_calc), np.amax(y_obs_upper)]).item()))
@@ -19,14 +26,20 @@ class Limits(PathDict):
                               y_max=np.amax(y_diff_upper).item())
 
         super().__init__(main=main, difference=difference)
-        self._log = logging.getLogger(__name__)
+        self._log = logging.getLogger(__class__.__module__)
+        self._log.debug('Created limits %s', self['main'])
 
 
 class CrystalBraggPeaks(PathDict):
-    def __init__(self, name:str, h: list, k: list, l: list, ttheta: list):
-        super().__init__(name=name, h=h, k=k, l=l, ttheta=ttheta)
-        self._log = logging.getLogger(__name__)
+    """
+    Generator for HKL reflections and corresponding two theta.
+    """
 
+    def __init__(self, name: str, h: list, k: list, l: list, ttheta: list):
+        super().__init__(name=name, h=h, k=k, l=l, ttheta=ttheta)
+        self._log = logging.getLogger(__class__.__module__)
+        self._log.debug('Created a bragg peak %s set with %i peaks', name, len(h))
+        
     def __repr__(self) -> str:
         return "{} Bragg peaks in phase {}".format(len(self['h']), self['name'])
 
@@ -35,6 +48,7 @@ class BraggPeaks(PathDict):
     """
     Container for multiple calculations
     """
+
     def __init__(self, bragg_peaks: Union[CrystalBraggPeaks, dict, list]):
         """
         Constructor for holding multiple bragg peaks
@@ -50,35 +64,40 @@ class BraggPeaks(PathDict):
                 theseCalculations[bragg_peak['name']] = bragg_peak
             bragg_peaks = theseCalculations
         super().__init__(**bragg_peaks)
-        self._log = logging.getLogger(__name__)
+        self._log = logging.getLogger(__class__.__module__)
 
     def __repr__(self) -> str:
         return '{} Calculations'.format(len(self))
 
 
 class CalculatedPattern(PathDict):
-    def __init__(self, x: list, y_calc: list, y_diff_lower: list , y_diff_upper: list):
+    """
+    Storage container for a calculated pattern
+    """
+    def __init__(self, x: list, y_calc: list, y_diff_lower: list, y_diff_upper: list):
         super().__init__(x=x, y_calc=y_calc, y_diff_lower=y_diff_lower, y_diff_upper=y_diff_upper)
-        self._log = logging.getLogger(__name__)
+        self._log = logging.getLogger(__class__.__module__)
 
 
 class Calculation(PathDict):
+    """
+    Storage container for calculations
+    """
     def __init__(self, name: str, bragg_peaks: BraggPeaks, calculated_pattern: CalculatedPattern, limits: Limits):
         super().__init__(name=name, bragg_peaks=bragg_peaks, calculated_pattern=calculated_pattern, limits=limits)
-        self._log = logging.getLogger(__name__)
+        self._log = logging.getLogger(__class__.__module__)
 
     @classmethod
     def default(cls, name: str):
-        bragg_peaks = CrystalBraggPeaks()
-        calculated_pattern = CalculatedPattern(0, 0, 0, 0)
+        bragg_peaks = BraggPeaks({})
+        calculated_pattern = CalculatedPattern([0], [0], [0], [0])
         limits = Limits()
         return cls(name, bragg_peaks, calculated_pattern, limits)
 
     @classmethod
     def fromPars(cls, name: str, bragg_crystals: CrystalBraggPeaks,
                  y_obs_lower: list, y_obs_upper: list,
-                 tth: list, y_calc: list, y_diff_lower: list , y_diff_upper: list):
-
+                 tth: list, y_calc: list, y_diff_lower: list, y_diff_upper: list):
         bragg_peaks = BraggPeaks(bragg_crystals)
         calculated_pattern = CalculatedPattern(tth, y_calc, y_diff_lower, y_diff_upper)
         limits = Limits(y_obs_lower, y_obs_upper, y_diff_upper, y_diff_lower, x_calc=tth, y_calc=y_calc)
@@ -107,7 +126,7 @@ class Calculations(PathDict):
                 theseCalculations[calculation['name']] = calculation
             calculations = theseCalculations
         super().__init__(**calculations)
-        self._log = logging.getLogger(__name__)
+        self._log = logging.getLogger(__class__.__module__)
 
     def __repr__(self) -> str:
         return '{} Calculations'.format(len(self))

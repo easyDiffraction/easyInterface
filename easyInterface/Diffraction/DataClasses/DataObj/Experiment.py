@@ -8,14 +8,14 @@ from easyInterface import logger as logging
 
 EXPERIMENT_DETAILS = {
     'wavelength': {
-        'header': 'χ²',
-        'tooltip': 'Goodness of fit as estimated by the Pearson''s chi-squared test.',
-        'url': 'https://en.wikipedia.org/wiki/Chi-squared_test',
+        'header': 'Lambda',
+        'tooltip': 'Neutron wavelength in angstroms',
+        'url': '',
         'default': (0, 'ang')
     },
     'offset': {
-        'header': '',
-        'tooltip': 'Number of free parameters.',
+        'header': 'Offest',
+        'tooltip': 'Degree offset in two theta',
         'url': '',
         'default': (0, 'deg')
     }
@@ -63,7 +63,7 @@ class Resolution(PathDict):
         :param y:  resolution parameter y
         """
         super().__init__(u=u, v=v, w=w, x=x, y=y)
-        self._log = logging.getLogger(__name__)
+        self._log = logging.getLogger(__class__.__module__)
 
         self.setItemByPath(['u', 'header'], RESOLUTION_DETAILS['UVWXY']['header'])
         self.setItemByPath(['u', 'tooltip'], RESOLUTION_DETAILS['UVWXY']['tooltip'])
@@ -133,7 +133,7 @@ class Background(PathDict):
         :return: Background data object
         """
         super().__init__(ttheta=ttheta, intensity=intensity)
-        self._log = logging.getLogger(__name__)
+        self._log = logging.getLogger(__class__.__module__)
         self.setItemByPath(['intensity', 'header'], INTENSITY_DETAILS['intensity']['header'])
         self.setItemByPath(['intensity', 'tooltip'], INTENSITY_DETAILS['intensity']['tooltip'])
         self.setItemByPath(['intensity', 'url'], INTENSITY_DETAILS['intensity']['url'])
@@ -182,7 +182,7 @@ class Backgrounds(PathDict):
                 theseBackgrounds[str(background['ttheta'])] = background
             backgrounds = theseBackgrounds
         super().__init__(**backgrounds)
-        self._log = logging.getLogger(__name__)
+        self._log = logging.getLogger(__class__.__module__)
 
     def __repr__(self):
         return '{} Backgrounds'.format(len(self))
@@ -192,8 +192,9 @@ class MeasuredPattern(PathDict):
     """
     Storage container for measured patterns
     """
-    def __init__(self, x: list, y_obs: list, sy_obs: list, y_obs_up: Union[list, None], sy_obs_up: Union[list, None],
-                 y_obs_down: Union[list, None], sy_obs_down: Union[list, None]):
+    def __init__(self, x: list, y_obs: list, sy_obs: list, y_obs_up: Union[list, None] = None, 
+                 sy_obs_up: Union[list, None] = None, y_obs_down: Union[list, None] = None, 
+                 sy_obs_down: Union[list, None] = None):
         """
         Constructor for a measured pattern
         :param x: Generally a two theta value
@@ -208,7 +209,7 @@ class MeasuredPattern(PathDict):
         # if y_obs_up is not None and sy_obs_up is not None and y_obs_down is not None and sy_obs_down is not None:
         super().__init__(x=x, y_obs=y_obs, sy_obs=sy_obs, y_obs_up=y_obs_up, sy_obs_up=sy_obs_up,
                          y_obs_down=y_obs_down, sy_obs_down=sy_obs_down)
-        self._log = logging.getLogger(__name__)
+        self._log = logging.getLogger(__class__.__module__)
         # # 1d unpolarised powder diffraction data
         # else:
         #     super().__init__(x=x, y_obs=y_obs, sy_obs=sy_obs)
@@ -272,10 +273,10 @@ class ExperimentPhase(PathDict):
         :param scale: phase scale as data object
         """
         super().__init__(scale=scale)
+        self._log = logging.getLogger(__class__.__module__)
         self.setItemByPath(['scale', 'header'], SCALE_DETAILS['scale']['header'])
         self.setItemByPath(['scale', 'tooltip'], SCALE_DETAILS['scale']['tooltip'])
         self.setItemByPath(['scale', 'url'], SCALE_DETAILS['scale']['url'])
-        self._log = logging.getLogger(__name__)
 
     @classmethod
     def default(cls) -> 'ExperimentPhase':
@@ -314,7 +315,15 @@ class Experiment(PathDict):
         """
         super().__init__(name=name, wavelength=wavelength, offset=offset, phase=phase, background=background,
                          resolution=resolution, measured_pattern=measured_pattern)
-        self._log = logging.getLogger(__name__)
+        self._log = logging.getLogger(__class__.__module__)
+
+        self.setItemByPath(['wavelength', 'header'], EXPERIMENT_DETAILS['wavelength']['header'])
+        self.setItemByPath(['wavelength', 'tooltip'], EXPERIMENT_DETAILS['wavelength']['tooltip'])
+        self.setItemByPath(['wavelength', 'url'], EXPERIMENT_DETAILS['wavelength']['url'])
+
+        self.setItemByPath(['offset', 'header'], EXPERIMENT_DETAILS['offset']['header'])
+        self.setItemByPath(['offset', 'tooltip'], EXPERIMENT_DETAILS['offset']['tooltip'])
+        self.setItemByPath(['offset', 'url'], EXPERIMENT_DETAILS['offset']['url'])
 
     @classmethod
     def default(cls, name: str) -> 'Experiment':
@@ -370,7 +379,7 @@ class Experiments(PathDict):
                 theseExperiments[experiment['name']] = experiment
             experiments = theseExperiments
         super().__init__(**experiments)
-        self._log = logging.getLogger(__name__)
+        self._log = logging.getLogger(__class__.__module__)
 
     def __repr__(self) -> str:
         return '{} Experiments'.format(len(self))

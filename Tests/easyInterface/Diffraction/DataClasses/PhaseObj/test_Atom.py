@@ -7,7 +7,7 @@ def genericTestAtom(atom_constructor, *args):
     expected = ['atom_site_label', 'type_symbol', 'scat_length_neutron', 'fract_x',
                 'fract_y', 'fract_z', 'occupancy', 'adp_type', 'U_iso_or_equiv', 'ADP', 'MSP']
 
-    expected_type = [str, Base, Base, Base, Base, Base, Base, Base, Base, (ADP, None), (MSP, None)]
+    expected_type = [str, Base, Base, Base, Base, Base, Base, Base, Base, (ADP, type(None)), (MSP, type(None))]
     PathDictDerived(atom_constructor, expected, expected_type, *args)
 
     atom = atom_constructor(*args)

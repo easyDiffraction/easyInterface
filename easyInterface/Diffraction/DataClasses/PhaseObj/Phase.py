@@ -80,8 +80,12 @@ class Phases(PathDict):
         :param oldPhaseName: phase name to be changed
         :param newPhaseName: new phase name
         """
+        if oldPhaseName not in self.keys():
+            self._log.warning('Key {} not in phases', oldPhaseName)
+            raise KeyError
         self[newPhaseName] = self.pop(oldPhaseName)
         self[newPhaseName]['phasename'] = newPhaseName
+        self._log.debug('Phasename changed {} -> {}', oldPhaseName, newPhaseName)
 
     def __repr__(self):
         return '{} Phases'.format(len(self))

@@ -14,11 +14,14 @@ from easyInterface.Diffraction.DataClasses.Utils.InfoObjs import Interface, App,
 from easyInterface.Utils.Helpers import time_it
 from easyInterface import logger as logging
 
+
 class ProjectDict(UndoableDict):
     """
     This class deals with the creation and modification of the main project dictionary
     """
-    def __init__(self, interface: Interface, app: App, calculator: Calculator, info: Info, phases: Phases, experiments: Experiments,
+
+    def __init__(self, interface: Interface, app: App, calculator: Calculator, info: Info, phases: Phases,
+                 experiments: Experiments,
                  calculations: Calculations):
         """
         Create the main project dictionary from base classes
@@ -31,6 +34,7 @@ class ProjectDict(UndoableDict):
         super().__init__(interface=interface, calculator=calculator, app=app, info=info, phases=phases,
                          experiments=experiments, calculations=calculations)
         self._log = logging.getLogger(__class__.__module__)
+        self._log.debug('Created a project dictionary')
 
     @classmethod
     def default(cls) -> 'ProjectDict':
@@ -75,6 +79,7 @@ class CalculatorInterface:
     """
     Interface to calculators in the easyInterface/Diffraction/Calculator folder
     """
+
     def __init__(self, calculator):
         self._log = logging.getLogger(__class__.__module__)
         self.project_dict = ProjectDict.default()
@@ -99,7 +104,6 @@ class CalculatorInterface:
         return self.calculator.final_chi_square
 
     def setProjectFromCalculator(self):
-        # TODO initiate buld update here
         self.updatePhases()
         self.updateExperiments()
         self.updateCalculations()
@@ -147,12 +151,10 @@ class CalculatorInterface:
             self.calculator.addPhase(phase)
         self.__lastupdated = datetime.now()
 
-
     def removePhase(self, phase_name):
         self.calculator.removePhaseDefinition(phase_name)
         self.project_dict.rmItemByPath(['phases', phase_name])
         self.__lastupdated = datetime.now()
-
 
     # Experiment section
     def setExperimentDefinition(self, exp_path: str):
@@ -162,7 +164,6 @@ class CalculatorInterface:
         self.calculator.setExpsDefinition(exp_path)
         # This will re-create all local directories
         self.updateExperiments()
-
 
     def addExperimentDefinition(self, phases_path: str):
         """
@@ -179,12 +180,10 @@ class CalculatorInterface:
             self.calculator.setExperiments(self.project_dict['experiments'])
         self.__lastupdated = datetime.now()
 
-
     def removeExperiment(self, experiment_name):
         self.calculator.removeExpsDefinition(experiment_name)
         self.updateExperiments()
         self.__lastupdated = datetime.now()
-
 
     # Output section
     def writeMainCif(self, save_dir: str):
@@ -204,7 +203,6 @@ class CalculatorInterface:
     ###
     # Syncing between Calculator/Dict
     ###
-    @time_it
     def updatePhases(self):
         phases = self.calculator.getPhases()
 
@@ -233,7 +231,6 @@ class CalculatorInterface:
         else:
             raise KeyError
 
-    @time_it
     def updateExperiments(self):
         experiments = self.calculator.getExperiments()
 
@@ -253,7 +250,6 @@ class CalculatorInterface:
             self.project_dict.bulkUpdate(k, v, 'Bulk update of experiments')
         self.__lastupdated = datetime.now()
 
-
     def getExperiment(self, experiment: Union[str, None]) -> Experiment:
         if experiment in self.project_dict['experiments']:
             return deepcopy(self.project_dict['experiments'][experiment])
@@ -262,7 +258,6 @@ class CalculatorInterface:
         else:
             raise KeyError
 
-    @time_it
     def updateCalculations(self):
         if self.__lastupdated > self.__lastcalculated:
             calculations = self.calculator.getCalculations()
@@ -305,7 +300,6 @@ class CalculatorInterface:
         self._mappedBulkUpdate(self._mappedValueUpdater, k, v)
         self.__lastupdated = datetime.now()
 
-    @time_it
     def setPhaseRefine(self, phase: str, key: list, value: bool = True):
         if phase not in self.project_dict['phases'].keys():
             raise KeyError
@@ -362,7 +356,6 @@ class CalculatorInterface:
         self.setCalculatorFromProject()
         self.updateCalculations()  # IT IS SLOW
 
-
     ###
     # Project Information
     ###
@@ -407,7 +400,7 @@ class CalculatorInterface:
         self.project_dict.endBulkUpdate()
 
         try:
-            data= {
+            data = {
                 "num_refined_parameters": len(scipy_refinement_res.x),
                 "refinement_message": scipy_refinement_res.message,
                 "nfev": scipy_refinement_res.nfev,
@@ -426,7 +419,6 @@ class CalculatorInterface:
                 return {
                     "refinement_message": "Unknown problems during refinement"
                 }
-
 
     ###
     # Undo/Redo logic
@@ -451,7 +443,7 @@ class CalculatorInterface:
     # Hidden internal logic
     ###
 
-    def _mappedBulkUpdate(self, func: Callable, keys: list, values:list):
+    def _mappedBulkUpdate(self, func: Callable, keys: list, values: list):
         self.project_dict.bulkUpdate(keys, values, 'Updating Dictionary')
         for k, v in zip(keys, values):
             if k[-2:] == ['store', 'value']:
