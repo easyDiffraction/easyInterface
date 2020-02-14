@@ -6,3 +6,5 @@
 easyInterface.egg-info/
 
 .coverage
+
+src/
