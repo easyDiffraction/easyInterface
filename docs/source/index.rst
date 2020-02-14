@@ -10,14 +10,19 @@ Welcome to easyInterface's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+easyInterface Cryspy Calculator
+===============================
+.. automodule:: easyInterface.Diffraction.Calculators.CryspyCalculator
+   :members:
+
 easyInterface Interface
 =======================
 .. automodule:: easyInterface.Diffraction.Interface
    :members:
 
-easyInterface Cryspy Calculator
-===============================
-.. automodule:: easyInterface.Diffraction.Calculators.CryspyCalculator
+easyInterface QT Interface
+==========================
+.. automodule:: easyInterface.Diffraction.QtInterface
    :members:
 
 Indices and tables

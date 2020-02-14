@@ -8,3 +8,5 @@ easyInterface.egg-info/
 .coverage
 
 src/
+
+docs/build/
