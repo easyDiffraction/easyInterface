@@ -72,9 +72,9 @@ def test_resolution_from_pars():
 
 
 def genericTestBackground(bg_constructor, *args):
-    expected = ['ttheta', 'intensity']
+    expected = ['name', 'ttheta', 'intensity']
 
-    expected_type = [float, Base]
+    expected_type = [str, float, Base]
     PathDictDerived(bg_constructor, expected, expected_type, *args)
 
     bg = bg_constructor(*args)
@@ -181,11 +181,13 @@ def test_measured_pattern_y_obs_lower():
 
 
 def test_exp_phase_default():
-    expected = ['scale']
-    expected_type = [Base]
+    expected = ['name', 'scale']
+    expected_type = [str, Base]
+    name = 'boo'
 
-    PathDictDerived(ExperimentPhase.default, expected, expected_type)
-    ep = ExperimentPhase.default()
+    PathDictDerived(ExperimentPhase.default, expected, expected_type, name)
+    ep = ExperimentPhase.default(name)
+    assert ep['name'] == name
     assert ep.getItemByPath(['scale', 'header']) == SCALE_DETAILS['scale']['header']
     assert ep.getItemByPath(['scale', 'tooltip']) == SCALE_DETAILS['scale']['tooltip']
     assert ep.getItemByPath(['scale', 'url']) == SCALE_DETAILS['scale']['url']
@@ -194,13 +196,15 @@ def test_exp_phase_default():
 
 
 def test_exp_phase_from_pars():
-    expected = ['scale']
-    expected_type = [Base]
+    expected = ['name', 'scale']
+    expected_type = [str, Base]
 
     scale = 500.5
+    name = 'boo'
 
-    PathDictDerived(ExperimentPhase.fromPars, expected, expected_type, scale)
-    ep = ExperimentPhase.fromPars(scale)
+    PathDictDerived(ExperimentPhase.fromPars, expected, expected_type, name, scale)
+    ep = ExperimentPhase.fromPars(name, scale)
+    assert ep['name'] == name
     assert ep.getItemByPath(['scale', 'header']) == SCALE_DETAILS['scale']['header']
     assert ep.getItemByPath(['scale', 'tooltip']) == SCALE_DETAILS['scale']['tooltip']
     assert ep.getItemByPath(['scale', 'url']) == SCALE_DETAILS['scale']['url']
@@ -211,7 +215,7 @@ def test_exp_phase_from_pars():
 def genericTestExperiment(exp_constructor, *args):
     expected = ['name', 'wavelength', 'offset', 'phase', 'background', 'resolution', 'measured_pattern']
 
-    expected_type = [str, Base, Base, ExperimentPhase, Backgrounds, Resolution, MeasuredPattern]
+    expected_type = [str, Base, Base, ExperimentPhases, Backgrounds, Resolution, MeasuredPattern]
     PathDictDerived(exp_constructor, expected, expected_type, *args)
 
     exp = exp_constructor(*args)
@@ -257,7 +261,7 @@ def test_exp_from_pars():
     assert str(exp['offset']['store']['unit']) == EXPERIMENT_DETAILS['offset']['default'][1]
     assert exp['offset'].value == offset
 
-    assert exp['phase']['scale'].value == scale
+    assert exp['phase'][name]['scale'].value == scale
     assert len(exp['background']) == 0
     assert isinstance(exp['resolution'], Resolution)
     assert isinstance(measured_pattern, MeasuredPattern)

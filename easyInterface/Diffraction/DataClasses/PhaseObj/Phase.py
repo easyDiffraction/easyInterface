@@ -4,6 +4,7 @@ from .SpaceGroup import *
 from .Cell import *
 
 from easyInterface import logger as logging
+from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import ContainerObj 
 
 
 class Phase(PathDict):
@@ -52,7 +53,7 @@ class Phase(PathDict):
         return 'Phase with {} atoms'.format(len(self['atoms']))
 
 
-class Phases(PathDict):
+class Phases(ContainerObj):
     """
     Container for multiple phases
     """
@@ -61,16 +62,7 @@ class Phases(PathDict):
         Contructor for the phases dict
         :param phases: Collection of phases
         """
-        if isinstance(phases, Phase):
-            phases = {
-                phases['phasename']: phases,
-            }
-        if isinstance(phases, list):
-            thesePhases = dict()
-            for phase in phases:
-                thesePhases[phase['phasename']] = phase
-            phases = thesePhases
-        super().__init__(**phases)
+        super().__init__(phases, Phase, 'phasename')
         self._log = logging.getLogger(__class__.__module__)
         self._log.debug('Phases created: %s', self)
 

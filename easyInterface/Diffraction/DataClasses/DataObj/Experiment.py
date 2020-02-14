@@ -3,7 +3,7 @@ from typing import Union
 import numpy as np
 
 from easyInterface.Utils.DictTools import PathDict
-from ..Utils.BaseClasses import Base
+from ..Utils.BaseClasses import Base, ContainerObj
 from easyInterface import logger as logging
 
 EXPERIMENT_DETAILS = {
@@ -132,7 +132,7 @@ class Background(PathDict):
         :param intensity: Intensity data store
         :return: Background data object
         """
-        super().__init__(ttheta=ttheta, intensity=intensity)
+        super().__init__(name=str(ttheta), ttheta=ttheta, intensity=intensity)
         self._log = logging.getLogger(__class__.__module__)
         self.setItemByPath(['intensity', 'header'], INTENSITY_DETAILS['intensity']['header'])
         self.setItemByPath(['intensity', 'tooltip'], INTENSITY_DETAILS['intensity']['tooltip'])
@@ -163,7 +163,7 @@ class Background(PathDict):
         return ''.format(self['ttheta'], self['intensity'].value)
 
 
-class Backgrounds(PathDict):
+class Backgrounds(ContainerObj):
     """
     Store for a collection of background points
     """
@@ -172,16 +172,7 @@ class Backgrounds(PathDict):
         Constructor for Background data points
         :param backgrounds: Background parameters formed from Background dicts
         """
-        if isinstance(backgrounds, Background):
-            backgrounds = {
-                str(backgrounds['ttheta']): backgrounds,
-            }
-        if isinstance(backgrounds, list):
-            theseBackgrounds = dict()
-            for background in backgrounds:
-                theseBackgrounds[str(background['ttheta'])] = background
-            backgrounds = theseBackgrounds
-        super().__init__(**backgrounds)
+        super().__init__(backgrounds, Background)
         self._log = logging.getLogger(__class__.__module__)
 
     def __repr__(self):
@@ -267,41 +258,57 @@ class ExperimentPhase(PathDict):
     """
     Storage container for the ExperiemntalPhase details
     """
-    def __init__(self, scale: Base):
+    def __init__(self, name: str, scale: Base):
         """
         Constructor for the Experimental phase container
         :param scale: phase scale as data object
         """
-        super().__init__(scale=scale)
+        super().__init__(name=name, scale=scale)
         self._log = logging.getLogger(__class__.__module__)
         self.setItemByPath(['scale', 'header'], SCALE_DETAILS['scale']['header'])
         self.setItemByPath(['scale', 'tooltip'], SCALE_DETAILS['scale']['tooltip'])
         self.setItemByPath(['scale', 'url'], SCALE_DETAILS['scale']['url'])
 
     @classmethod
-    def default(cls) -> 'ExperimentPhase':
+    def default(cls, name: str) -> 'ExperimentPhase':
         """
         Default experimental phase data container
         :return: Default experimental phase data container
         """
         scale = Base(*SCALE_DETAILS['scale']['default'])
-        return cls(scale)
+        return cls(name, scale)
 
     @classmethod
-    def fromPars(cls, scale: float) -> 'ExperimentPhase':
+    def fromPars(cls, name: str, scale: float) -> 'ExperimentPhase':
         """
         Parameter initialised experimental phase data container
         :return: Set experimental phase data container
         """
         scale = Base(scale, SCALE_DETAILS['scale']['default'][1])
-        return cls(scale)
+        return cls(name, scale)
+
+
+class ExperimentPhases(ContainerObj):
+    """
+    Storage of multiple phase markers associated with experiemnts
+    """
+    def __init__(self, experiment_phases: Union[list, ExperimentPhase, dict]):
+        """
+        Constructor for holding multiple experiments
+        :param experiments: A collection of experimental dicts
+        """
+        super().__init__(experiment_phases, ExperimentPhase)
+        self._log = logging.getLogger(__class__.__module__)
+
+    def __repr__(self) -> str:
+        return '{} Experimental phases'.format(len(self))
 
 
 class Experiment(PathDict):
     """
     Experimental details data container
     """
-    def __init__(self, name: str, wavelength: Base, offset: Base, phase: ExperimentPhase, background: Backgrounds,
+    def __init__(self, name: str, wavelength: Base, offset: Base, phase: ExperimentPhases, background: Backgrounds,
                  resolution: Resolution, measured_pattern: MeasuredPattern):
         """
         Constructor for experimental data container
@@ -334,15 +341,15 @@ class Experiment(PathDict):
         """
         wavelength = Base(*EXPERIMENT_DETAILS['wavelength']['default'])
         offset = Base(*EXPERIMENT_DETAILS['offset']['default'])
-        phase = ExperimentPhase.default()
+        phase = ExperimentPhases({})
         backgrounds = Backgrounds(Background.default())
         resolution = Resolution.default()
         measured_pattern = MeasuredPattern.default()
         return cls(name, wavelength, offset, phase, backgrounds, resolution, measured_pattern)
 
     @classmethod
-    def fromPars(cls, name: str, wavelength: float, offset: float, scale: float, background: Backgrounds, resolution: Resolution,
-                 measured_pattern: MeasuredPattern) -> 'Experiment':
+    def fromPars(cls, name: str, wavelength: float, offset: float, scale: float, background: Backgrounds,
+                 resolution: Resolution, measured_pattern: MeasuredPattern) -> 'Experiment':
         """
         Constructor of experiment from parameters
         :param name: What the experiment should be called
@@ -356,11 +363,11 @@ class Experiment(PathDict):
         """
         wavelength = Base(wavelength, EXPERIMENT_DETAILS['wavelength']['default'][1])
         offset = Base(offset, EXPERIMENT_DETAILS['offset']['default'][1])
-        phase = ExperimentPhase.fromPars(scale)
+        phase = ExperimentPhases(ExperimentPhase.fromPars(name, scale))
         return cls(name, wavelength, offset, phase, background, resolution, measured_pattern)
 
 
-class Experiments(PathDict):
+class Experiments(ContainerObj):
     """
     Container for multiple experiments
     """
@@ -369,20 +376,8 @@ class Experiments(PathDict):
         Constructor for holding multiple experiments
         :param experiments: A collection of experimental dicts
         """
-        if isinstance(experiments, Experiment):
-            experiments = {
-                experiments['name']: experiments,
-            }
-        if isinstance(experiments, list):
-            theseExperiments = dict()
-            for experiment in experiments:
-                theseExperiments[experiment['name']] = experiment
-            experiments = theseExperiments
-        super().__init__(**experiments)
+        super().__init__(experiments, Experiment)
         self._log = logging.getLogger(__class__.__module__)
 
     def __repr__(self) -> str:
         return '{} Experiments'.format(len(self))
-
-    def getNames(self) -> list:
-        return list(self.keys())

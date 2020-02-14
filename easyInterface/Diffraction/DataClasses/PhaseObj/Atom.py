@@ -1,7 +1,7 @@
 from typing import Union
 
 from easyInterface.Utils.DictTools import PathDict
-from ..Utils.BaseClasses import Base
+from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import Base, ContainerObj
 from easyInterface import logger as logging
 
 ATOM_DETAILS = {
@@ -208,7 +208,7 @@ class Atom(PathDict):
                    occupancy, adp_type, U_iso_or_equiv, ADp, MSp)
 
 
-class Atoms(PathDict):
+class Atoms(ContainerObj):
     """
     Container for multiple atoms
     """
@@ -218,20 +218,9 @@ class Atoms(PathDict):
         Constructor for multiple atoms
         :param atoms: Collection of atoms
         """
-        if isinstance(atoms, Atom):
-            atoms = {
-                atoms['atom_site_label']: atoms,
-            }
-        if isinstance(atoms, list):
-            theseAtoms = dict()
-            for atom in atoms:
-                theseAtoms[atom['atom_site_label']] = atom
-            atoms = theseAtoms
-
-        super().__init__(**atoms)
+        super().__init__(atoms, Atom, 'atom_site_label')
         self._log = logging.getLogger(__class__.__module__)
         self._log.debug('Atoms created: %s', self)
-
 
     def __repr__(self) -> str:
         return '{} Atoms'.format(len(self))

@@ -7,7 +7,7 @@ from copy import deepcopy
 from typing import List, Callable, Any
 
 from easyInterface.Diffraction.DataClasses.DataObj.Calculation import *
-from easyInterface.Diffraction.DataClasses.DataObj.Experiment import Experiments, Experiment
+from easyInterface.Diffraction.DataClasses.DataObj.Experiment import Experiments, Experiment, ExperimentPhase
 from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import Phases, Phase
 from easyInterface.Utils.DictTools import UndoableDict
 from easyInterface.Diffraction.DataClasses.Utils.InfoObjs import Interface, App, Calculator, Info
@@ -88,8 +88,8 @@ class CalculatorInterface:
         CALCULATOR_INFO = self.calculator.calculatorInfo()
         for key in CALCULATOR_INFO.keys():
             self.project_dict['calculator'][key] = CALCULATOR_INFO[key]
-        self.__lastupdated = datetime.max
-        self.__lastcalculated = datetime.min
+        self.__last_updated = datetime.max
+        self.__last_calculated = datetime.min
         self.setProjectFromCalculator()
         self._log.info("Created: %s", self)
 
@@ -107,10 +107,13 @@ class CalculatorInterface:
         self.updatePhases()
         self.updateExperiments()
         self.updateCalculations()
-        self.project_dict.setItemByPath(['info', 'modified_datetime'],
-                                        datetime.fromtimestamp(
-                                            os.path.getmtime(self.calculator._main_rcif_path)).strftime(
-                                            '%d %b %Y, %H:%M:%S'))
+        try:
+            self.project_dict.setItemByPath(['info', 'modified_datetime'],
+                                            datetime.fromtimestamp(
+                                                os.path.getmtime(self.calculator._main_rcif_path)).strftime(
+                                                '%d %b %Y, %H:%M:%S'))
+        except (TypeError, FileNotFoundError):
+            self.project_dict.setItemByPath(['info', 'modified_datetime'], datetime.min)
         self.project_dict.setItemByPath(['info', 'name'], self.calculator.getProjectName())
         self.project_dict.setItemByPath(['info', 'refinement_datetime'], str(np.datetime64('now')))
 
@@ -119,7 +122,7 @@ class CalculatorInterface:
 
         self.project_dict.setItemByPath(['info', 'n_res', 'store', 'value'], n_res)
         self.project_dict.setItemByPath(['info', 'chi_squared', 'store', 'value'], final_chi_square)
-        self.__lastupdated = datetime.now()
+        self.__last_updated = datetime.now()
 
     ###
     # Setting of Calculator
@@ -132,6 +135,7 @@ class CalculatorInterface:
         """
         self.calculator.setPhaseDefinition(exp_path)
         # This will re-create all local directories
+        self.updatePhases()
         self.updateExperiments()
 
     def addPhaseDefinition(self, phases_path: str):
@@ -149,12 +153,25 @@ class CalculatorInterface:
         else:
             self.project_dict.setItemByPath(['phases', phase['phasename']], phase)
             self.calculator.addPhase(phase)
-        self.__lastupdated = datetime.now()
+        self.__last_updated = datetime.now()
 
-    def removePhase(self, phase_name):
+    def removePhase(self, phase_name: str):
         self.calculator.removePhaseDefinition(phase_name)
         self.project_dict.rmItemByPath(['phases', phase_name])
-        self.__lastupdated = datetime.now()
+        self.__last_updated = datetime.now()
+
+    def addPhaseToExp(self, exp_name: str, phase_name: str, scale: float = 0.0):
+        self.calculator.associatePhaseToExp(exp_name, phase_name, scale)
+        currentPhases = self.project_dict.getItemByPath(['experiments', 'phase'])
+        newPhase = ExperimentPhase.fromPars(phase_name, scale)
+        currentPhases[phase_name] = newPhase
+        self.project_dict.setItemByPath(['experiments', 'phase'], currentPhases)
+        self.__last_updated = datetime.now()
+
+    def removePhaseFromExp(self, exp_name: str, phase_name: str):
+        self.calculator.disassociatePhaseToExp(exp_name, phase_name)
+        self.project_dict.rmItemByPath(['experiments', 'phase', phase_name])
+        self.__last_updated = datetime.now()
 
     # Experiment section
     def setExperimentDefinition(self, exp_path: str):
@@ -178,12 +195,12 @@ class CalculatorInterface:
         else:
             self.project_dict.setItemByPath(['experiments', experiment['name']], experiment)
             self.calculator.setExperiments(self.project_dict['experiments'])
-        self.__lastupdated = datetime.now()
+        self.__last_updated = datetime.now()
 
     def removeExperiment(self, experiment_name):
         self.calculator.removeExpsDefinition(experiment_name)
         self.updateExperiments()
-        self.__lastupdated = datetime.now()
+        self.__last_updated = datetime.now()
 
     # Output section
     def writeMainCif(self, save_dir: str):
@@ -227,7 +244,7 @@ class CalculatorInterface:
                     self.project_dict.setItemByPath(key, value)
             else:
                 self.project_dict.bulkUpdate(k, v, 'Bulk update of phases')
-        self.__lastupdated = datetime.now()
+        self.__last_updated = datetime.now()
 
     def getPhase(self, phase: Union[str, None]) -> Phase:
         if phase in self.project_dict['phases']:
@@ -261,8 +278,7 @@ class CalculatorInterface:
                     self.project_dict.setItemByPath(key, value)
             else:
                 self.project_dict.bulkUpdate(k, v, 'Bulk update of experiments')
-        self.__lastupdated = datetime.now()
-
+        self.__last_updated = datetime.now()
 
     def getExperiment(self, experiment: Union[str, None]) -> Experiment:
         if experiment in self.project_dict['experiments']:
@@ -274,10 +290,10 @@ class CalculatorInterface:
 
     @time_it
     def updateCalculations(self):
-        if self.__lastupdated > self.__lastcalculated:
+        if self.__last_updated > self.__last_calculated:
             calculations = self.calculator.getCalculations()
             self.project_dict['calculations'] = calculations
-            self.__lastcalculated = datetime.now()
+            self.__last_calculated = datetime.now()
 
     def getCalculations(self) -> Calculations:
         self.updateCalculations()
@@ -297,7 +313,7 @@ class CalculatorInterface:
                 self._mappedBulkUpdate(self._mappedValueUpdater, k, v)
             else:
                 self.addPhase(phase)
-            self.__lastupdated = datetime.now()
+            self.__last_updated = datetime.now()
         else:
             raise TypeError
 
@@ -313,7 +329,7 @@ class CalculatorInterface:
         else:
             raise TypeError
         self._mappedBulkUpdate(self._mappedValueUpdater, k, v)
-        self.__lastupdated = datetime.now()
+        self.__last_updated = datetime.now()
 
     def setPhaseRefine(self, phase: str, key: list, value: bool = True):
         if phase not in self.project_dict['phases'].keys():
@@ -341,7 +357,7 @@ class CalculatorInterface:
                                          [experiments[key] for key in experiments.keys()],
                                          "Setting new experiments")
         self.calculator.setExperiments(self.project_dict['experiments'])
-        self.__lastupdated = datetime.now()
+        self.__last_updated = datetime.now()
 
     def setExperimentRefine(self, experiment: str, key: list, value: bool = True):
         if experiment not in self.project_dict['experiments'].keys():
@@ -361,7 +377,7 @@ class CalculatorInterface:
 
     def setCalculatorFromProject(self):
         self.calculator.setObjFromProjectDicts(self.project_dict['phases'], self.project_dict['experiments'])
-        self.__lastupdated = datetime.now()
+        self.__last_updated = datetime.now()
 
     def getDictByPath(self, keys: list) -> Any:
         return self.project_dict.getItemByPath(keys)
@@ -469,13 +485,13 @@ class CalculatorInterface:
             if k[-2:] == ['store', 'value']:
                 k = k[:-2]
             func(k, v)
-        self.__lastupdated = datetime.now()
+        self.__last_updated = datetime.now()
         self.updateCalculations()
 
     def _mappedValueUpdater(self, key, value):
         update_str = self.project_dict.getItemByPath(key)['mapping']
         self.calculator._mappedValueUpdater(update_str, value)
-        self.__lastupdated = datetime.now()
+        self.__last_updated = datetime.now()
 
     def _mappedRefineUpdater(self, key, value):
         update_str = self.project_dict.getItemByPath(key)['mapping']
@@ -493,4 +509,4 @@ class CalculatorInterface:
                 self.addExperiment(experiment)
         else:
             raise TypeError
-        self.__lastupdated = datetime.now()
+        self.__last_updated = datetime.now()
