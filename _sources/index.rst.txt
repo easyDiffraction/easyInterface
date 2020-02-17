@@ -12,22 +12,17 @@ Welcome to easyInterface's documentation!
 
 easyInterface Cryspy Calculator
 ===============================
-.. automodule:: easyInterface.Diffraction.Calculators.CryspyCalculator
+.. autoclass:: easyInterface.Diffraction.Calculators.CryspyCalculator
    :members:
 
 easyInterface Interface
 =======================
-.. automodule:: easyInterface.Diffraction.Interface
-   :members:
-
-easyInterface QT Interface
-==========================
-.. automodule:: easyInterface.Diffraction.QtInterface
+.. autoclass:: easyInterface.Diffraction.Interface.CalculatorInterface
    :members:
 
 easyInterfaces Project Dictionary
 =================================
-.. automodule:: easyInterface.Diffraction.Interface.ProjectDict
+.. autoclass:: easyInterface.Diffraction.Interface.ProjectDict
    :members:
 
 

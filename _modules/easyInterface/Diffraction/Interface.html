@@ -54,26 +54,18 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">Interface</span><span class="p">,</span> <span class="n">app</span><span class="p">:</span> <span class="n">App</span><span class="p">,</span> <span class="n">calculator</span><span class="p">:</span> <span class="n">Calculator</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">Info</span><span class="p">,</span> <span class="n">phases</span><span class="p">:</span> <span class="n">Phases</span><span class="p">,</span>
-                 <span class="n">experiments</span><span class="p">:</span> <span class="n">Experiments</span><span class="p">,</span>
-                 <span class="n">calculations</span><span class="p">:</span> <span class="n">Calculations</span><span class="p">):</span>
+                 <span class="n">experiments</span><span class="p">:</span> <span class="n">Experiments</span><span class="p">,</span> <span class="n">calculations</span><span class="p">:</span> <span class="n">Calculations</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create the main project dictionary from base constituent classes. Generally called from one of the constructor</span>
 <span class="sd">        methods.</span>
 
 <span class="sd">        :param app: Details of the EasyDiffraction app</span>
-<span class="sd">        :type app: App</span>
 <span class="sd">        :param calculator: Calculator to be used, from Calculators class</span>
-<span class="sd">        :type calculator: Calculator</span>
 <span class="sd">        :param info: Store of ID&#39;s and some fit information</span>
-<span class="sd">        :type info: Info</span>
-<span class="sd">        :param phases: Collection of crystolographic phases which make up the system</span>
-<span class="sd">        :type phases: Phases</span>
+<span class="sd">        :param phases: Collection of crystallographic phases which make up the system</span>
 <span class="sd">        :param experiments: Collection of experimental data to be simulated</span>
-<span class="sd">        :type experiments: Experiments</span>
 
 <span class="sd">        :return: Project dictionary which has undo/redo functionality</span>
-<span class="sd">        :rtype: ProjectDict</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">interface</span><span class="o">=</span><span class="n">interface</span><span class="p">,</span> <span class="n">calculator</span><span class="o">=</span><span class="n">calculator</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">,</span> <span class="n">info</span><span class="o">=</span><span class="n">info</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="n">phases</span><span class="p">,</span>
                          <span class="n">experiments</span><span class="o">=</span><span class="n">experiments</span><span class="p">,</span> <span class="n">calculations</span><span class="o">=</span><span class="n">calculations</span><span class="p">)</span>
@@ -104,9 +96,7 @@
 <span class="sd">        Create a main project dictionary from phases and experiments.</span>
 
 <span class="sd">        :param experiments: A collection of experiments to be compared to calculations</span>
-<span class="sd">        :type experiments: Experiments, Experiment, List[Experiment]</span>
-<span class="sd">        :param phases: A Collection of crystolographic phases to be calculated</span>
-<span class="sd">        :type phases: Phases, Phase, List[Phase]</span>
+<span class="sd">        :param phases: A Collection of crystallographic phases to be calculated</span>
 
 <span class="sd">        :return: Project dictionary with undo/redo</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -129,7 +119,7 @@
 <span class="sd">    Interface to calculators in the `easyInterface.Diffraction.Calculator` class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calculator</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calculator</span><span class="p">:</span> <span class="s1">&#39;easyInterface.Diffraction.Calculator&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialise an interface with a `calculator` of the `easyInterface.Diffraction.Calculator` class.</span>
 
@@ -161,15 +151,13 @@
 <span class="sd">        the number of data points.</span>
 
 <span class="sd">        :return: Final chi squared</span>
-<span class="sd">        :rtype: float</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">final_chi_square</span>
 
 <div class="viewcode-block" id="CalculatorInterface.setProjectFromCalculator"><a class="viewcode-back" href="../../../index.html#easyInterface.Diffraction.Interface.CalculatorInterface.setProjectFromCalculator">[docs]</a>    <span class="k">def</span> <span class="nf">setProjectFromCalculator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sets the project dictionary from the calculator given on initialisation.</span>
-
-<span class="sd">        :return: None</span>
+<span class="sd">        Sets the project dictionary from the calculator given on initialisation. Calling this function will regenerate</span>
+<span class="sd">        the project dictionary and changes may be lost.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">updatePhases</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">updateExperiments</span><span class="p">()</span>
@@ -201,7 +189,6 @@
 <span class="sd">        Parse a phases cif file and replace existing crystal phases</span>
 
 <span class="sd">        :param phase_path: Path to new phase definition file  (`.cif`)</span>
-<span class="sd">        :type phase_path: str</span>
 
 <span class="sd">        Example::</span>
 
@@ -219,7 +206,6 @@
 <span class="sd">        Add a new phases from a cif file to the list of existing crystal phases.</span>
 
 <span class="sd">        :param phase_path: Path to a phase definition file (`.cif`)</span>
-<span class="sd">        :type phase_path: str</span>
 
 <span class="sd">        Example::</span>
 
@@ -232,9 +218,9 @@
 
 <div class="viewcode-block" id="CalculatorInterface.addPhase"><a class="viewcode-back" href="../../../index.html#easyInterface.Diffraction.Interface.CalculatorInterface.addPhase">[docs]</a>    <span class="k">def</span> <span class="nf">addPhase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase</span><span class="p">:</span> <span class="n">Phase</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        </span>
+<span class="sd">        Add a new phases from a cif file to the list of existing crystal phases.</span>
+
 <span class="sd">        :param phase:</span>
-<span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">phase</span><span class="p">[</span><span class="s1">&#39;phasename&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;phases&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">setPhase</span><span class="p">(</span><span class="n">phase</span><span class="p">)</span>
@@ -270,11 +256,14 @@
         <span class="c1"># This will re-create all local directories</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">updateExperiments</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="CalculatorInterface.addExperimentDefinition"><a class="viewcode-back" href="../../../index.html#easyInterface.Diffraction.Interface.CalculatorInterface.addExperimentDefinition">[docs]</a>    <span class="k">def</span> <span class="nf">addExperimentDefinition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phases_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="CalculatorInterface.addExperimentDefinition"><a class="viewcode-back" href="../../../index.html#easyInterface.Diffraction.Interface.CalculatorInterface.addExperimentDefinition">[docs]</a>    <span class="k">def</span> <span class="nf">addExperimentDefinition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exp_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Parse the relevant phases file and update the corresponding model</span>
+<span class="sd">        Add an experiment to be simulated from a cif file. Note that this will not have any crystallographic phases</span>
+<span class="sd">        associated with it.</span>
+
+<span class="sd">        :param exp_path: Path to a experiment file (`.cif`)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">addExpsDefinition</span><span class="p">(</span><span class="n">phases_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">addExpsDefinition</span><span class="p">(</span><span class="n">exp_path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">updateExperiments</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">addExperiment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment</span><span class="p">:</span> <span class="n">Experiment</span><span class="p">):</span>
@@ -285,7 +274,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">setExperiments</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;experiments&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">removeExperiment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment_name</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">removeExperiment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">removeExpsDefinition</span><span class="p">(</span><span class="n">experiment_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">updateExperiments</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
