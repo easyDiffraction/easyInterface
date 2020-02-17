@@ -7,7 +7,7 @@ Please, visit <https://easyDiffraction.org> for more details.
 
 [![][25]][20] [![][26]][20] [![][27]][20]
 
-[![][45]][40] [![][55]][50]
+[![Sphinx documentation][45]][40] [![][55]][50]
 
 <!---[![][28]][21]--->
 
@@ -24,10 +24,11 @@ Please, visit <https://easyDiffraction.org> for more details.
 [28]: https://codecov.io/gh/easyDiffraction/easyInterface/branch/master/graph/badge.svg
 
 <!---User Manual--->
+![]()
 
-[40]: https://easydiffraction.github.io/documentation.html
+[40]: http://easydiffraction.org/easyInterface/
 
-[45]: https://img.shields.io/badge/User_Manual-13_Nov_2019-informational.svg
+[45]: https://github.com/easyDiffraction/easyInterface/workflows/Sphinx%20documentation/badge.svg
 
 <!---License--->
 
