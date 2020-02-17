@@ -32,7 +32,7 @@ Please, visit <https://easyDiffraction.org> for more details.
 
 <!---License--->
 
-[50]: https://github.com/easyDiffraction/easyInterface/blob/develop/LICENSE
+[50]: https://github.com/easyDiffraction/easyInterface/blob/master/LICENSE
 
 [55]: https://img.shields.io/badge/License-GNU_GPL_v3.0-informational.svg
 
@@ -40,4 +40,4 @@ Please, visit <https://easyDiffraction.org> for more details.
 
 [21]: https://codecov.io/gh/easyDiffraction/easyInterface
 
-[28]: https://codecov.io/gh/easyDiffraction/easyInterface/branch/develop/graph/badge.svg
+[28]: https://codecov.io/gh/easyDiffraction/easyInterface/branch/master/graph/badge.svg
