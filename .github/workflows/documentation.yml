@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/checkout@v1
     - uses: ammaraskar/sphinx-action@master
       with:
         docs-folder: "docs/source/"
@@ -30,7 +31,7 @@ jobs:
     - uses: actions/upload-artifact@v1
       with:
         name: Documentation
-        path: docs/source/_build/latex/pdfexample.pdf
+        path: docs/source/_build/latex/easyInterface.pdf
     # Publish built docs to gh-pages branch.
     # ===============================
     - name: Commit documentation changes
