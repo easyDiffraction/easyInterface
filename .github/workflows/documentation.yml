@@ -33,7 +33,7 @@ jobs:
     - uses: actions/upload-artifact@v1
       with:
         name: Documentation
-        path: docs/_build/latex/easyInterface.pdf
+        path: docs/_build/latex/easyinterface.pdf
     # Publish built docs to gh-pages branch.
     # ===============================
     - name: Commit documentation changes
