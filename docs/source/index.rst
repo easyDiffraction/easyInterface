@@ -25,6 +25,12 @@ easyInterface QT Interface
 .. automodule:: easyInterface.Diffraction.QtInterface
    :members:
 
+easyInterfaces Project Dictionary
+=================================
+.. automodule:: easyInterface.Diffraction.Interface.ProjectDict
+   :members:
+
+
 Indices and tables
 ==================
 

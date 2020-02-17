@@ -17,19 +17,30 @@ from easyInterface import logger as logging
 
 class ProjectDict(UndoableDict):
     """
-    This class deals with the creation and modification of the main project dictionary
+    This class deals with the creation and modification of the main project dictionary.
     """
 
     def __init__(self, interface: Interface, app: App, calculator: Calculator, info: Info, phases: Phases,
                  experiments: Experiments,
                  calculations: Calculations):
         """
-        Create the main project dictionary from base classes
+        Create the main project dictionary from base constituent classes. Generally called from one of the constructor
+        methods.
+
         :param app: Details of the EasyDiffraction app
-        :param calculator: Details of the Calculator to be used
+        :type app: App
+        :param calculator: Calculator to be used, from Calculators class
+        :type calculator: Calculator
         :param info: Store of ID's and some fit information
-        :param phases: Crystolographic phases in the system
-        :param experiments: Experimental data store in the system
+        :type info: Info
+        :param phases: Collection of crystolographic phases which make up the system
+        :type phases: Phases
+        :param experiments: Collection of experimental data to be simulated
+        :type experiments: Experiments
+
+        :return: Project dictionary which has undo/redo functionality
+        :rtype: ProjectDict
+
         """
         super().__init__(interface=interface, calculator=calculator, app=app, info=info, phases=phases,
                          experiments=experiments, calculations=calculations)
@@ -40,7 +51,8 @@ class ProjectDict(UndoableDict):
     def default(cls) -> 'ProjectDict':
         """
         Create a default and empty project dictionary
-        :return: Default project dictionary with undo/redo
+
+        :return: Default project dictionary with undo/redo functionality
         """
         app = App.default()
         info = Info.default()
@@ -56,10 +68,14 @@ class ProjectDict(UndoableDict):
                  phases: Union[Phases, Phase, List[Phase]],
                  calculations: Union[Calculations, Calculation, List[Calculation]]) -> 'ProjectDict':
         """
-        Create a main project dictionary from phases and experiments
+        Create a main project dictionary from phases and experiments.
+
         :param experiments: A collection of experiments to be compared to calculations
+        :type experiments: Experiments, Experiment, List[Experiment]
         :param phases: A Collection of crystolographic phases to be calculated
-        :return: project dictionary with undo/redo
+        :type phases: Phases, Phase, List[Phase]
+
+        :return: Project dictionary with undo/redo
         """
         app = App.default()
         info = Info.default()
@@ -77,10 +93,16 @@ class ProjectDict(UndoableDict):
 
 class CalculatorInterface:
     """
-    Interface to calculators in the easyInterface/Diffraction/Calculator folder
+    Interface to calculators in the `easyInterface.Diffraction.Calculator` class.
     """
 
     def __init__(self, calculator):
+        """
+        Initialise an interface with a `calculator` of the `easyInterface.Diffraction.Calculator` class.
+
+        :param calculator: Calculator of the `easyInterface.Diffraction.Calculator` class.
+        """
+
         self._log = logging.getLogger(__class__.__module__)
         self.project_dict = ProjectDict.default()
         self.calculator = calculator
@@ -101,9 +123,21 @@ class CalculatorInterface:
 
     @property
     def final_chi_square(self) -> float:
+        """
+        Calculates the final chi squared of the simulation. Where the final chi squared is the chi squared divided by
+        the number of data points.
+
+        :return: Final chi squared
+        :rtype: float
+        """
         return self.calculator.final_chi_square
 
     def setProjectFromCalculator(self):
+        """
+        Sets the project dictionary from the calculator given on initialisation.
+
+        :return: None
+        """
         self.updatePhases()
         self.updateExperiments()
         self.updateCalculations()
@@ -129,25 +163,46 @@ class CalculatorInterface:
     ###
 
     # Phase section
-    def setPhaseDefinition(self, exp_path: str):
+    def setPhaseDefinition(self, phase_path: str):
         """
-        Parse the relevant phases file and update the corresponding model
+        Parse a phases cif file and replace existing crystal phases
+
+        :param phase_path: Path to new phase definition file  (`.cif`)
+        :type phase_path: str
+
+        Example::
+
+            interface = CalculatorInterface(calculator)
+            phase_path = '~/Experiments/phases.cif'
+            interface.setPhaseDefinition(phase_path)
         """
-        self.calculator.setPhaseDefinition(exp_path)
+        self.calculator.setPhaseDefinition(phase_path)
         # This will re-create all local directories
         self.updatePhases()
         self.updateExperiments()
 
-    def addPhaseDefinition(self, phases_path: str):
+    def addPhaseDefinition(self, phase_path: str):
         """
-        Parse the relevant phases file and update the corresponding model
+        Add a new phases from a cif file to the list of existing crystal phases.
+
+        :param phase_path: Path to a phase definition file (`.cif`)
+        :type phase_path: str
+
+        Example::
+
+            interface = CalculatorInterface(calculator)
+            phase_path = '~/Experiments/new_phase.cif'
+            interface.addPhaseDefinition(phase_path)
         """
-        self.calculator.addPhaseDefinition(phases_path)
+        self.calculator.addPhaseDefinition(phase_path)
         self.updatePhases()
-        # This will notify the GUI models changed
-        # self.projectDictChanged.emit()
 
     def addPhase(self, phase: Phase):
+        """
+        
+        :param phase:
+        :return:
+        """
         if phase['phasename'] in self.project_dict['phases'].keys():
             self.setPhase(phase)
         else:
