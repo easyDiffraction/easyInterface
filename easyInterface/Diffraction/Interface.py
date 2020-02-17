@@ -21,26 +21,18 @@ class ProjectDict(UndoableDict):
     """
 
     def __init__(self, interface: Interface, app: App, calculator: Calculator, info: Info, phases: Phases,
-                 experiments: Experiments,
-                 calculations: Calculations):
+                 experiments: Experiments, calculations: Calculations):
         """
         Create the main project dictionary from base constituent classes. Generally called from one of the constructor
         methods.
 
         :param app: Details of the EasyDiffraction app
-        :type app: App
         :param calculator: Calculator to be used, from Calculators class
-        :type calculator: Calculator
         :param info: Store of ID's and some fit information
-        :type info: Info
-        :param phases: Collection of crystolographic phases which make up the system
-        :type phases: Phases
+        :param phases: Collection of crystallographic phases which make up the system
         :param experiments: Collection of experimental data to be simulated
-        :type experiments: Experiments
 
         :return: Project dictionary which has undo/redo functionality
-        :rtype: ProjectDict
-
         """
         super().__init__(interface=interface, calculator=calculator, app=app, info=info, phases=phases,
                          experiments=experiments, calculations=calculations)
@@ -71,9 +63,7 @@ class ProjectDict(UndoableDict):
         Create a main project dictionary from phases and experiments.
 
         :param experiments: A collection of experiments to be compared to calculations
-        :type experiments: Experiments, Experiment, List[Experiment]
-        :param phases: A Collection of crystolographic phases to be calculated
-        :type phases: Phases, Phase, List[Phase]
+        :param phases: A Collection of crystallographic phases to be calculated
 
         :return: Project dictionary with undo/redo
         """
@@ -96,7 +86,7 @@ class CalculatorInterface:
     Interface to calculators in the `easyInterface.Diffraction.Calculator` class.
     """
 
-    def __init__(self, calculator):
+    def __init__(self, calculator: 'easyInterface.Diffraction.Calculator'):
         """
         Initialise an interface with a `calculator` of the `easyInterface.Diffraction.Calculator` class.
 
@@ -128,15 +118,13 @@ class CalculatorInterface:
         the number of data points.
 
         :return: Final chi squared
-        :rtype: float
         """
         return self.calculator.final_chi_square
 
     def setProjectFromCalculator(self):
         """
-        Sets the project dictionary from the calculator given on initialisation.
-
-        :return: None
+        Sets the project dictionary from the calculator given on initialisation. Calling this function will regenerate
+        the project dictionary and changes may be lost.
         """
         self.updatePhases()
         self.updateExperiments()
@@ -168,7 +156,6 @@ class CalculatorInterface:
         Parse a phases cif file and replace existing crystal phases
 
         :param phase_path: Path to new phase definition file  (`.cif`)
-        :type phase_path: str
 
         Example::
 
@@ -186,7 +173,6 @@ class CalculatorInterface:
         Add a new phases from a cif file to the list of existing crystal phases.
 
         :param phase_path: Path to a phase definition file (`.cif`)
-        :type phase_path: str
 
         Example::
 
@@ -199,9 +185,9 @@ class CalculatorInterface:
 
     def addPhase(self, phase: Phase):
         """
-        
+        Add a new phases from a cif file to the list of existing crystal phases.
+
         :param phase:
-        :return:
         """
         if phase['phasename'] in self.project_dict['phases'].keys():
             self.setPhase(phase)
@@ -237,11 +223,14 @@ class CalculatorInterface:
         # This will re-create all local directories
         self.updateExperiments()
 
-    def addExperimentDefinition(self, phases_path: str):
+    def addExperimentDefinition(self, exp_path: str):
         """
-        Parse the relevant phases file and update the corresponding model
+        Add an experiment to be simulated from a cif file. Note that this will not have any crystallographic phases
+        associated with it.
+
+        :param exp_path: Path to a experiment file (`.cif`)
         """
-        self.calculator.addExpsDefinition(phases_path)
+        self.calculator.addExpsDefinition(exp_path)
         self.updateExperiments()
 
     def addExperiment(self, experiment: Experiment):
@@ -252,7 +241,7 @@ class CalculatorInterface:
             self.calculator.setExperiments(self.project_dict['experiments'])
         self.__last_updated = datetime.now()
 
-    def removeExperiment(self, experiment_name):
+    def removeExperiment(self, experiment_name: str):
         self.calculator.removeExpsDefinition(experiment_name)
         self.updateExperiments()
         self.__last_updated = datetime.now()
