@@ -14,10 +14,10 @@ import os
 import sys
 import sphinx_rtd_theme
 from datetime import date
-from easyInterface.Utils.Helpers import getReleaseInfo
-
 
 sys.path.insert(0, os.path.abspath('../'))
+
+from easyInterface.Utils.Helpers import getReleaseInfo
 
 # -- Project information -----------------------------------------------------
 
