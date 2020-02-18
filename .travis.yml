@@ -9,10 +9,6 @@ env:
 matrix:
   include:
     # Linux
-    - name: "Python 3.5 on Linux Ubuntu 16.04 (Xenial)"
-      dist: xenial
-      python: 3.5
-      env: BADGE=linux
     - name: "Python 3.6 on Linux Ubuntu 16.04 (Xenial)"
       dist: xenial
       python: 3.6
@@ -26,15 +22,6 @@ matrix:
       python: 3.8
       env: BADGE=linux
     # macOS
-    - name: "Python 3.5.9 on macOS 10.14 (Mojave)"
-      os: osx
-      osx_image: xcode11.2                                                      # xcode11 --- Python 3.7.4 running on macOS 10.14.4
-      language: shell
-      install:
-        - brew install sashkab/python/python@3.5
-        - /usr/local/opt/python@3.5/bin/python3.5 -m venv $VENV_DIR
-        - source $VENV_DIR/bin/activate
-      env: BADGE=osx
     - name: "Python 3.6.10 on macOS 10.14 (Mojave)"
       os: osx
       osx_image: xcode11.2                                                      # xcode11 --- Python 3.7.4 running on macOS 10.14.4
@@ -63,15 +50,6 @@ matrix:
         - source $VENV_DIR/bin/activate
       env: BADGE=osx
     # Windows
-    - name: "Python 3.5.4 on Windows 10.0"
-      os: windows                                                               # Windows 10.0.17134 N/A Build 17134
-      language: shell
-      install:
-        - choco install python --version=3.5.4                                  # install python
-        - python -m pip install --upgrade pip
-      env:
-        - BADGE=win
-        - PATH=/c/Python36:/c/Python36/Scripts:$PATH
     - name: "Python 3.6.5 on Windows 10.0"
       os: windows                                                               # Windows 10.0.17134 N/A Build 17134
       language: shell
