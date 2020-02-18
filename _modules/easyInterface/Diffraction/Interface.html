@@ -323,13 +323,20 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">bulkUpdate</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="s1">&#39;Bulk update of phases&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">getPhase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Phase</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">phase</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;phases&#39;</span><span class="p">]:</span>
-            <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;phases&#39;</span><span class="p">][</span><span class="n">phase</span><span class="p">])</span>
-        <span class="k">elif</span> <span class="n">phase</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="CalculatorInterface.getPhase"><a class="viewcode-back" href="../../../index.html#easyInterface.Diffraction.Interface.CalculatorInterface.getPhase">[docs]</a>    <span class="k">def</span> <span class="nf">getPhase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase_name</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Phase</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a phase from the project dictionary by name if one is supplied. If the phase name is none then all</span>
+<span class="sd">        phases are returned. If the phase name does not exist KeyError is thrown.</span>
+<span class="sd">        :param phase_name: Name of the phase to de returned or None for all phases</span>
+<span class="sd">        :return: Copy of the project dictionaries phase object with name phase_name</span>
+<span class="sd">        :raises KeyError:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">phase_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;phases&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;phases&#39;</span><span class="p">][</span><span class="n">phase_name</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">phase_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;phases&#39;</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span></div>
 
     <span class="nd">@time_it</span>
     <span class="k">def</span> <span class="nf">updateExperiments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

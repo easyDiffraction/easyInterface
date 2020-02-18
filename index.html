@@ -195,6 +195,18 @@ the number of data points.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.getPhase">
+<code class="sig-name descname">getPhase</code><span class="sig-paren">(</span><em class="sig-param">phase_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.getPhase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.getPhase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a phase from the project dictionary by name if one is supplied. If the phase name is none then all
+phases are returned. If the phase name does not exist KeyError is thrown.
+:type phase_name: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]
+:param phase_name: Name of the phase to de returned or None for all phases
+:rtype: <code class="xref py py-class docutils literal notranslate"><span class="pre">Phase</span></code>
+:return: Copy of the project dictionaries phase object with name phase_name
+:raises KeyError:</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="easyInterface.Diffraction.Interface.CalculatorInterface.phasesCount">
 <code class="sig-name descname">phasesCount</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.phasesCount"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.phasesCount" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns number of phases in the project.</p>
