@@ -290,10 +290,17 @@ class CalculatorInterface:
                 self.project_dict.bulkUpdate(k, v, 'Bulk update of phases')
         self.__last_updated = datetime.now()
 
-    def getPhase(self, phase: Union[str, None]) -> Phase:
-        if phase in self.project_dict['phases']:
-            return deepcopy(self.project_dict['phases'][phase])
-        elif phase is None:
+    def getPhase(self, phase_name: Union[str, None]) -> Phase:
+        """
+        Returns a phase from the project dictionary by name if one is supplied. If the phase name is none then all
+        phases are returned. If the phase name does not exist KeyError is thrown.
+        :param phase_name: Name of the phase to de returned or None for all phases
+        :return: Copy of the project dictionaries phase object with name phase_name
+        :raises KeyError:
+        """
+        if phase_name in self.project_dict['phases']:
+            return deepcopy(self.project_dict['phases'][phase_name])
+        elif phase_name is None:
             return deepcopy(self.project_dict['phases'])
         else:
             raise KeyError

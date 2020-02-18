@@ -1,3 +1,4 @@
+from copy import deepcopy
 from typing import Union, Optional, Any, NoReturn
 
 from easyInterface.Utils.units import Unit
@@ -33,6 +34,20 @@ class ContainerObj(PathDict):
     def __repr__(self) -> str:
         return ''
 
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        newobj = cls.__new__(cls)
+        memo[id(self)] = newobj
+        has_log = False
+        for k, v in self.__dict__.items():
+            if k == '_log':
+                has_log = True
+                continue
+            setattr(newobj, k, deepcopy(v, memo))
+        if has_log:
+            setattr(newobj, '_log', logging.getLogger(__name__))
+        return newobj
+
     def getNames(self) -> list:
         return list(self.keys())
 
@@ -57,6 +72,20 @@ class Data(PathDict):
 
     def __repr__(self) -> str:
         return '{}'.format(self['value'])
+
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        newobj = cls.__new__(cls)
+        memo[id(self)] = newobj
+        has_log = False
+        for k, v in self.__dict__.items():
+            if k == '_log':
+                has_log = True
+                continue
+            setattr(newobj, k, deepcopy(v, memo))
+        if has_log:
+            setattr(newobj, '_log', logging.getLogger(__name__))
+        return newobj
 
     @property
     def min(self) -> float:
@@ -83,6 +112,20 @@ class Base(PathDict):
 
     def __repr__(self) -> str:
         return '{} {}'.format(self.value, self.getItemByPath(['store', 'unit']))
+
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        newobj = cls.__new__(cls)
+        memo[id(self)] = newobj
+        has_log = False
+        for k, v in self.__dict__.items():
+            if k == '_log':
+                has_log = True
+                continue
+            setattr(newobj, k, deepcopy(v, memo))
+        if has_log:
+            setattr(newobj, '_log', logging.getLogger(__name__))
+        return newobj
 
     @property
     def value(self) -> Any:

@@ -22,7 +22,7 @@ matrix:
       python: 3.8
       env: BADGE=linux
     # macOS
-    - name: "Python 3.6.10 on macOS 10.14 (High Mojave)"
+    - name: "Python 3.6.10 on macOS 10.14 (Mojave)"
       os: osx
       osx_image: xcode11.2                                                      # xcode11 --- Python 3.7.4 running on macOS 10.14.4
       language: shell
@@ -31,7 +31,7 @@ matrix:
         - /usr/local/opt/python@3.6/bin/python3.6 -m venv $VENV_DIR
         - source $VENV_DIR/bin/activate
       env: BADGE=osx
-    - name: "Python 3.7.6 on macOS 10.14 (High Mojave)"
+    - name: "Python 3.7.6 on macOS 10.14 (Mojave)"
       os: osx
       osx_image: xcode11.2                                                      # xcode11 --- Python 3.7.4 running on macOS 10.14.4
       language: shell
@@ -40,7 +40,7 @@ matrix:
         - /usr/local/opt/python@3.7/bin/python3.7 -m venv $VENV_DIR
         - source $VENV_DIR/bin/activate
       env: BADGE=osx
-    - name: "Python 3.8.1 on macOS 10.14 (High Mojave)"
+    - name: "Python 3.8.1 on macOS 10.14 (Mojave)"
       os: osx
       osx_image: xcode11.2                                                      # xcode11 --- Python 3.7.4 running on macOS 10.14.4
       language: shell
