@@ -15,6 +15,14 @@ Features of easyInterface
 
 Boom!
 
+
+Projects using easyInterface
+============================
+
+easyInterface is currently being used in the following projects:
+
+* `easyDiffraction <https://github.com/easyDiffraction/easyDiffraction>`_ - A scientific software for modelling and analysis of the neutron diffraction data
+
 .. installation-begin-content
 
 Installation
@@ -48,6 +56,12 @@ you can do:
 
 Main Contents
 ------------------------------------------
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Example galleries
+
+   auto_examples/index
 
 .. toctree::
    :maxdepth: 1
