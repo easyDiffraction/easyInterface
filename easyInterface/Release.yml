@@ -3,6 +3,7 @@ release:
   name: easyInterface
   version: 0.0.5
   date: 18 Feb 2020
+  author: Simon Ward
   url: https://github.com/easyDiffraction/easyInterface
   changes: # Get from pull requests description?
   - Docstring are updated

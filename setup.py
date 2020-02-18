@@ -1,17 +1,21 @@
+import os
 from setuptools import setup
+from easyInterface.Utils.Helpers import getReleaseInfo
+
+project_info = getReleaseInfo(os.path.join('easyInterface', 'Release.yml'))['release']
 
 setup(
-    name='easyInterface',
-    version='0.0.4',
+    name=project_info['name'],
+    version=project_info['version'],
     packages=['easyInterface', 'easyInterface.Utils', 'easyInterface.Diffraction',
               'easyInterface.Diffraction.Calculators', 'easyInterface.Diffraction.DataClasses',
               'easyInterface.Diffraction.DataClasses.Utils', 'easyInterface.Diffraction.DataClasses.DataObj',
               'easyInterface.Diffraction.DataClasses.PhaseObj'],
     package_data={'': ['Release.yml']},
     include_package_data=True,
-    url='http://www.easydiffraction.org',
+    url=project_info['url'],
     license='GPL3',
-    author='Simon Ward',
+    author=project_info['author'],
     author_email='',
     description='Description  easyInterface - The easy way to interface with crystallographic calculators ',
     install_requires=[

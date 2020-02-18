@@ -18,16 +18,17 @@ from datetime import date
 sys.path.insert(0, os.path.abspath('../'))
 
 from easyInterface.Utils.Helpers import getReleaseInfo
+project_info = getReleaseInfo(os.path.join('..', 'easyInterface', 'Release.yml'))['release']
 
 # -- Project information -----------------------------------------------------
 
-project = 'easyInterface'
-copyright = u'2019-%s, Simon Ward' % date.today().year
-author = 'Simon Ward'
+project = project_info['name']
+copyright = '2019-{}, {}'.format(date.today().year, project_info['author'])
+author = project_info['author']
 
 # The full version, including alpha/beta/rc tags
 
-release = getReleaseInfo(os.path.join('..', 'easyInterface', 'Release.yml'))['release']['version']
+release = project_info['version']
 
 
 # -- General configuration ---------------------------------------------------
