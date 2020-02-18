@@ -1,0 +1,593 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>easyInterface.Diffraction.DataClasses.DataObj.Experiment &mdash; easyInterface 0.0.5 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/theme_override.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html" class="icon icon-home"> easyInterface
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">API and developer reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer.html">Interface and Calculators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer.html#container-classes">Container Classes</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/easyDiffraction/easyInterface">Fork easyInterface on Github</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">easyInterface</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>easyInterface.Diffraction.DataClasses.DataObj.Experiment</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for easyInterface.Diffraction.DataClasses.DataObj.Experiment</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">easyInterface.Diffraction.DataClasses.Utils.BaseClasses</span> <span class="kn">import</span> <span class="n">LoggedPathDict</span>
+<span class="kn">from</span> <span class="nn">..Utils.BaseClasses</span> <span class="kn">import</span> <span class="n">Base</span><span class="p">,</span> <span class="n">ContainerObj</span>
+<span class="kn">from</span> <span class="nn">easyInterface</span> <span class="kn">import</span> <span class="n">logger</span> <span class="k">as</span> <span class="n">logging</span>
+
+<span class="n">EXPERIMENT_DETAILS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;wavelength&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;header&#39;</span><span class="p">:</span> <span class="s1">&#39;Lambda&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;tooltip&#39;</span><span class="p">:</span> <span class="s1">&#39;Neutron wavelength in angstroms&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;ang&#39;</span><span class="p">)</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;offset&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;header&#39;</span><span class="p">:</span> <span class="s1">&#39;Offest&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;tooltip&#39;</span><span class="p">:</span> <span class="s1">&#39;Degree offset in two theta&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">RESOLUTION_DETAILS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;UVWXY&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;header&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;tooltip&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">SCALE_DETAILS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;scale&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;header&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;tooltip&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">INTENSITY_DETAILS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;intensity&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;header&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;tooltip&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="Resolution"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.Resolution">[docs]</a><span class="k">class</span> <span class="nc">Resolution</span><span class="p">(</span><span class="n">LoggedPathDict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Data store for the resolution parameters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Base</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dictionary store for resolution parameters</span>
+
+<span class="sd">        :param u: resolution parameter u</span>
+<span class="sd">        :param v: resolution parameter v</span>
+<span class="sd">        :param w:  resolution parameter w</span>
+<span class="sd">        :param x:  resolution parameter x</span>
+<span class="sd">        :param y:  resolution parameter y</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;header&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;header&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;header&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;header&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;header&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+<div class="viewcode-block" id="Resolution.default"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.Resolution.default">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Resolution&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Default constructor for the resolution dict</span>
+
+<span class="sd">        :return: Default resolution dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Resolution.fromPars"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.Resolution.fromPars">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">fromPars</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Resolution&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor when resolution parameters are known</span>
+
+<span class="sd">        :param u: resolution parameter u</span>
+<span class="sd">        :param v: resolution parameter v</span>
+<span class="sd">        :param w: resolution parameter w</span>
+<span class="sd">        :param x: resolution parameter x</span>
+<span class="sd">        :param y: resolution parameter y</span>
+<span class="sd">        :return: Resolution dictionary with values set</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">RESOLUTION_DETAILS</span><span class="p">[</span><span class="s1">&#39;UVWXY&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;u: </span><span class="si">{}</span><span class="s1">, v: </span><span class="si">{}</span><span class="s1">, w: </span><span class="si">{}</span><span class="s1">, x: </span><span class="si">{}</span><span class="s1">, y:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;v&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                                                         <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Background"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.Background">[docs]</a><span class="k">class</span> <span class="nc">Background</span><span class="p">(</span><span class="n">LoggedPathDict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Data store for the background data parameters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ttheta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">intensity</span><span class="p">:</span> <span class="n">Base</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Background dictionary</span>
+
+<span class="sd">        :param ttheta: Two Theta angle in degrees</span>
+<span class="sd">        :param intensity: Intensity data store</span>
+<span class="sd">        :return: Background data object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">ttheta</span><span class="p">),</span> <span class="n">ttheta</span><span class="o">=</span><span class="n">ttheta</span><span class="p">,</span> <span class="n">intensity</span><span class="o">=</span><span class="n">intensity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;intensity&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="n">INTENSITY_DETAILS</span><span class="p">[</span><span class="s1">&#39;intensity&#39;</span><span class="p">][</span><span class="s1">&#39;header&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;intensity&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">INTENSITY_DETAILS</span><span class="p">[</span><span class="s1">&#39;intensity&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;intensity&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">INTENSITY_DETAILS</span><span class="p">[</span><span class="s1">&#39;intensity&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+<div class="viewcode-block" id="Background.default"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.Background.default">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Background&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Default constructor for a background point</span>
+
+<span class="sd">        :return: Default background data object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ttheta</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">intensity</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">INTENSITY_DETAILS</span><span class="p">[</span><span class="s1">&#39;intensity&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">ttheta</span><span class="p">,</span> <span class="n">intensity</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Background.fromPars"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.Background.fromPars">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">fromPars</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ttheta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">intensity</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Background&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor for background when two theta and intensity are known</span>
+
+<span class="sd">        :param ttheta: Two Theta angle in degrees</span>
+<span class="sd">        :param intensity: Value for intensity</span>
+<span class="sd">        :return: Background data dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">intensity</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">intensity</span><span class="p">,</span> <span class="n">INTENSITY_DETAILS</span><span class="p">[</span><span class="s1">&#39;intensity&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">ttheta</span><span class="p">,</span> <span class="n">intensity</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;ttheta&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;intensity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Backgrounds"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.Backgrounds">[docs]</a><span class="k">class</span> <span class="nc">Backgrounds</span><span class="p">(</span><span class="n">ContainerObj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Store for a collection of background points</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backgrounds</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Background</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor for Background data points</span>
+
+<span class="sd">        :param backgrounds: Background parameters formed from Background dicts</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">backgrounds</span><span class="p">,</span> <span class="n">Background</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> Backgrounds&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="MeasuredPattern"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.MeasuredPattern">[docs]</a><span class="k">class</span> <span class="nc">MeasuredPattern</span><span class="p">(</span><span class="n">LoggedPathDict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Storage container for measured patterns</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">y_obs</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">sy_obs</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">y_obs_up</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+                 <span class="n">sy_obs_up</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">y_obs_down</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+                 <span class="n">sy_obs_down</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor for a measured pattern</span>
+
+<span class="sd">        :param x: Generally a two theta value</span>
+<span class="sd">        :param y_obs: Observed intensity</span>
+<span class="sd">        :param sy_obs: Observed Error</span>
+<span class="sd">        :param y_obs_up: Polarised UP intensity. None if non-polarised</span>
+<span class="sd">        :param sy_obs_up: Polarised UP intensity error. None if non-polarised</span>
+<span class="sd">        :param y_obs_down: Polarised DOWN intensity. None if non-polarised</span>
+<span class="sd">        :param sy_obs_down: Polarised DOWN intensity error. None if non-polarised</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 1d polarised powder diffraction data</span>
+        <span class="c1"># if y_obs_up is not None and sy_obs_up is not None and y_obs_down is not None and sy_obs_down is not None:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y_obs</span><span class="o">=</span><span class="n">y_obs</span><span class="p">,</span> <span class="n">sy_obs</span><span class="o">=</span><span class="n">sy_obs</span><span class="p">,</span> <span class="n">y_obs_up</span><span class="o">=</span><span class="n">y_obs_up</span><span class="p">,</span> <span class="n">sy_obs_up</span><span class="o">=</span><span class="n">sy_obs_up</span><span class="p">,</span>
+                         <span class="n">y_obs_down</span><span class="o">=</span><span class="n">y_obs_down</span><span class="p">,</span> <span class="n">sy_obs_down</span><span class="o">=</span><span class="n">sy_obs_down</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span>
+        <span class="c1"># # 1d unpolarised powder diffraction data</span>
+        <span class="c1"># else:</span>
+        <span class="c1">#     super().__init__(x=x, y_obs=y_obs, sy_obs=sy_obs)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">isPolarised</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Is the measured data of a polarised type?</span>
+
+<span class="sd">        :return: True if it is from a polarised measurement, false otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;y_obs_up&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">y_obs_upper</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Upper data confidence bound</span>
+
+<span class="sd">        :return: value of upper confidence bound</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;y_obs&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;sy_obs&#39;</span><span class="p">]))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">y_obs_lower</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Lower data confidence bound</span>
+
+<span class="sd">        :return: value of lower confidence bound</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;y_obs&#39;</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;sy_obs&#39;</span><span class="p">]))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+<div class="viewcode-block" id="MeasuredPattern.default"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.MeasuredPattern.default">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">polarised</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Default constructor for measured data container</span>
+
+<span class="sd">        :param polarised: Should the container be initialised as a polarised data container?</span>
+<span class="sd">        :return: Empty data container</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">y_obs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">sy_obs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">y_obs_up</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">sy_obs_up</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">y_obs_down</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">sy_obs_down</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">polarised</span><span class="p">:</span>
+            <span class="n">y_obs_up</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">sy_obs_up</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">y_obs_down</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">sy_obs_down</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_obs</span><span class="p">,</span> <span class="n">sy_obs</span><span class="p">,</span> <span class="n">y_obs_up</span><span class="p">,</span> <span class="n">sy_obs_up</span><span class="p">,</span> <span class="n">y_obs_down</span><span class="p">,</span> <span class="n">sy_obs_down</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ExperimentPhase"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.ExperimentPhase">[docs]</a><span class="k">class</span> <span class="nc">ExperimentPhase</span><span class="p">(</span><span class="n">LoggedPathDict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Storage container for the ExperiemntalPhase details</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="n">Base</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor for the Experimental phase container</span>
+
+<span class="sd">        :param scale: phase scale as data object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;scale&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="n">SCALE_DETAILS</span><span class="p">[</span><span class="s1">&#39;scale&#39;</span><span class="p">][</span><span class="s1">&#39;header&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;scale&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">SCALE_DETAILS</span><span class="p">[</span><span class="s1">&#39;scale&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;scale&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">SCALE_DETAILS</span><span class="p">[</span><span class="s1">&#39;scale&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+<div class="viewcode-block" id="ExperimentPhase.default"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.ExperimentPhase.default">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ExperimentPhase&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Default experimental phase data container</span>
+
+<span class="sd">        :return: Default experimental phase data container</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">SCALE_DETAILS</span><span class="p">[</span><span class="s1">&#39;scale&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ExperimentPhase.fromPars"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.ExperimentPhase.fromPars">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">fromPars</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ExperimentPhase&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameter initialised experimental phase data container</span>
+
+<span class="sd">        :return: Set experimental phase data container</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">SCALE_DETAILS</span><span class="p">[</span><span class="s1">&#39;scale&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ExperimentPhases"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.ExperimentPhases">[docs]</a><span class="k">class</span> <span class="nc">ExperimentPhases</span><span class="p">(</span><span class="n">ContainerObj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Storage of multiple phase markers associated with experiemnts</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment_phases</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="n">ExperimentPhase</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor for holding multiple experiments</span>
+
+<span class="sd">        :param experiments: A collection of experimental dicts</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">experiment_phases</span><span class="p">,</span> <span class="n">ExperimentPhase</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> Experimental phases&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Experiment"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.Experiment">[docs]</a><span class="k">class</span> <span class="nc">Experiment</span><span class="p">(</span><span class="n">LoggedPathDict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Experimental details data container</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">phase</span><span class="p">:</span> <span class="n">ExperimentPhases</span><span class="p">,</span> <span class="n">background</span><span class="p">:</span> <span class="n">Backgrounds</span><span class="p">,</span>
+                 <span class="n">resolution</span><span class="p">:</span> <span class="n">Resolution</span><span class="p">,</span> <span class="n">measured_pattern</span><span class="p">:</span> <span class="n">MeasuredPattern</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor for experimental data container</span>
+
+<span class="sd">        :param name: The name of the experimental data</span>
+<span class="sd">        :param wavelength: What wavelength was the experiment taken at</span>
+<span class="sd">        :param offset: The experimental offset</span>
+<span class="sd">        :param phase: The experimental phase scale</span>
+<span class="sd">        :param background: Description of the background</span>
+<span class="sd">        :param resolution: Description of the resolution</span>
+<span class="sd">        :param measured_pattern: What was actually measured</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">wavelength</span><span class="o">=</span><span class="n">wavelength</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">phase</span><span class="o">=</span><span class="n">phase</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="n">background</span><span class="p">,</span>
+                         <span class="n">resolution</span><span class="o">=</span><span class="n">resolution</span><span class="p">,</span> <span class="n">measured_pattern</span><span class="o">=</span><span class="n">measured_pattern</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;wavelength&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="n">EXPERIMENT_DETAILS</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">][</span><span class="s1">&#39;header&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;wavelength&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">EXPERIMENT_DETAILS</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;wavelength&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">EXPERIMENT_DETAILS</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;offset&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="n">EXPERIMENT_DETAILS</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">][</span><span class="s1">&#39;header&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;offset&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">EXPERIMENT_DETAILS</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;offset&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">EXPERIMENT_DETAILS</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+<div class="viewcode-block" id="Experiment.default"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.Experiment.default">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Experiment&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Default constructor for an Experiment</span>
+
+<span class="sd">        :param name: What the experiment should be called</span>
+<span class="sd">        :return: Default empty experiment</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">wavelength</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">EXPERIMENT_DETAILS</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">EXPERIMENT_DETAILS</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+        <span class="n">phase</span> <span class="o">=</span> <span class="n">ExperimentPhases</span><span class="p">({})</span>
+        <span class="n">backgrounds</span> <span class="o">=</span> <span class="n">Backgrounds</span><span class="p">(</span><span class="n">Background</span><span class="o">.</span><span class="n">default</span><span class="p">())</span>
+        <span class="n">resolution</span> <span class="o">=</span> <span class="n">Resolution</span><span class="o">.</span><span class="n">default</span><span class="p">()</span>
+        <span class="n">measured_pattern</span> <span class="o">=</span> <span class="n">MeasuredPattern</span><span class="o">.</span><span class="n">default</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">phase</span><span class="p">,</span> <span class="n">backgrounds</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">measured_pattern</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Experiment.fromPars"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.Experiment.fromPars">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">fromPars</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">background</span><span class="p">:</span> <span class="n">Backgrounds</span><span class="p">,</span>
+                 <span class="n">resolution</span><span class="p">:</span> <span class="n">Resolution</span><span class="p">,</span> <span class="n">measured_pattern</span><span class="p">:</span> <span class="n">MeasuredPattern</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Experiment&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor of experiment from parameters</span>
+<span class="sd">        </span>
+<span class="sd">        :param name: What the experiment should be called</span>
+<span class="sd">        :param wavelength: Experimental wavelength</span>
+<span class="sd">        :param offset: Experimental offset</span>
+<span class="sd">        :param scale: Scale parameter</span>
+<span class="sd">        :param background: Background model</span>
+<span class="sd">        :param resolution: Resolution model</span>
+<span class="sd">        :param measured_pattern: The Measured data</span>
+<span class="sd">        :return: Experiemnt from parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">wavelength</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">wavelength</span><span class="p">,</span> <span class="n">EXPERIMENT_DETAILS</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">EXPERIMENT_DETAILS</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">phase</span> <span class="o">=</span> <span class="n">ExperimentPhases</span><span class="p">(</span><span class="n">ExperimentPhase</span><span class="o">.</span><span class="n">fromPars</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">scale</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">phase</span><span class="p">,</span> <span class="n">background</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">measured_pattern</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Experiments"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.Experiments">[docs]</a><span class="k">class</span> <span class="nc">Experiments</span><span class="p">(</span><span class="n">ContainerObj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Container for multiple experiments</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiments</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Experiment</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor for holding multiple experiments</span>
+<span class="sd">        :param experiments: A collection of experimental dicts</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">experiments</span><span class="p">,</span> <span class="n">Experiment</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> Experiments&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Simon Ward
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

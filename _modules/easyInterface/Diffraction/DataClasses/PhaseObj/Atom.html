@@ -1,0 +1,564 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>easyInterface.Diffraction.DataClasses.PhaseObj.Atom &mdash; easyInterface 0.0.5 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/theme_override.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html" class="icon icon-home"> easyInterface
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">API and developer reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer.html">Interface and Calculators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer.html#container-classes">Container Classes</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/easyDiffraction/easyInterface">Fork easyInterface on Github</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">easyInterface</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>easyInterface.Diffraction.DataClasses.PhaseObj.Atom</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for easyInterface.Diffraction.DataClasses.PhaseObj.Atom</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">easyInterface.Diffraction.DataClasses.Utils.BaseClasses</span> <span class="kn">import</span> <span class="n">Base</span><span class="p">,</span> <span class="n">ContainerObj</span><span class="p">,</span> <span class="n">LoggedPathDict</span>
+<span class="kn">from</span> <span class="nn">easyInterface</span> <span class="kn">import</span> <span class="n">logger</span> <span class="k">as</span> <span class="n">logging</span>
+
+<span class="n">ATOM_DETAILS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;type_symbol&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;header&#39;</span><span class="p">:</span> <span class="s1">&#39;Atom&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;tooltip&#39;</span><span class="p">:</span> <span class="s1">&#39;A code to identify the atom species occupying this site.&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.iucr.org/__data/iucr/cifdic_html/1/cif_core.dic/Iatom_site_type_symbol.html&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;fract&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;header&#39;</span><span class="p">:</span> <span class="s1">&#39;Atom&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;tooltip&#39;</span><span class="p">:</span> <span class="s1">&#39;Atom-site coordinate as fractions of the unit cell length.&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.iucr.org/__data/iucr/cifdic_html/1/cif_core.dic/Iatom_site_fract_.html&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;frac&#39;</span><span class="p">)</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;occupancy&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;header&#39;</span><span class="p">:</span> <span class="s1">&#39;Occupancy&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;tooltip&#39;</span><span class="p">:</span> <span class="s1">&#39;The fraction of the atom type present at this site.&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.iucr.org/__data/iucr/cifdic_html/1/cif_core.dic/Iatom_site_occupancy.html&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;frac&#39;</span><span class="p">)</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;adp_type&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;header&#39;</span><span class="p">:</span> <span class="s1">&#39;Type&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;tooltip&#39;</span><span class="p">:</span> <span class="s1">&#39;A standard code used to describe the type of atomic displacement parameters used for the site.&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.iucr.org/__data/iucr/cifdic_html/1/cif_core.dic/Iatom_site_adp_type.html&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;U_iso_or_equiv&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;header&#39;</span><span class="p">:</span> <span class="s1">&#39;Biso&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;tooltip&#39;</span><span class="p">:</span> <span class="s1">&#39;Isotropic atomic displacement parameter, or equivalent isotropic atomic displacement parameter, &#39;</span>
+                   <span class="s1">&#39;B(equiv), in angstroms squared.&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.iucr.org/__data/iucr/cifdic_html/1/cif_core.dic/Iatom_site_B_iso_or_equiv.html&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;ang^2&#39;</span><span class="p">)</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;scat_length_neutron&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;header&#39;</span><span class="p">:</span> <span class="s1">&#39;Neutron Scattering Length&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;tooltip&#39;</span><span class="p">:</span> <span class="s1">&#39;The bound coherent scattering length in femtometres for the atom type at the isotopic composition &#39;</span>
+                   <span class="s1">&#39;used for the diffraction experiment.&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.iucr.org/__data/iucr/cifdic_html/1/cif_core.dic/Iatom_type_scat_length_neutron.html&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;fm&#39;</span><span class="p">)</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;ADP&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;header&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;tooltip&#39;</span><span class="p">:</span> <span class="s1">&#39;Anisotropic atomic displacement component in angstroms squared.&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.iucr.org/__data/iucr/cifdic_html/1/cif_core.dic/Iatom_site_aniso_U_.html&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;ang^2&#39;</span><span class="p">)</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;MSP&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;header&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;tooltip&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;T^-1&#39;</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="Atom"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Atom.Atom">[docs]</a><span class="k">class</span> <span class="nc">Atom</span><span class="p">(</span><span class="n">LoggedPathDict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Storage for details about an atom</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_site_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">type_symbol</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">scat_length_neutron</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span>
+                 <span class="n">fract_x</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">fract_y</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">fract_z</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">occupancy</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">adp_type</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">U_iso_or_equiv</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span>
+                 <span class="n">ADp</span><span class="p">:</span> <span class="s1">&#39;ADP&#39;</span><span class="p">,</span> <span class="n">MSp</span><span class="p">:</span> <span class="s1">&#39;MSP&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor for an atom</span>
+
+<span class="sd">        :param atom_site_label: The unique name of the atom in the phase</span>
+<span class="sd">        :param type_symbol: The type of atom</span>
+<span class="sd">        :param scat_length_neutron: Neutron scattering length</span>
+<span class="sd">        :param fract_x: X position</span>
+<span class="sd">        :param fract_y: Y position</span>
+<span class="sd">        :param fract_z: Z position</span>
+<span class="sd">        :param occupancy: Site occupancy</span>
+<span class="sd">        :param adp_type: ADP type code</span>
+<span class="sd">        :param U_iso_or_equiv: Isotropic atomic displacement parameter</span>
+<span class="sd">        :param ADP: Data store for Atom site anisotropic displacement parameters</span>
+<span class="sd">        :param MSP: Data store for Atom site magnetic susceptibility parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">atom_site_label</span><span class="o">=</span><span class="n">atom_site_label</span><span class="p">,</span> <span class="n">type_symbol</span><span class="o">=</span><span class="n">type_symbol</span><span class="p">,</span>
+                         <span class="n">scat_length_neutron</span><span class="o">=</span><span class="n">scat_length_neutron</span><span class="p">,</span> <span class="n">fract_x</span><span class="o">=</span><span class="n">fract_x</span><span class="p">,</span> <span class="n">fract_y</span><span class="o">=</span><span class="n">fract_y</span><span class="p">,</span> <span class="n">fract_z</span><span class="o">=</span><span class="n">fract_z</span><span class="p">,</span>
+                         <span class="n">occupancy</span><span class="o">=</span><span class="n">occupancy</span><span class="p">,</span> <span class="n">adp_type</span><span class="o">=</span><span class="n">adp_type</span><span class="p">,</span> <span class="n">U_iso_or_equiv</span><span class="o">=</span><span class="n">U_iso_or_equiv</span><span class="p">,</span> <span class="n">ADP</span><span class="o">=</span><span class="n">ADp</span><span class="p">,</span> <span class="n">MSP</span><span class="o">=</span><span class="n">MSp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;type_symbol&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;type_symbol&#39;</span><span class="p">][</span><span class="s1">&#39;header&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;type_symbol&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;type_symbol&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;type_symbol&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;type_symbol&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;scat_length_neutron&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;scat_length_neutron&#39;</span><span class="p">][</span><span class="s1">&#39;header&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;scat_length_neutron&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;scat_length_neutron&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;scat_length_neutron&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;scat_length_neutron&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;fract_x&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="s1">&#39;x&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;fract_x&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;fract&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;fract_x&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;fract&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;fract_y&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="s1">&#39;y&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;fract_y&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;fract&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;fract_y&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;fract&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;fract_z&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="s1">&#39;z&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;fract_z&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;fract&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;fract_z&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;fract&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;occupancy&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;occupancy&#39;</span><span class="p">][</span><span class="s1">&#39;header&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;occupancy&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;occupancy&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;occupancy&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;occupancy&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;adp_type&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;adp_type&#39;</span><span class="p">][</span><span class="s1">&#39;header&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;adp_type&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;adp_type&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;adp_type&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;adp_type&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;U_iso_or_equiv&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;U_iso_or_equiv&#39;</span><span class="p">][</span><span class="s1">&#39;header&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;U_iso_or_equiv&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;U_iso_or_equiv&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;U_iso_or_equiv&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;U_iso_or_equiv&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Atom created: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;Atom </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;type_symbol&#39;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;Atom </span><span class="si">{}</span><span class="s1">: x = </span><span class="si">{}</span><span class="s1">, y = </span><span class="si">{}</span><span class="s1">, z = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;type_symbol&#39;</span><span class="p">],</span>
+                                                        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;fract_x&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;fract_y&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;fract_z&#39;</span><span class="p">])</span>
+
+<div class="viewcode-block" id="Atom.default"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Atom.Atom.default">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">atom_site_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Atom&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Default constructor for an atom given a unique name in the phase</span>
+
+<span class="sd">        :param atom_site_label: The atoms unique name in the phase</span>
+<span class="sd">        :return: Default atom with a given name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">type_symbol</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;type_symbol&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+        <span class="n">scat_length_neutron</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;scat_length_neutron&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+        <span class="n">fract_x</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;fract&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+        <span class="n">fract_y</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;fract&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+        <span class="n">fract_z</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;fract&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+        <span class="n">occupancy</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;occupancy&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+        <span class="n">adp_type</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;adp_type&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+        <span class="n">U_iso_or_equiv</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;U_iso_or_equiv&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+        <span class="n">ADp</span> <span class="o">=</span> <span class="n">ADP</span><span class="o">.</span><span class="n">default</span><span class="p">()</span>
+        <span class="n">MSp</span> <span class="o">=</span> <span class="n">MSP</span><span class="o">.</span><span class="n">default</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">atom_site_label</span><span class="p">,</span> <span class="n">type_symbol</span><span class="p">,</span> <span class="n">scat_length_neutron</span><span class="p">,</span> <span class="n">fract_x</span><span class="p">,</span> <span class="n">fract_y</span><span class="p">,</span> <span class="n">fract_z</span><span class="p">,</span>
+                   <span class="n">occupancy</span><span class="p">,</span> <span class="n">adp_type</span><span class="p">,</span> <span class="n">U_iso_or_equiv</span><span class="p">,</span> <span class="n">ADp</span><span class="p">,</span> <span class="n">MSp</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Atom.fromXYZ"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Atom.Atom.fromXYZ">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">fromXYZ</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">atom_site_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">type_symbol</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Atom&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct an atom from name, type and position</span>
+
+<span class="sd">        :param atom_site_label: The atoms unique name in the phase</span>
+<span class="sd">        :param type_symbol: The type of atom</span>
+<span class="sd">        :param x: X position</span>
+<span class="sd">        :param y: Y position</span>
+<span class="sd">        :param z: Z position</span>
+<span class="sd">        :return: Atom with name type and position filled in</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">atom_site_label</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;type_symbol&#39;</span><span class="p">,</span> <span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">],</span> <span class="n">type_symbol</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;fract_x&#39;</span><span class="p">,</span> <span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;fract_y&#39;</span><span class="p">,</span> <span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">],</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;fract_z&#39;</span><span class="p">,</span> <span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">],</span> <span class="n">z</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">obj</span></div>
+
+<div class="viewcode-block" id="Atom.fromPars"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Atom.Atom.fromPars">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">fromPars</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">atom_site_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">type_symbol</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">scat_length_neutron</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                 <span class="n">fract_x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">fract_y</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">fract_z</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">occupancy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">adp_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">U_iso_or_equiv</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">ADp</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">MSp</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Atom&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Atom constructor from parameters</span>
+
+<span class="sd">        :param atom_site_label: The unique name of the atom in the phase</span>
+<span class="sd">        :param type_symbol: The type of atom</span>
+<span class="sd">        :param scat_length_neutron: Neutron scattering length</span>
+<span class="sd">        :param fract_x: X position</span>
+<span class="sd">        :param fract_y: Y position</span>
+<span class="sd">        :param fract_z: Z position</span>
+<span class="sd">        :param occupancy: Site occupancy</span>
+<span class="sd">        :param adp_type: ADP type code</span>
+<span class="sd">        :param U_iso_or_equiv: Isotropic atomic displacement parameter</span>
+<span class="sd">        :return: Fully formed atom data store</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">type_symbol</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">type_symbol</span><span class="p">,</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;type_symbol&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">scat_length_neutron</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">scat_length_neutron</span><span class="p">,</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;scat_length_neutron&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">occupancy</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">occupancy</span><span class="p">,</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;occupancy&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">adp_type</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">adp_type</span><span class="p">,</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;adp_type&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">U_iso_or_equiv</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">U_iso_or_equiv</span><span class="p">,</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;U_iso_or_equiv&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">fract_x</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">fract_x</span><span class="p">,</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;fract&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">fract_y</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">fract_y</span><span class="p">,</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;fract&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">fract_z</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">fract_z</span><span class="p">,</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;fract&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ADp</span><span class="p">,</span> <span class="n">ADP</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">ADp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">ADp</span> <span class="o">=</span> <span class="n">ADP</span><span class="o">.</span><span class="n">fromPars</span><span class="p">(</span><span class="o">*</span><span class="n">ADp</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ADp</span> <span class="o">=</span> <span class="n">ADP</span><span class="o">.</span><span class="n">default</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">MSp</span><span class="p">,</span> <span class="n">MSP</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">MSp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">MSp</span> <span class="o">=</span> <span class="n">MSP</span><span class="o">.</span><span class="n">fromPars</span><span class="p">(</span><span class="o">*</span><span class="n">MSp</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">MSp</span> <span class="o">=</span> <span class="n">MSP</span><span class="o">.</span><span class="n">default</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">atom_site_label</span><span class="p">,</span> <span class="n">type_symbol</span><span class="p">,</span> <span class="n">scat_length_neutron</span><span class="p">,</span> <span class="n">fract_x</span><span class="p">,</span> <span class="n">fract_y</span><span class="p">,</span> <span class="n">fract_z</span><span class="p">,</span>
+                   <span class="n">occupancy</span><span class="p">,</span> <span class="n">adp_type</span><span class="p">,</span> <span class="n">U_iso_or_equiv</span><span class="p">,</span> <span class="n">ADp</span><span class="p">,</span> <span class="n">MSp</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Atoms"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Atom.Atoms">[docs]</a><span class="k">class</span> <span class="nc">Atoms</span><span class="p">(</span><span class="n">ContainerObj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Container for multiple atoms</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Atom</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor for multiple atoms</span>
+<span class="sd">        :param atoms: Collection of atoms</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="s1">&#39;atom_site_label&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Atoms created: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> Atoms&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="ADP"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Atom.ADP">[docs]</a><span class="k">class</span> <span class="nc">ADP</span><span class="p">(</span><span class="n">LoggedPathDict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Data store for Atom site anisotropic displacement parameters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">u_11</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">u_22</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">u_33</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span>
+                 <span class="n">u_12</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">u_13</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">u_23</span><span class="p">:</span> <span class="n">Base</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">u_11</span><span class="o">=</span><span class="n">u_11</span><span class="p">,</span> <span class="n">u_22</span><span class="o">=</span><span class="n">u_22</span><span class="p">,</span> <span class="n">u_33</span><span class="o">=</span><span class="n">u_33</span><span class="p">,</span>
+                         <span class="n">u_12</span><span class="o">=</span><span class="n">u_12</span><span class="p">,</span> <span class="n">u_13</span><span class="o">=</span><span class="n">u_13</span><span class="p">,</span> <span class="n">u_23</span><span class="o">=</span><span class="n">u_23</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;ADP created: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;u_11&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="s1">&#39;U11&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;u_11&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;u_11&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;u_12&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="s1">&#39;U12&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;u_12&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;u_12&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;u_13&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="s1">&#39;U13&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;u_13&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;u_13&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;u_22&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="s1">&#39;U22&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;u_22&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;u_22&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;u_23&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="s1">&#39;U23&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;u_23&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;u_23&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;u_33&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="s1">&#39;U33&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;u_33&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;u_33&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ADP&#39;</span><span class="p">:</span>
+        <span class="n">u_11</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+        <span class="n">u_12</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+        <span class="n">u_13</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+
+        <span class="n">u_22</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+        <span class="n">u_23</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+
+        <span class="n">u_33</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">u_11</span><span class="p">,</span> <span class="n">u_22</span><span class="p">,</span> <span class="n">u_33</span><span class="p">,</span> <span class="n">u_12</span><span class="p">,</span> <span class="n">u_13</span><span class="p">,</span> <span class="n">u_23</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">fromPars</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">u_11</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">u_12</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">u_13</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">u_22</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">u_23</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">u_33</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ADP&#39;</span><span class="p">:</span>
+        <span class="n">u_11</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">u_11</span><span class="p">,</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">u_12</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">u_12</span><span class="p">,</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">u_13</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">u_13</span><span class="p">,</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">u_22</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">u_22</span><span class="p">,</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">u_23</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">u_23</span><span class="p">,</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">u_33</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">u_33</span><span class="p">,</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;ADP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">u_11</span><span class="p">,</span> <span class="n">u_22</span><span class="p">,</span> <span class="n">u_33</span><span class="p">,</span> <span class="n">u_12</span><span class="p">,</span> <span class="n">u_13</span><span class="p">,</span> <span class="n">u_23</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">isEmpty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;u_33&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">val</span></div>
+
+
+<div class="viewcode-block" id="MSP"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Atom.MSP">[docs]</a><span class="k">class</span> <span class="nc">MSP</span><span class="p">(</span><span class="n">LoggedPathDict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Data store for Atom site magnetic susceptibility parameters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">MSPtype</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span>
+                 <span class="n">chi_11</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">chi_22</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">chi_33</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span>
+                 <span class="n">chi_12</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">chi_13</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">chi_23</span><span class="p">:</span> <span class="n">Base</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">MSPtype</span><span class="p">,</span> <span class="n">chi_11</span><span class="o">=</span><span class="n">chi_11</span><span class="p">,</span> <span class="n">chi_22</span><span class="o">=</span><span class="n">chi_22</span><span class="p">,</span> <span class="n">chi_33</span><span class="o">=</span><span class="n">chi_33</span><span class="p">,</span>
+                         <span class="n">chi_12</span><span class="o">=</span><span class="n">chi_12</span><span class="p">,</span> <span class="n">chi_13</span><span class="o">=</span><span class="n">chi_13</span><span class="p">,</span> <span class="n">chi_23</span><span class="o">=</span><span class="n">chi_23</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;MSP created: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="s1">&#39;Type&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;chi_11&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="s1">&#39;U11&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;chi_11&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;chi_11&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;chi_12&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="s1">&#39;U12&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;chi_12&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;chi_12&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;chi_13&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="s1">&#39;U13&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;chi_13&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;chi_13&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;chi_22&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="s1">&#39;U22&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;chi_22&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;chi_22&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;chi_23&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="s1">&#39;U23&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;chi_23&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;chi_23&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;chi_33&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">],</span> <span class="s1">&#39;U33&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;chi_33&#39;</span><span class="p">,</span> <span class="s1">&#39;tooltip&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;tooltip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;chi_33&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MSP&#39;</span><span class="p">:</span>
+        <span class="n">MSPtype</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="n">chi_11</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+        <span class="n">chi_12</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+        <span class="n">chi_13</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+
+        <span class="n">chi_22</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+        <span class="n">chi_23</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+
+        <span class="n">chi_33</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">MSPtype</span><span class="p">,</span> <span class="n">chi_11</span><span class="p">,</span> <span class="n">chi_22</span><span class="p">,</span> <span class="n">chi_33</span><span class="p">,</span> <span class="n">chi_12</span><span class="p">,</span> <span class="n">chi_13</span><span class="p">,</span> <span class="n">chi_23</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">fromPars</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">MSPtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">chi_11</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">chi_22</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">chi_33</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">chi_12</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">chi_13</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                 <span class="n">chi_23</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MSP&#39;</span><span class="p">:</span>
+        <span class="n">MSPtype</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">MSPtype</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="n">chi_11</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">chi_11</span><span class="p">,</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">chi_12</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">chi_12</span><span class="p">,</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">chi_13</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">chi_13</span><span class="p">,</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">chi_22</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">chi_22</span><span class="p">,</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">chi_23</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">chi_23</span><span class="p">,</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">chi_33</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="n">chi_33</span><span class="p">,</span> <span class="n">ATOM_DETAILS</span><span class="p">[</span><span class="s1">&#39;MSP&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">MSPtype</span><span class="p">,</span> <span class="n">chi_11</span><span class="p">,</span> <span class="n">chi_22</span><span class="p">,</span> <span class="n">chi_33</span><span class="p">,</span> <span class="n">chi_12</span><span class="p">,</span> <span class="n">chi_13</span><span class="p">,</span> <span class="n">chi_23</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">isEmpty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;chi_11&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">val</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Simon Ward
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

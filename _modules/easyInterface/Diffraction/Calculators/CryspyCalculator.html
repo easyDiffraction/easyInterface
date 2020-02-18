@@ -1,34 +1,150 @@
 
+
 <!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>easyInterface.Diffraction.Calculators.CryspyCalculator &mdash; easyInterface 0.0.5 documentation</title>
+  
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta charset="utf-8" />
-    <title>easyInterface.Diffraction.Calculators.CryspyCalculator &#8212; easyInterface 0.0.5 documentation</title>
-    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/theme_override.css" type="text/css" />
     <link rel="index" title="Index" href="../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
    
-  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
-  </head><body>
-  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
           
 
-          <div class="body" role="main">
+          
+            <a href="../../../../index.html" class="icon icon-home"> easyInterface
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">API and developer reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../developer.html">Interface and Calculators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../developer.html#container-classes">Container Classes</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/easyDiffraction/easyInterface">Fork easyInterface on Github</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">easyInterface</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>easyInterface.Diffraction.Calculators.CryspyCalculator</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <h1>Source code for easyInterface.Diffraction.Calculators.CryspyCalculator</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
@@ -72,7 +188,7 @@
 <span class="p">}</span>
 
 
-<div class="viewcode-block" id="CryspyCalculator"><a class="viewcode-back" href="../../../../index.html#easyInterface.Diffraction.Calculators.CryspyCalculator">[docs]</a><span class="k">class</span> <span class="nc">CryspyCalculator</span><span class="p">:</span>
+<div class="viewcode-block" id="CryspyCalculator"><a class="viewcode-back" href="../../../../calculators.html#easyInterface.Diffraction.Calculators.CryspyCalculator">[docs]</a><span class="k">class</span> <span class="nc">CryspyCalculator</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_rcif_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_experiment_name</span> <span class="o">=</span> <span class="p">[]</span>
@@ -404,7 +520,7 @@
                 <span class="n">ret_vals</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="s1">&#39;refine&#39;</span><span class="p">],</span> <span class="n">obj_list</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">refinement</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ret_vals</span>
 
-<div class="viewcode-block" id="CryspyCalculator.getPhases"><a class="viewcode-back" href="../../../../index.html#easyInterface.Diffraction.Calculators.CryspyCalculator.getPhases">[docs]</a>    <span class="nd">@time_it</span>
+<div class="viewcode-block" id="CryspyCalculator.getPhases"><a class="viewcode-back" href="../../../../calculators.html#easyInterface.Diffraction.Calculators.CryspyCalculator.getPhases">[docs]</a>    <span class="nd">@time_it</span>
     <span class="k">def</span> <span class="nf">getPhases</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Phases</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Set phases (sample model tab in GUI)&quot;&quot;&quot;</span>
 
@@ -833,7 +949,7 @@
         <span class="n">item</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="s1">&#39;hide&#39;</span><span class="p">],</span> <span class="n">obj</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
         <span class="n">item</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="s1">&#39;refine&#39;</span><span class="p">],</span> <span class="n">obj</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CryspyCalculator.setPhases"><a class="viewcode-back" href="../../../../index.html#easyInterface.Diffraction.Calculators.CryspyCalculator.setPhases">[docs]</a>    <span class="k">def</span> <span class="nf">setPhases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phases</span><span class="p">:</span> <span class="n">Phases</span><span class="p">):</span>
+<div class="viewcode-block" id="CryspyCalculator.setPhases"><a class="viewcode-back" href="../../../../calculators.html#easyInterface.Diffraction.Calculators.CryspyCalculator.setPhases">[docs]</a>    <span class="k">def</span> <span class="nf">setPhases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phases</span><span class="p">:</span> <span class="n">Phases</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set phases (sample model tab in GUI)&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;-&gt; start&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cryspy_obj</span><span class="o">.</span><span class="n">crystals</span> <span class="o">=</span> <span class="p">[]</span>
@@ -841,7 +957,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">addPhase</span><span class="p">(</span><span class="n">phases</span><span class="p">[</span><span class="n">phase_name</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&lt;- end&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CryspyCalculator.setExperiments"><a class="viewcode-back" href="../../../../index.html#easyInterface.Diffraction.Calculators.CryspyCalculator.setExperiments">[docs]</a>    <span class="k">def</span> <span class="nf">setExperiments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiments</span><span class="p">:</span> <span class="n">Experiments</span><span class="p">):</span>
+<div class="viewcode-block" id="CryspyCalculator.setExperiments"><a class="viewcode-back" href="../../../../calculators.html#easyInterface.Diffraction.Calculators.CryspyCalculator.setExperiments">[docs]</a>    <span class="k">def</span> <span class="nf">setExperiments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiments</span><span class="p">:</span> <span class="n">Experiments</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set experiments (Experimental data tab in GUI)&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;-&gt; start&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cryspy_obj</span><span class="o">.</span><span class="n">experiments</span> <span class="o">=</span> <span class="p">[]</span>
@@ -849,12 +965,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">addExperiment</span><span class="p">(</span><span class="n">experiments</span><span class="p">[</span><span class="n">experiment_name</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&lt;- end&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CryspyCalculator.setObjFromProjectDicts"><a class="viewcode-back" href="../../../../index.html#easyInterface.Diffraction.Calculators.CryspyCalculator.setObjFromProjectDicts">[docs]</a>    <span class="k">def</span> <span class="nf">setObjFromProjectDicts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phases</span><span class="p">:</span> <span class="n">Phases</span><span class="p">,</span> <span class="n">experiments</span><span class="p">:</span> <span class="n">Experiments</span><span class="p">):</span>
+<div class="viewcode-block" id="CryspyCalculator.setObjFromProjectDicts"><a class="viewcode-back" href="../../../../calculators.html#easyInterface.Diffraction.Calculators.CryspyCalculator.setObjFromProjectDicts">[docs]</a>    <span class="k">def</span> <span class="nf">setObjFromProjectDicts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phases</span><span class="p">:</span> <span class="n">Phases</span><span class="p">,</span> <span class="n">experiments</span><span class="p">:</span> <span class="n">Experiments</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set all the cryspy parameters from project dictionary&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setPhases</span><span class="p">(</span><span class="n">phases</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setExperiments</span><span class="p">(</span><span class="n">experiments</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CryspyCalculator.asCifDict"><a class="viewcode-back" href="../../../../index.html#easyInterface.Diffraction.Calculators.CryspyCalculator.asCifDict">[docs]</a>    <span class="k">def</span> <span class="nf">asCifDict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<div class="viewcode-block" id="CryspyCalculator.asCifDict"><a class="viewcode-back" href="../../../../calculators.html#easyInterface.Diffraction.Calculators.CryspyCalculator.asCifDict">[docs]</a>    <span class="k">def</span> <span class="nf">asCifDict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;...&quot;&quot;&quot;</span>
         <span class="n">experiments</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">calculations</span> <span class="o">=</span> <span class="p">{}</span>
@@ -873,7 +989,7 @@
             <span class="s1">&#39;calculations&#39;</span><span class="p">:</span> <span class="n">calculations</span>
         <span class="p">}</span></div>
 
-<div class="viewcode-block" id="CryspyCalculator.refine"><a class="viewcode-back" href="../../../../index.html#easyInterface.Diffraction.Calculators.CryspyCalculator.refine">[docs]</a>    <span class="nd">@time_it</span>
+<div class="viewcode-block" id="CryspyCalculator.refine"><a class="viewcode-back" href="../../../../calculators.html#easyInterface.Diffraction.Calculators.CryspyCalculator.refine">[docs]</a>    <span class="nd">@time_it</span>
     <span class="k">def</span> <span class="nf">refine</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;refinement ...&quot;&quot;&quot;</span>
         <span class="n">refinement_res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cryspy_obj</span><span class="o">.</span><span class="n">refine</span><span class="p">()</span>
@@ -1066,65 +1182,43 @@
         <span class="k">return</span> <span class="n">exp_phases</span></div>
 </pre></div>
 
+           </div>
+           
           </div>
-          
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../../../../index.html">easyInterface</a></h1>
+          <footer>
+  
 
+  <hr/>
 
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Simon Ward
 
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
-
-
-
-
-<h3>Navigation</h3>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../../../index.html">Documentation overview</a><ul>
-  <li><a href="../../../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
+</footer>
 
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2020, Simon Ward.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-    </div>
 
-    
+    </section>
 
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
     
-  </body>
+   
+
+</body>
 </html>

@@ -1,0 +1,323 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>easyInterface.Diffraction.DataClasses.DataObj.Calculation &mdash; easyInterface 0.0.5 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/theme_override.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html" class="icon icon-home"> easyInterface
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">API and developer reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer.html">Interface and Calculators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer.html#container-classes">Container Classes</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/easyDiffraction/easyInterface">Fork easyInterface on Github</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">easyInterface</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>easyInterface.Diffraction.DataClasses.DataObj.Calculation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for easyInterface.Diffraction.DataClasses.DataObj.Calculation</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">easyInterface.Diffraction.DataClasses.Utils.BaseClasses</span> <span class="kn">import</span> <span class="n">LoggedPathDict</span>
+<span class="kn">from</span> <span class="nn">easyInterface</span> <span class="kn">import</span> <span class="n">logger</span> <span class="k">as</span> <span class="n">logging</span>
+
+
+<div class="viewcode-block" id="Limits"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Calculation.Limits">[docs]</a><span class="k">class</span> <span class="nc">Limits</span><span class="p">(</span><span class="n">LoggedPathDict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generator for limits of a dataset</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_obs_lower</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">Inf</span><span class="p">,</span> <span class="n">y_obs_upper</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">Inf</span><span class="p">,</span>
+                 <span class="n">y_diff_upper</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">Inf</span><span class="p">,</span> <span class="n">y_diff_lower</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">Inf</span><span class="p">,</span>
+                 <span class="n">x_calc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_calc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">y_calc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">y_calc</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">x_calc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">x_calc</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span>
+        <span class="n">main</span> <span class="o">=</span> <span class="n">LoggedPathDict</span><span class="p">(</span><span class="n">x_min</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">x_calc</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="n">x_max</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">x_calc</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
+                        <span class="n">y_min</span><span class="o">=</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">y_calc</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">y_obs_lower</span><span class="p">)])</span><span class="o">.</span><span class="n">item</span><span class="p">()),</span>
+                        <span class="n">y_max</span><span class="o">=</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">y_calc</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">y_obs_upper</span><span class="p">)])</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
+
+        <span class="n">difference</span> <span class="o">=</span> <span class="n">LoggedPathDict</span><span class="p">(</span><span class="n">y_min</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">y_diff_lower</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
+                              <span class="n">y_max</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">y_diff_upper</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">main</span><span class="o">=</span><span class="n">main</span><span class="p">,</span> <span class="n">difference</span><span class="o">=</span><span class="n">difference</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Created limits </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;main&#39;</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="CrystalBraggPeaks"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Calculation.CrystalBraggPeaks">[docs]</a><span class="k">class</span> <span class="nc">CrystalBraggPeaks</span><span class="p">(</span><span class="n">LoggedPathDict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generator for HKL reflections and corresponding two theta.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">l</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">ttheta</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="n">l</span><span class="p">,</span> <span class="n">ttheta</span><span class="o">=</span><span class="n">ttheta</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Created a bragg peak </span><span class="si">%s</span><span class="s1"> set with </span><span class="si">%i</span><span class="s1"> peaks&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+        
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> Bragg peaks in phase </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]),</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="BraggPeaks"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Calculation.BraggPeaks">[docs]</a><span class="k">class</span> <span class="nc">BraggPeaks</span><span class="p">(</span><span class="n">LoggedPathDict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Container for multiple calculations</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bragg_peaks</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">CrystalBraggPeaks</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor for holding multiple bragg peaks</span>
+<span class="sd">        :param bragg_peaks: A collection of bragg peak dicts</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bragg_peaks</span><span class="p">,</span> <span class="n">CrystalBraggPeaks</span><span class="p">):</span>
+            <span class="n">bragg_peaks</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">bragg_peaks</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]:</span> <span class="n">bragg_peaks</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bragg_peaks</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">theseCalculations</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">bragg_peak</span> <span class="ow">in</span> <span class="n">bragg_peaks</span><span class="p">:</span>
+                <span class="n">theseCalculations</span><span class="p">[</span><span class="n">bragg_peak</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">bragg_peak</span>
+            <span class="n">bragg_peaks</span> <span class="o">=</span> <span class="n">theseCalculations</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">bragg_peaks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> Calculations&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="CalculatedPattern"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Calculation.CalculatedPattern">[docs]</a><span class="k">class</span> <span class="nc">CalculatedPattern</span><span class="p">(</span><span class="n">LoggedPathDict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Storage container for a calculated pattern</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">y_calc</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">y_diff_lower</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">y_diff_upper</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y_calc</span><span class="o">=</span><span class="n">y_calc</span><span class="p">,</span> <span class="n">y_diff_lower</span><span class="o">=</span><span class="n">y_diff_lower</span><span class="p">,</span> <span class="n">y_diff_upper</span><span class="o">=</span><span class="n">y_diff_upper</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Calculation"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Calculation.Calculation">[docs]</a><span class="k">class</span> <span class="nc">Calculation</span><span class="p">(</span><span class="n">LoggedPathDict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Storage container for calculations</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">bragg_peaks</span><span class="p">:</span> <span class="n">BraggPeaks</span><span class="p">,</span> <span class="n">calculated_pattern</span><span class="p">:</span> <span class="n">CalculatedPattern</span><span class="p">,</span> <span class="n">limits</span><span class="p">:</span> <span class="n">Limits</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">bragg_peaks</span><span class="o">=</span><span class="n">bragg_peaks</span><span class="p">,</span> <span class="n">calculated_pattern</span><span class="o">=</span><span class="n">calculated_pattern</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="n">limits</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">bragg_peaks</span> <span class="o">=</span> <span class="n">BraggPeaks</span><span class="p">({})</span>
+        <span class="n">calculated_pattern</span> <span class="o">=</span> <span class="n">CalculatedPattern</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">limits</span> <span class="o">=</span> <span class="n">Limits</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">bragg_peaks</span><span class="p">,</span> <span class="n">calculated_pattern</span><span class="p">,</span> <span class="n">limits</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">fromPars</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">bragg_crystals</span><span class="p">:</span> <span class="n">CrystalBraggPeaks</span><span class="p">,</span>
+                 <span class="n">y_obs_lower</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">y_obs_upper</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+                 <span class="n">tth</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">y_calc</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">y_diff_lower</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">y_diff_upper</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">bragg_peaks</span> <span class="o">=</span> <span class="n">BraggPeaks</span><span class="p">(</span><span class="n">bragg_crystals</span><span class="p">)</span>
+        <span class="n">calculated_pattern</span> <span class="o">=</span> <span class="n">CalculatedPattern</span><span class="p">(</span><span class="n">tth</span><span class="p">,</span> <span class="n">y_calc</span><span class="p">,</span> <span class="n">y_diff_lower</span><span class="p">,</span> <span class="n">y_diff_upper</span><span class="p">)</span>
+        <span class="n">limits</span> <span class="o">=</span> <span class="n">Limits</span><span class="p">(</span><span class="n">y_obs_lower</span><span class="p">,</span> <span class="n">y_obs_upper</span><span class="p">,</span> <span class="n">y_diff_upper</span><span class="p">,</span> <span class="n">y_diff_lower</span><span class="p">,</span> <span class="n">x_calc</span><span class="o">=</span><span class="n">tth</span><span class="p">,</span> <span class="n">y_calc</span><span class="o">=</span><span class="n">y_calc</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">bragg_peaks</span><span class="p">,</span> <span class="n">calculated_pattern</span><span class="p">,</span> <span class="n">limits</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;Pattern [</span><span class="si">{}</span><span class="s1">] with </span><span class="si">{}</span><span class="s1"> phases&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;bragg_peaks&#39;</span><span class="p">]))</span></div>
+
+
+<div class="viewcode-block" id="Calculations"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Calculation.Calculations">[docs]</a><span class="k">class</span> <span class="nc">Calculations</span><span class="p">(</span><span class="n">LoggedPathDict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Container for multiple calculations</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calculations</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Calculation</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor for holding multiple calculations</span>
+
+<span class="sd">        :param calculations: A collection of calculation dicts</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calculations</span><span class="p">,</span> <span class="n">Calculation</span><span class="p">):</span>
+            <span class="n">calculations</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">calculations</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]:</span> <span class="n">calculations</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calculations</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">theseCalculations</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">calculation</span> <span class="ow">in</span> <span class="n">calculations</span><span class="p">:</span>
+                <span class="n">theseCalculations</span><span class="p">[</span><span class="n">calculation</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">calculation</span>
+            <span class="n">calculations</span> <span class="o">=</span> <span class="n">theseCalculations</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">calculations</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> Calculations&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Simon Ward
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

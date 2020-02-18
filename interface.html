@@ -1,0 +1,538 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>easyInterface Interface &mdash; easyInterface 0.0.5 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/theme_override.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="easyInterface Cryspy Calculator" href="calculators.html" />
+    <link rel="prev" title="Interface and Calculators" href="developer.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> easyInterface
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">API and developer reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="developer.html">Interface and Calculators</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">easyInterface Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#easyinterfaces-project-dictionary">easyInterfaces Project Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calculators.html">easyInterface Cryspy Calculator</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="developer.html#container-classes">Container Classes</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/easyDiffraction/easyInterface">Fork easyInterface on Github</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">easyInterface</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="developer.html">Interface and Calculators</a> &raquo;</li>
+        
+      <li>easyInterface Interface</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="easyinterface-interface">
+<h1>easyInterface Interface<a class="headerlink" href="#easyinterface-interface" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface">
+<em class="property">class </em><code class="sig-prename descclassname">easyInterface.Diffraction.Interface.</code><code class="sig-name descname">CalculatorInterface</code><span class="sig-paren">(</span><em class="sig-param">calculator</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interface to calculators in the <cite>easyInterface.Diffraction.Calculator</cite> class.</p>
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.addExperimentDefinition">
+<code class="sig-name descname">addExperimentDefinition</code><span class="sig-paren">(</span><em class="sig-param">exp_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.addExperimentDefinition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.addExperimentDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an experiment to be simulated from a cif file. Note that this will not have any crystallographic phases
+associated with it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>exp_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path to a experiment file (<cite>.cif</cite>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.addPhase">
+<code class="sig-name descname">addPhase</code><span class="sig-paren">(</span><em class="sig-param">phase</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.addPhase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.addPhase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new phases from a cif file to the list of existing crystal phases.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>phase</strong> (<a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase" title="easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase"><code class="xref py py-class docutils literal notranslate"><span class="pre">Phase</span></code></a>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.addPhaseDefinition">
+<code class="sig-name descname">addPhaseDefinition</code><span class="sig-paren">(</span><em class="sig-param">phase_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.addPhaseDefinition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.addPhaseDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new phases from a cif file to the list of existing crystal phases.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>phase_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path to a phase definition file (<cite>.cif</cite>)</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">interface</span> <span class="o">=</span> <span class="n">CalculatorInterface</span><span class="p">(</span><span class="n">calculator</span><span class="p">)</span>
+<span class="n">phase_path</span> <span class="o">=</span> <span class="s1">&#39;~/Experiments/new_phase.cif&#39;</span>
+<span class="n">interface</span><span class="o">.</span><span class="n">addPhaseDefinition</span><span class="p">(</span><span class="n">phase_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.asCifDict">
+<code class="sig-name descname">asCifDict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.asCifDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.asCifDict" title="Permalink to this definition">¶</a></dt>
+<dd><p>…</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.asDict">
+<code class="sig-name descname">asDict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.asDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.asDict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return data dict.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.experimentsCount">
+<code class="sig-name descname">experimentsCount</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.experimentsCount"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.experimentsCount" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns number of experiments in the project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.experimentsIds">
+<code class="sig-name descname">experimentsIds</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.experimentsIds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.experimentsIds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns labels of the experiments in the project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.final_chi_square">
+<em class="property">property </em><code class="sig-name descname">final_chi_square</code><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.final_chi_square" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the final chi squared of the simulation. Where the final chi squared is the chi squared divided by
+the number of data points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Final chi squared</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.getPhase">
+<code class="sig-name descname">getPhase</code><span class="sig-paren">(</span><em class="sig-param">phase_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.getPhase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.getPhase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a phase from the project dictionary by name if one is supplied. If the phase name is none then all
+phases are returned. If the phase name does not exist KeyError is thrown.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>phase_name</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Name of the phase to be returned or None for all phases</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase" title="easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase"><code class="xref py py-class docutils literal notranslate"><span class="pre">Phase</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Copy of the project dictionaries phase object with name phase_name</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>KeyError</strong> – The supplied key is not a valid phase name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.phasesCount">
+<code class="sig-name descname">phasesCount</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.phasesCount"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.phasesCount" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns number of phases in the project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.phasesIds">
+<code class="sig-name descname">phasesIds</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.phasesIds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.phasesIds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns labels of the phases in the project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.refine">
+<code class="sig-name descname">refine</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.refine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.refine" title="Permalink to this definition">¶</a></dt>
+<dd><p>refinement …</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.saveCifs">
+<code class="sig-name descname">saveCifs</code><span class="sig-paren">(</span><em class="sig-param">save_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.saveCifs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.saveCifs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write project cif files (<cite>main.cif</cite>, <cite>experiments.cif</cite> and <cite>phases.cif</cite>) to a user supplied directory. This
+contains all information needed to recreate the project dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>save_dir</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Directory to where the project cif files should be saved.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.setExperiment">
+<code class="sig-name descname">setExperiment</code><span class="sig-paren">(</span><em class="sig-param">experiment</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.setExperiment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.setExperiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set phases (sample model tab in GUI)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.setExperimentDefinition">
+<code class="sig-name descname">setExperimentDefinition</code><span class="sig-paren">(</span><em class="sig-param">exp_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.setExperimentDefinition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.setExperimentDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the relevant phases file and update the corresponding model</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.setExperiments">
+<code class="sig-name descname">setExperiments</code><span class="sig-paren">(</span><em class="sig-param">experiments=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.setExperiments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.setExperiments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set experiments (Experimental data tab in GUI)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.setPhase">
+<code class="sig-name descname">setPhase</code><span class="sig-paren">(</span><em class="sig-param">phase</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.setPhase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.setPhase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set phases (sample model tab in GUI)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.setPhaseDefinition">
+<code class="sig-name descname">setPhaseDefinition</code><span class="sig-paren">(</span><em class="sig-param">phase_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.setPhaseDefinition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.setPhaseDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a phases cif file and replace existing crystal phases</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>phase_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path to new phase definition file  (<cite>.cif</cite>)</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">interface</span> <span class="o">=</span> <span class="n">CalculatorInterface</span><span class="p">(</span><span class="n">calculator</span><span class="p">)</span>
+<span class="n">phase_path</span> <span class="o">=</span> <span class="s1">&#39;~/Experiments/phases.cif&#39;</span>
+<span class="n">interface</span><span class="o">.</span><span class="n">setPhaseDefinition</span><span class="p">(</span><span class="n">phase_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.setPhases">
+<code class="sig-name descname">setPhases</code><span class="sig-paren">(</span><em class="sig-param">phases=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.setPhases"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.setPhases" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set phases (sample model tab in GUI)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.setProjectFromCalculator">
+<code class="sig-name descname">setProjectFromCalculator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.setProjectFromCalculator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.setProjectFromCalculator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the project dictionary from the calculator given on initialisation. Calling this function will regenerate
+the project dictionary and changes may be lost.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.updatePhases">
+<code class="sig-name descname">updatePhases</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.updatePhases"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.updatePhases" title="Permalink to this definition">¶</a></dt>
+<dd><p>Synchronise the phases in project dictionary by queering the calculator object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.writeExpCif">
+<code class="sig-name descname">writeExpCif</code><span class="sig-paren">(</span><em class="sig-param">save_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.writeExpCif"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.writeExpCif" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the <cite>experiments.cif</cite> where all experiments in the project dictionary are saved to file. This includes the
+instrumental parameters and which phases are in the experiment/s</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>save_dir</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Directory to where the experiment cif file should be saved.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.writeMainCif">
+<code class="sig-name descname">writeMainCif</code><span class="sig-paren">(</span><em class="sig-param">save_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.writeMainCif"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.writeMainCif" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the <cite>main.cif</cite> where links to the experiments and phases are stored and other generalised project
+information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>save_dir</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Directory to where the main cif file should be saved.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.writePhaseCif">
+<code class="sig-name descname">writePhaseCif</code><span class="sig-paren">(</span><em class="sig-param">save_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.writePhaseCif"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.writePhaseCif" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the <cite>phases.cif</cite> where all phases in the project dictionary are saved to file. This cif file should be
+compatible with other crystallographic software.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>save_dir</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Directory to where the phases cif file should be saved.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="easyinterfaces-project-dictionary">
+<h1>easyInterfaces Project Dictionary<a class="headerlink" href="#easyinterfaces-project-dictionary" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="easyInterface.Diffraction.Interface.ProjectDict">
+<em class="property">class </em><code class="sig-prename descclassname">easyInterface.Diffraction.Interface.</code><code class="sig-name descname">ProjectDict</code><span class="sig-paren">(</span><em class="sig-param">interface</em>, <em class="sig-param">app</em>, <em class="sig-param">calculator</em>, <em class="sig-param">info</em>, <em class="sig-param">phases</em>, <em class="sig-param">experiments</em>, <em class="sig-param">calculations</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#ProjectDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.ProjectDict" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class deals with the creation and modification of the main project dictionary.</p>
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.ProjectDict.default">
+<em class="property">classmethod </em><code class="sig-name descname">default</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#ProjectDict.default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.ProjectDict.default" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a default and empty project dictionary</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#easyInterface.Diffraction.Interface.ProjectDict" title="easyInterface.Diffraction.Interface.ProjectDict"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProjectDict</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Default project dictionary with undo/redo functionality</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.ProjectDict.fromPars">
+<em class="property">classmethod </em><code class="sig-name descname">fromPars</code><span class="sig-paren">(</span><em class="sig-param">experiments</em>, <em class="sig-param">phases</em>, <em class="sig-param">calculations</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#ProjectDict.fromPars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.ProjectDict.fromPars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a main project dictionary from phases and experiments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>experiments</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.Experiments" title="easyInterface.Diffraction.DataClasses.DataObj.Experiment.Experiments"><code class="xref py py-class docutils literal notranslate"><span class="pre">Experiments</span></code></a>, <a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.Experiment" title="easyInterface.Diffraction.DataClasses.DataObj.Experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Experiment</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.Experiment" title="easyInterface.Diffraction.DataClasses.DataObj.Experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Experiment</span></code></a>]]) – A collection of experiments to be compared to calculations</p></li>
+<li><p><strong>phases</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phases" title="easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phases"><code class="xref py py-class docutils literal notranslate"><span class="pre">Phases</span></code></a>, <a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase" title="easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase"><code class="xref py py-class docutils literal notranslate"><span class="pre">Phase</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase" title="easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase"><code class="xref py py-class docutils literal notranslate"><span class="pre">Phase</span></code></a>]]) – A Collection of crystallographic phases to be calculated</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#easyInterface.Diffraction.Interface.ProjectDict" title="easyInterface.Diffraction.Interface.ProjectDict"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProjectDict</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Project dictionary with undo/redo</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="calculators.html" class="btn btn-neutral float-right" title="easyInterface Cryspy Calculator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="developer.html" class="btn btn-neutral float-left" title="Interface and Calculators" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Simon Ward
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
