@@ -8,7 +8,31 @@ from easyInterface import VERBOSE
 from abc import abstractmethod
 
 
-class ContainerObj(PathDict):
+class LoggedPathDict(PathDict):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def __deepcopy__(self, memo):
+        """
+        We can't deepcopy log objects on python 3.6 :-(
+        :param memo:
+        :return:
+        """
+        cls = self.__class__
+        newobj = cls.__new__(cls)
+        memo[id(self)] = newobj
+        log_key = None
+        for k, v in self.__dict__.items():
+            if isinstance(v, logging.Logger):
+                log_key = k
+                continue
+            setattr(newobj, k, deepcopy(v, memo))
+        if log_key is not None:
+            setattr(newobj, log_key, logging.getLogger(self.__class__.__module__))
+        return newobj
+
+
+class ContainerObj(LoggedPathDict):
     """
     Container for multiple objects
     """
@@ -34,25 +58,11 @@ class ContainerObj(PathDict):
     def __repr__(self) -> str:
         return ''
 
-    def __deepcopy__(self, memo):
-        cls = self.__class__
-        newobj = cls.__new__(cls)
-        memo[id(self)] = newobj
-        has_log = False
-        for k, v in self.__dict__.items():
-            if k == '_log':
-                has_log = True
-                continue
-            setattr(newobj, k, deepcopy(v, memo))
-        if has_log:
-            setattr(newobj, '_log', logging.getLogger(__name__))
-        return newobj
-
     def getNames(self) -> list:
         return list(self.keys())
 
 
-class Data(PathDict):
+class Data(LoggedPathDict):
     """
     Data class which contains the value, error, constraint, hidden and refine attributes
     """
@@ -73,20 +83,6 @@ class Data(PathDict):
     def __repr__(self) -> str:
         return '{}'.format(self['value'])
 
-    def __deepcopy__(self, memo):
-        cls = self.__class__
-        newobj = cls.__new__(cls)
-        memo[id(self)] = newobj
-        has_log = False
-        for k, v in self.__dict__.items():
-            if k == '_log':
-                has_log = True
-                continue
-            setattr(newobj, k, deepcopy(v, memo))
-        if has_log:
-            setattr(newobj, '_log', logging.getLogger(__name__))
-        return newobj
-
     @property
     def min(self) -> float:
         value = self['value']
@@ -106,26 +102,12 @@ class Data(PathDict):
         return ret
 
 
-class Base(PathDict):
+class Base(LoggedPathDict):
     def __init__(self, value: object = None, unit: object = '') -> object:
         super().__init__(header='Undefined', tooltip='', url='', mapping=None, store=Data(value, unit))
 
     def __repr__(self) -> str:
         return '{} {}'.format(self.value, self.getItemByPath(['store', 'unit']))
-
-    def __deepcopy__(self, memo):
-        cls = self.__class__
-        newobj = cls.__new__(cls)
-        memo[id(self)] = newobj
-        has_log = False
-        for k, v in self.__dict__.items():
-            if k == '_log':
-                has_log = True
-                continue
-            setattr(newobj, k, deepcopy(v, memo))
-        if has_log:
-            setattr(newobj, '_log', logging.getLogger(__name__))
-        return newobj
 
     @property
     def value(self) -> Any:

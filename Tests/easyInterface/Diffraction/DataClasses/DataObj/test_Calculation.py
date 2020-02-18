@@ -3,7 +3,7 @@ from Tests.easyInterface.Diffraction.DataClasses.Utils.Helpers import PathDictDe
 
 
 def PathDictTest(path_dic, expected, expected_type):
-    assert isinstance(path_dic, PathDict)
+    assert isinstance(path_dic, LoggedPathDict)
     keys = path_dic.keys()
     for index, key in enumerate(expected):
         assert key in keys
@@ -13,7 +13,7 @@ def PathDictTest(path_dic, expected, expected_type):
 def test_limits():
     # Empty Test
     expected = ['main', 'difference']
-    expected_type = [PathDict, PathDict]
+    expected_type = [LoggedPathDict, LoggedPathDict]
 
     PathDictDerived(Limits, expected, expected_type)
     lim = Limits()
@@ -34,7 +34,7 @@ def test_limits():
 
     # Data Test
     expected = ['main', 'difference']
-    expected_type = [PathDict, PathDict]
+    expected_type = [LoggedPathDict, LoggedPathDict]
 
     x = [float(x) for x in range(10)]
     y_obs_lower = [x_ - 0.1 for x_ in x]

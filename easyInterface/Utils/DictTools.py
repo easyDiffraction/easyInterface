@@ -164,7 +164,6 @@ class _EmptyCommand(UndoCommand):
         self._key = key
         self._new_value = value
         self._old_value = dictionary.getItem(key)
-        # print(f"dict: {id(self._dictionary)}, key: {id(self._key)}, new val: {id(self._old_value)}, old val: {id(self._old_value)}")
 
 
 class _AddItemCommand(_EmptyCommand):

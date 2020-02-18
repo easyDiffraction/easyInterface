@@ -1,7 +1,6 @@
 from typing import Union
 
-from easyInterface.Utils.DictTools import PathDict
-from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import Base, ContainerObj
+from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import Base, ContainerObj, LoggedPathDict
 from easyInterface import logger as logging
 
 ATOM_DETAILS = {
@@ -58,7 +57,7 @@ ATOM_DETAILS = {
 }
 
 
-class Atom(PathDict):
+class Atom(LoggedPathDict):
     """
     Storage for details about an atom
     """
@@ -226,7 +225,7 @@ class Atoms(ContainerObj):
         return '{} Atoms'.format(len(self))
 
 
-class ADP(PathDict):
+class ADP(LoggedPathDict):
     """
     Data store for Atom site anisotropic displacement parameters
     """
@@ -295,7 +294,7 @@ class ADP(PathDict):
         return val
 
 
-class MSP(PathDict):
+class MSP(LoggedPathDict):
     """
     Data store for Atom site magnetic susceptibility parameters
     """

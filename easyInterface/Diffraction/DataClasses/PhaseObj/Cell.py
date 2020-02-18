@@ -1,5 +1,4 @@
-from easyInterface.Utils.DictTools import PathDict
-from ..Utils.BaseClasses import Base
+from ..Utils.BaseClasses import Base, LoggedPathDict
 from easyInterface import logger as logging
 
 CELL_DETAILS = {
@@ -18,7 +17,7 @@ CELL_DETAILS = {
 }
 
 
-class Cell(PathDict):
+class Cell(LoggedPathDict):
     """
     Container for crysolagraphic unit cell parameters
     """

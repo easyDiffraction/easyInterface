@@ -2,7 +2,7 @@ from typing import Union
 
 import numpy as np
 
-from easyInterface.Utils.DictTools import PathDict
+from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import LoggedPathDict
 from ..Utils.BaseClasses import Base, ContainerObj
 from easyInterface import logger as logging
 
@@ -49,7 +49,7 @@ INTENSITY_DETAILS = {
 }
 
 
-class Resolution(PathDict):
+class Resolution(LoggedPathDict):
     """
     Data store for the resolution parameters
     """
@@ -121,7 +121,7 @@ class Resolution(PathDict):
                                                          self['x'].value, self['y'].value)
 
 
-class Background(PathDict):
+class Background(LoggedPathDict):
     """
     Data store for the background data parameters
     """
@@ -179,7 +179,7 @@ class Backgrounds(ContainerObj):
         return '{} Backgrounds'.format(len(self))
 
 
-class MeasuredPattern(PathDict):
+class MeasuredPattern(LoggedPathDict):
     """
     Storage container for measured patterns
     """
@@ -254,7 +254,7 @@ class MeasuredPattern(PathDict):
         return cls(x, y_obs, sy_obs, y_obs_up, sy_obs_up, y_obs_down, sy_obs_down)
 
 
-class ExperimentPhase(PathDict):
+class ExperimentPhase(LoggedPathDict):
     """
     Storage container for the ExperiemntalPhase details
     """
@@ -304,7 +304,7 @@ class ExperimentPhases(ContainerObj):
         return '{} Experimental phases'.format(len(self))
 
 
-class Experiment(PathDict):
+class Experiment(LoggedPathDict):
     """
     Experimental details data container
     """

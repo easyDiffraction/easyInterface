@@ -2,11 +2,11 @@ from typing import Union
 
 import numpy as np
 
-from easyInterface.Utils.DictTools import PathDict
+from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import LoggedPathDict
 from easyInterface import logger as logging
 
 
-class Limits(PathDict):
+class Limits(LoggedPathDict):
     """
     Generator for limits of a dataset
     """
@@ -18,11 +18,11 @@ class Limits(PathDict):
             y_calc = [0.0]
         if x_calc is None:
             x_calc = [0.0]
-        main = PathDict(x_min=np.amin(x_calc).item(), x_max=np.amax(x_calc).item(),
+        main = LoggedPathDict(x_min=np.amin(x_calc).item(), x_max=np.amax(x_calc).item(),
                         y_min=(np.amin([np.amin(y_calc), np.amin(y_obs_lower)]).item()),
                         y_max=(np.amax([np.amax(y_calc), np.amax(y_obs_upper)]).item()))
 
-        difference = PathDict(y_min=np.amin(y_diff_lower).item(),
+        difference = LoggedPathDict(y_min=np.amin(y_diff_lower).item(),
                               y_max=np.amax(y_diff_upper).item())
 
         super().__init__(main=main, difference=difference)
@@ -30,7 +30,7 @@ class Limits(PathDict):
         self._log.debug('Created limits %s', self['main'])
 
 
-class CrystalBraggPeaks(PathDict):
+class CrystalBraggPeaks(LoggedPathDict):
     """
     Generator for HKL reflections and corresponding two theta.
     """
@@ -44,7 +44,7 @@ class CrystalBraggPeaks(PathDict):
         return "{} Bragg peaks in phase {}".format(len(self['h']), self['name'])
 
 
-class BraggPeaks(PathDict):
+class BraggPeaks(LoggedPathDict):
     """
     Container for multiple calculations
     """
@@ -70,7 +70,7 @@ class BraggPeaks(PathDict):
         return '{} Calculations'.format(len(self))
 
 
-class CalculatedPattern(PathDict):
+class CalculatedPattern(LoggedPathDict):
     """
     Storage container for a calculated pattern
     """
@@ -79,7 +79,7 @@ class CalculatedPattern(PathDict):
         self._log = logging.getLogger(__class__.__module__)
 
 
-class Calculation(PathDict):
+class Calculation(LoggedPathDict):
     """
     Storage container for calculations
     """
@@ -107,7 +107,7 @@ class Calculation(PathDict):
         return 'Pattern [{}] with {} phases'.format(self['name'], len(self['bragg_peaks']))
 
 
-class Calculations(PathDict):
+class Calculations(LoggedPathDict):
     """
     Container for multiple calculations
     """

@@ -4,10 +4,10 @@ from .SpaceGroup import *
 from .Cell import *
 
 from easyInterface import logger as logging
-from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import ContainerObj 
+from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import ContainerObj, LoggedPathDict
 
 
-class Phase(PathDict):
+class Phase(LoggedPathDict):
     """
     Container for crysolographic phase information
     """
