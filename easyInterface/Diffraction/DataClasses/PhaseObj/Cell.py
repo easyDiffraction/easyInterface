@@ -26,6 +26,7 @@ class Cell(LoggedPathDict):
                  angle_alpha: Base, angle_beta: Base, angle_gamma: Base):
         """
         Constructor for the crystolographic unit cell
+
         :param length_a: Unit cell length a
         :param length_b: Unit cell length b
         :param length_c:  Unit cell length c
@@ -67,6 +68,7 @@ class Cell(LoggedPathDict):
     def default(cls) -> 'Cell':
         """
         Default constructor for a crystolographic unit cell
+
         :return: Default crystolographic unit cell container
         """
         length_a = Base(*CELL_DETAILS['length']['default'])
@@ -82,6 +84,7 @@ class Cell(LoggedPathDict):
                  angle_alpha: float, angle_beta: float, angle_gamma: float) -> 'Cell':
         """
         Constructor of a crystolographic unit cell when parameters are known
+
         :param length_a: Unit cell length a
         :param length_b: Unit cell length b
         :param length_c:  Unit cell length c

@@ -14,9 +14,3 @@ logging.addLevelName(5, "verbose")
 # Create the master logger
 from easyInterface.Utils.Logging import Logger
 logger = Logger(level=LEVEL)
-
-# Create a logging object on initialisation 
-from easyInterface.Diffraction.DataClasses import *
-from easyInterface.Utils import *
-
-

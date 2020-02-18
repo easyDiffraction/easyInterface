@@ -66,6 +66,7 @@ class Atom(LoggedPathDict):
                  ADp: 'ADP', MSp: 'MSP'):
         """
         Constructor for an atom
+
         :param atom_site_label: The unique name of the atom in the phase
         :param type_symbol: The type of atom
         :param scat_length_neutron: Neutron scattering length
@@ -129,6 +130,7 @@ class Atom(LoggedPathDict):
     def default(cls, atom_site_label: str) -> 'Atom':
         """
         Default constructor for an atom given a unique name in the phase
+
         :param atom_site_label: The atoms unique name in the phase
         :return: Default atom with a given name
         """
@@ -150,6 +152,7 @@ class Atom(LoggedPathDict):
     def fromXYZ(cls, atom_site_label: str, type_symbol: str, x: float, y: float, z: float) -> 'Atom':
         """
         Construct an atom from name, type and position
+
         :param atom_site_label: The atoms unique name in the phase
         :param type_symbol: The type of atom
         :param x: X position
@@ -171,6 +174,7 @@ class Atom(LoggedPathDict):
                  U_iso_or_equiv: float, ADp: list = None, MSp: list = None) -> 'Atom':
         """
         Atom constructor from parameters
+
         :param atom_site_label: The unique name of the atom in the phase
         :param type_symbol: The type of atom
         :param scat_length_neutron: Neutron scattering length
@@ -211,7 +215,6 @@ class Atoms(ContainerObj):
     """
     Container for multiple atoms
     """
-
     def __init__(self, atoms: Union[Atom, dict, list]):
         """
         Constructor for multiple atoms

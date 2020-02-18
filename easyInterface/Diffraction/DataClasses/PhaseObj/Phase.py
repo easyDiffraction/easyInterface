@@ -13,7 +13,8 @@ class Phase(LoggedPathDict):
     """
     def __init__(self, name: str, spacegroup: SpaceGroup, cell: Cell, atoms: Union[Atom, dict, Atoms], sites: dict):
         """
-        Constructor for a crysolographic phase
+        Constructor for a crystallographic phase
+
         :param name: The name of the crystolographic phase
         :param spacegroup: The phase spacegroup information
         :param cell: The unit cell parameters
@@ -31,7 +32,8 @@ class Phase(LoggedPathDict):
     @classmethod
     def default(cls, name: str) -> 'Phase':
         """
-        Default constructor for a crysolographic phase with a given name
+        Default constructor for a crystallographic phase with a given name
+
         :return: Default empty phase with a name
         """
         cell = Cell.default()
@@ -59,25 +61,27 @@ class Phases(ContainerObj):
     """
     def __init__(self, phases: Union[Phase, dict, list]):
         """
-        Contructor for the phases dict
+        Constructor for the phases dict
+
         :param phases: Collection of phases
         """
         super().__init__(phases, Phase, 'phasename')
         self._log = logging.getLogger(__class__.__module__)
         self._log.debug('Phases created: %s', self)
 
-    def renamePhase(self, oldPhaseName: str, newPhaseName: str) -> NoReturn:
+    def renamePhase(self, old_phase_name: str, new_phase_name: str) -> NoReturn:
         """
         Easy method of renaming a phase
-        :param oldPhaseName: phase name to be changed
-        :param newPhaseName: new phase name
+
+        :param old_phase_name: phase name to be changed
+        :param new_phase_name: new phase name
         """
-        if oldPhaseName not in self.keys():
-            self._log.warning('Key {} not in phases', oldPhaseName)
+        if old_phase_name not in self.keys():
+            self._log.warning('Key {} not in phases', old_phase_name)
             raise KeyError
-        self[newPhaseName] = self.pop(oldPhaseName)
-        self[newPhaseName]['phasename'] = newPhaseName
-        self._log.debug('Phasename changed {} -> {}'.format(oldPhaseName, newPhaseName))
+        self[new_phase_name] = self.pop(old_phase_name)
+        self[new_phase_name]['phasename'] = new_phase_name
+        self._log.debug('Phasename changed {} -> {}'.format(old_phase_name, new_phase_name))
 
     def __repr__(self):
         return '{} Phases'.format(len(self))

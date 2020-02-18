@@ -1,0 +1,57 @@
+* :ref:`create_simple_gallery` by automatically running Python files,
+  capturing outputs + figures, and rendering
+  them into rST files ready for Sphinx when you build the documentation.
+  Learn how to :ref:`set_up_your_project`
+* :ref:`embedding_rst`, allowing you to interweave narrative-like content
+  with code that generates plots in your documentation. Sphinx-Gallery also
+  automatically generates a Jupyter Notebook for each your example page.
+* :ref:`references_to_examples`. Sphinx-Gallery can generate mini-galleries
+  listing all examples that use a particular function/method/etc.
+* :ref:`link_to_documentation`. Sphinx-Gallery can automatically add links to
+  API documentation for functions/methods/classes that are used in your
+  examples (for any Python module that uses intersphinx).
+* :ref:`multiple_galleries_config` to create and embed galleries for several
+  folders of examples.
+
+.. _install_sg:
+
+.. include:: ../README.rst
+   :start-after: installation-begin-content
+   :end-before: installation-end-content
+
+Sphinx-Gallery Show: :ref:`examples-index`
+------------------------------------------
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Using Sphinx Gallery
+
+   getting_started
+   syntax
+   configuration
+   projects_list
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Advanced usage and information
+
+   advanced
+   faq
+   utils
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Example galleries
+
+   auto_examples/index
+   tutorials/index
+   auto_mayavi_examples/index
+
+.. toctree::
+   :maxdepth: 2
+   :caption: API and developer reference
+
+   reference
+   changes
+   Fork sphinx-gallery on Github <https://github.com/sphinx-gallery/sphinx-gallery>

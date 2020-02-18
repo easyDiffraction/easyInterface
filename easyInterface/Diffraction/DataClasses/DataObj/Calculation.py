@@ -1,7 +1,6 @@
 from typing import Union
 
 import numpy as np
-
 from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import LoggedPathDict
 from easyInterface import logger as logging
 
@@ -114,6 +113,7 @@ class Calculations(LoggedPathDict):
     def __init__(self, calculations: Union[Calculation, dict, list]):
         """
         Constructor for holding multiple calculations
+
         :param calculations: A collection of calculation dicts
         """
         if isinstance(calculations, Calculation):

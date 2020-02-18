@@ -8,7 +8,7 @@ logger.addSysOutput()
 log = logger.getLogger(__name__)
 
 
-@pytest.mark.parametrize('example', glob.glob(os.path.join('Examples', '*.py')))
+@pytest.mark.parametrize('example', glob.glob(os.path.join('examples', 'no_output', '*.py')))
 def test_examples(example):
     example = example.replace(os.path.sep, '.')
     log.info('\033[1;35;49mStarting feature test: %s\033[0m', example)

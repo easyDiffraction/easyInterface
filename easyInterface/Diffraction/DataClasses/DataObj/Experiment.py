@@ -56,6 +56,7 @@ class Resolution(LoggedPathDict):
     def __init__(self, u: Base, v: Base, w: Base, x: Base, y: Base):
         """
         Dictionary store for resolution parameters
+
         :param u: resolution parameter u
         :param v: resolution parameter v
         :param w:  resolution parameter w
@@ -89,6 +90,7 @@ class Resolution(LoggedPathDict):
     def default(cls) -> 'Resolution':
         """
         Default constructor for the resolution dict
+
         :return: Default resolution dict
         """
         u = Base(*RESOLUTION_DETAILS['UVWXY']['default'])
@@ -102,6 +104,7 @@ class Resolution(LoggedPathDict):
     def fromPars(cls, u: float, v: float, w: float, x: float, y: float) -> 'Resolution':
         """
         Constructor when resolution parameters are known
+
         :param u: resolution parameter u
         :param v: resolution parameter v
         :param w: resolution parameter w
@@ -128,6 +131,7 @@ class Background(LoggedPathDict):
     def __init__(self, ttheta: float, intensity: Base):
         """
         Background dictionary
+
         :param ttheta: Two Theta angle in degrees
         :param intensity: Intensity data store
         :return: Background data object
@@ -142,6 +146,7 @@ class Background(LoggedPathDict):
     def default(cls) -> 'Background':
         """
         Default constructor for a background point
+
         :return: Default background data object
         """
         ttheta = 0.0
@@ -152,6 +157,7 @@ class Background(LoggedPathDict):
     def fromPars(cls, ttheta: float, intensity: float) -> 'Background':
         """
         Constructor for background when two theta and intensity are known
+
         :param ttheta: Two Theta angle in degrees
         :param intensity: Value for intensity
         :return: Background data dict
@@ -170,6 +176,7 @@ class Backgrounds(ContainerObj):
     def __init__(self, backgrounds: Union[Background, dict, list]):
         """
         Constructor for Background data points
+
         :param backgrounds: Background parameters formed from Background dicts
         """
         super().__init__(backgrounds, Background)
@@ -188,6 +195,7 @@ class MeasuredPattern(LoggedPathDict):
                  sy_obs_down: Union[list, None] = None):
         """
         Constructor for a measured pattern
+
         :param x: Generally a two theta value
         :param y_obs: Observed intensity
         :param sy_obs: Observed Error
@@ -209,6 +217,7 @@ class MeasuredPattern(LoggedPathDict):
     def isPolarised(self) -> bool:
         """
         Is the measured data of a polarised type?
+
         :return: True if it is from a polarised measurement, false otherwise
         """
         if self['y_obs_up'] is None:
@@ -220,6 +229,7 @@ class MeasuredPattern(LoggedPathDict):
     def y_obs_upper(self) -> list:
         """
         Upper data confidence bound
+
         :return: value of upper confidence bound
         """
         return (np.array(self['y_obs']) + np.array(self['sy_obs'])).tolist()
@@ -228,6 +238,7 @@ class MeasuredPattern(LoggedPathDict):
     def y_obs_lower(self) -> list:
         """
         Lower data confidence bound
+
         :return: value of lower confidence bound
         """
         return (np.array(self['y_obs']) - np.array(self['sy_obs'])).tolist()
@@ -236,6 +247,7 @@ class MeasuredPattern(LoggedPathDict):
     def default(cls, polarised: bool = False):
         """
         Default constructor for measured data container
+
         :param polarised: Should the container be initialised as a polarised data container?
         :return: Empty data container
         """
@@ -261,6 +273,7 @@ class ExperimentPhase(LoggedPathDict):
     def __init__(self, name: str, scale: Base):
         """
         Constructor for the Experimental phase container
+
         :param scale: phase scale as data object
         """
         super().__init__(name=name, scale=scale)
@@ -273,6 +286,7 @@ class ExperimentPhase(LoggedPathDict):
     def default(cls, name: str) -> 'ExperimentPhase':
         """
         Default experimental phase data container
+
         :return: Default experimental phase data container
         """
         scale = Base(*SCALE_DETAILS['scale']['default'])
@@ -282,6 +296,7 @@ class ExperimentPhase(LoggedPathDict):
     def fromPars(cls, name: str, scale: float) -> 'ExperimentPhase':
         """
         Parameter initialised experimental phase data container
+
         :return: Set experimental phase data container
         """
         scale = Base(scale, SCALE_DETAILS['scale']['default'][1])
@@ -295,6 +310,7 @@ class ExperimentPhases(ContainerObj):
     def __init__(self, experiment_phases: Union[list, ExperimentPhase, dict]):
         """
         Constructor for holding multiple experiments
+
         :param experiments: A collection of experimental dicts
         """
         super().__init__(experiment_phases, ExperimentPhase)
@@ -312,6 +328,7 @@ class Experiment(LoggedPathDict):
                  resolution: Resolution, measured_pattern: MeasuredPattern):
         """
         Constructor for experimental data container
+
         :param name: The name of the experimental data
         :param wavelength: What wavelength was the experiment taken at
         :param offset: The experimental offset
@@ -336,6 +353,7 @@ class Experiment(LoggedPathDict):
     def default(cls, name: str) -> 'Experiment':
         """
         Default constructor for an Experiment
+
         :param name: What the experiment should be called
         :return: Default empty experiment
         """
@@ -352,6 +370,7 @@ class Experiment(LoggedPathDict):
                  resolution: Resolution, measured_pattern: MeasuredPattern) -> 'Experiment':
         """
         Constructor of experiment from parameters
+        
         :param name: What the experiment should be called
         :param wavelength: Experimental wavelength
         :param offset: Experimental offset

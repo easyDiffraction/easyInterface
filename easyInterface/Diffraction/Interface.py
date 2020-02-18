@@ -4,9 +4,9 @@ __version__ = "2020_02_01"
 import os
 from datetime import datetime
 from copy import deepcopy
-from typing import List, Callable, Any
+from typing import List, Callable, Any, Union
 
-from easyInterface.Diffraction.DataClasses.DataObj.Calculation import *
+from easyInterface.Diffraction.DataClasses.DataObj.Calculation import Calculation, Calculations
 from easyInterface.Diffraction.DataClasses.DataObj.Experiment import Experiments, Experiment, ExperimentPhase
 from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import Phases, Phase
 from easyInterface.Utils.DictTools import UndoableDict
@@ -14,6 +14,7 @@ from easyInterface.Diffraction.DataClasses.Utils.InfoObjs import Interface, App,
 from easyInterface.Utils.Helpers import time_it
 from easyInterface import logger as logging
 
+from numpy import datetime64
 
 class ProjectDict(UndoableDict):
     """
@@ -137,7 +138,7 @@ class CalculatorInterface:
         except (TypeError, FileNotFoundError):
             self.project_dict.setItemByPath(['info', 'modified_datetime'], datetime.min)
         self.project_dict.setItemByPath(['info', 'name'], self.calculator.getProjectName())
-        self.project_dict.setItemByPath(['info', 'refinement_datetime'], str(np.datetime64('now')))
+        self.project_dict.setItemByPath(['info', 'refinement_datetime'], str(datetime64('now')))
 
         final_chi_square, n_res = self.calculator.getChiSq()
         final_chi_square = final_chi_square / n_res
@@ -248,15 +249,43 @@ class CalculatorInterface:
 
     # Output section
     def writeMainCif(self, save_dir: str):
+        """
+        Write the `main.cif` where links to the experiments and phases are stored and other generalised project
+        information.
+
+        :param save_dir: Directory to where the main cif file should be saved.
+        :return: None
+        """
         self.calculator.writeMainCif(save_dir)
 
     def writePhaseCif(self, save_dir: str):
+        """
+        Write the `phases.cif` where all phases in the project dictionary are saved to file. This cif file should be
+        compatible with other crystallographic software.
+
+        :param save_dir: Directory to where the phases cif file should be saved.
+        :return: None
+        """
         self.calculator.writePhaseCif(save_dir)
 
     def writeExpCif(self, save_dir: str):
+        """
+        Write the `experiments.cif` where all experiments in the project dictionary are saved to file. This includes the
+        instrumental parameters and which phases are in the experiment/s
+
+        :param save_dir: Directory to where the experiment cif file should be saved.
+        :return: None
+        """
         self.calculator.writeExpCif(save_dir)
 
     def saveCifs(self, save_dir: str):
+        """
+        Write project cif files (`main.cif`, `experiments.cif` and `phases.cif`) to a user supplied directory. This
+        contains all information needed to recreate the project dictionary.
+
+        :param save_dir: Directory to where the project cif files should be saved.
+        :return: None
+        """
         self.writeMainCif(save_dir)
         self.writePhaseCif(save_dir)
         self.writeExpCif(save_dir)
@@ -266,6 +295,11 @@ class CalculatorInterface:
     ###
     @time_it
     def updatePhases(self):
+        """
+        Synchronise the phases in project dictionary by queering the calculator object.
+
+        :return: None
+        """
         phases = self.calculator.getPhases()
 
         if len(self.project_dict['phases']) == 0:
@@ -294,9 +328,10 @@ class CalculatorInterface:
         """
         Returns a phase from the project dictionary by name if one is supplied. If the phase name is none then all
         phases are returned. If the phase name does not exist KeyError is thrown.
-        :param phase_name: Name of the phase to de returned or None for all phases
+
+        :param phase_name: Name of the phase to be returned or None for all phases
         :return: Copy of the project dictionaries phase object with name phase_name
-        :raises KeyError:
+        :raises KeyError: The supplied key is not a valid phase name
         """
         if phase_name in self.project_dict['phases']:
             return deepcopy(self.project_dict['phases'][phase_name])

@@ -1,9 +1,16 @@
+"""
+Performing a fit
+================
+This demonstrates an example of how to load an example and create a interface to a cryspy calculator and then fit a
+value.
+"""
+
+
 import os
 from easyInterface.Diffraction.Calculators import CryspyCalculator
 from easyInterface.Diffraction.Interface import CalculatorInterface
 
-
-main_rcif = os.path.join('Examples', 'PbSO4_powder-1d_neutrons-unpol_D1A(ILL)', 'main.cif')
+main_rcif = os.path.join('examples', 'PbSO4_powder-1d_neutrons-unpol_D1A(ILL)', 'main.cif')
 calculator = CryspyCalculator(main_rcif)
 
 interface = CalculatorInterface(calculator)
