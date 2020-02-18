@@ -17,7 +17,7 @@ Please, visit <https://easyDiffraction.org> for more details.
 
 [25]: http://badges.herokuapp.com/travis/easydiffraction/easyInterface?env=BADGE=win&label=Windows%2010.0&branch=master
 
-[26]: http://badges.herokuapp.com/travis/easydiffraction/easyInterface?env=BADGE=osx&label=macOS%2010.13%20(High%20Sierra)&branch=master
+[26]: http://badges.herokuapp.com/travis/easydiffraction/easyInterface?env=BADGE=osx&label=macOS%2010.14&branch=master
 
 [27]: http://badges.herokuapp.com/travis/easydiffraction/easyInterface?env=BADGE=linux&label=Ubuntu%20Linux%2016.04%20(Xenial)&branch=master
 
