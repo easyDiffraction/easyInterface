@@ -35,6 +35,7 @@ jobs:
       run: |
         git clone https://github.com/easyDiffraction/easyInterface.git --branch gh-pages --single-branch gh-pages
         cp -r docs/_build/html/* gh-pages/
+        cp docs/_build/latex/easyinterface.pdf gh-pages/_static/
         cd gh-pages
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
