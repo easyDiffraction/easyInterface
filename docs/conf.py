@@ -13,16 +13,21 @@
 import os
 import sys
 import sphinx_rtd_theme
+from datetime import date
+from easyInterface.Utils.Helpers import getReleaseInfo
+
+
 sys.path.insert(0, os.path.abspath('../'))
 
 # -- Project information -----------------------------------------------------
 
 project = 'easyInterface'
-copyright = '2020, Simon Ward'
+copyright = u'2019-%s, Simon Ward' % date.today().year
 author = 'Simon Ward'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.5'
+
+release = getReleaseInfo(os.path.join('..', 'easyInterface', 'Release.yml'))['release']['version']
 
 
 # -- General configuration ---------------------------------------------------
@@ -37,7 +42,21 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
+    'sphinx_gallery.gen_gallery',
 ]
+
+sphinx_gallery_conf = {
+    'examples_dirs': '../examples',   # path to your example scripts
+    'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
+    'binder': {'org': 'easyDiffraction',
+               'repo': 'easyInterface',
+               'branch': 'master',
+               'binderhub_url': 'https://mybinder.org',
+               'dependencies': '../requirements.txt',
+               'notebooks_dir': 'tutorials',
+               'use_jupyter_lab': True,
+               },
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

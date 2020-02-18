@@ -1,8 +1,11 @@
 # release
 release:
   name: easyInterface
-  version: 0.0.4
-  date: 31 Jan 2020
+  version: 0.0.5
+  date: 18 Feb 2020
   url: https://github.com/easyDiffraction/easyInterface
   changes: # Get from pull requests description?
-  - Where to start... Welcome to easyInterface
+  - Docstring are updated
+  - Website is live http://easyDiffraction.org/easyInterface
+  - Python 3.6 compatibility fixed
+  - Speed improvements

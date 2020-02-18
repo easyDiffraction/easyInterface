@@ -228,7 +228,7 @@ class MeasuredPattern(LoggedPathDict):
     @property
     def y_obs_upper(self) -> list:
         """
-        Upper data confidence bound
+        Upper data confidence bound.
 
         :return: value of upper confidence bound
         """
@@ -237,7 +237,7 @@ class MeasuredPattern(LoggedPathDict):
     @property
     def y_obs_lower(self) -> list:
         """
-        Lower data confidence bound
+        Lower data confidence bound.
 
         :return: value of lower confidence bound
         """
@@ -246,7 +246,7 @@ class MeasuredPattern(LoggedPathDict):
     @classmethod
     def default(cls, polarised: bool = False):
         """
-        Default constructor for measured data container
+        Default constructor for measured data container.
 
         :param polarised: Should the container be initialised as a polarised data container?
         :return: Empty data container
@@ -268,7 +268,7 @@ class MeasuredPattern(LoggedPathDict):
 
 class ExperimentPhase(LoggedPathDict):
     """
-    Storage container for the ExperiemntalPhase details
+    Storage container for the Experimental Phase details
     """
     def __init__(self, name: str, scale: Base):
         """
@@ -305,7 +305,7 @@ class ExperimentPhase(LoggedPathDict):
 
 class ExperimentPhases(ContainerObj):
     """
-    Storage of multiple phase markers associated with experiemnts
+    Storage of multiple phase markers associated with experiments
     """
     def __init__(self, experiment_phases: Union[list, ExperimentPhase, dict]):
         """
@@ -370,7 +370,7 @@ class Experiment(LoggedPathDict):
                  resolution: Resolution, measured_pattern: MeasuredPattern) -> 'Experiment':
         """
         Constructor of experiment from parameters
-        
+
         :param name: What the experiment should be called
         :param wavelength: Experimental wavelength
         :param offset: Experimental offset
@@ -378,7 +378,7 @@ class Experiment(LoggedPathDict):
         :param background: Background model
         :param resolution: Resolution model
         :param measured_pattern: The Measured data
-        :return: Experiemnt from parameters
+        :return: Experiment from parameters
         """
         wavelength = Base(wavelength, EXPERIMENT_DETAILS['wavelength']['default'][1])
         offset = Base(offset, EXPERIMENT_DETAILS['offset']['default'][1])
