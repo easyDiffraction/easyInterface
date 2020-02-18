@@ -16,7 +16,7 @@ jobs:
     - uses: ammaraskar/sphinx-action@master
       with:
         pre-build-command: "apt-get update -y && apt-get install -y git latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended && pip install sphinx-autodoc-typehints"
-        build-command: "make html && make latexpdf"
+        build-command: "make html latexpdf"
         docs-folder: "docs/"
     # Great extra actions to compose with:
     # Create an artifact of the html output.
