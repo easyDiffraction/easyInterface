@@ -1,5 +1,5 @@
 
-<img src="https://raw.githubusercontent.com/easyDiffraction/easyInterface/master/docs/_static/easyInterface_logo.svg?sanitize=true" height="80"><img>
+<img src="https://raw.githubusercontent.com/easyDiffraction/easyInterface/master/docs/_static/easyInterface_logo.png" height="80"><img>
 
 **easyInterface** is he easy way to interface with crystallographic calculators
 
