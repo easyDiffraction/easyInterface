@@ -52,7 +52,7 @@ the project is then displayed.
   .. container:: binder-badge
 
     .. image:: https://mybinder.org/badge_logo.svg
-      :target: https://mybinder.org/v2/gh/easyDiffraction/easyInterface/master?urlpath=lab/tree/tutorials/auto_examples/no_output/temp_test.ipynb
+      :target: https://mybinder.org/v2/gh/easyDiffraction/easyInterface/gh-pages?urlpath=lab/tree/tutorials/auto_examples/no_output/temp_test.ipynb
       :width: 150 px
 
 
