@@ -1,1 +1,2 @@
-recursive-include examples *
+include easyInterface/Release.json
+recursive-include examples/ *.cif

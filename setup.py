@@ -12,7 +12,6 @@ setup(
     name=project_info.get('name', 'easyInterface'),
     version=project_info.get('version', '0.0.0'),
     packages=find_packages(),
-    package_data={'': ['Release.json']},
     include_package_data=True,
     url=project_info.get('url', 'https://github.com/easyDiffraction/easyInterface'),
     license='GPL3',
