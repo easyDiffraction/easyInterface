@@ -51,9 +51,9 @@ sphinx_gallery_conf = {
     'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
     'binder': {'org': 'easyDiffraction',
                'repo': 'easyInterface',
-               'branch': 'master',
+               'branch': 'gh-pages',
                'binderhub_url': 'https://mybinder.org',
-               'dependencies': '../requirements.txt',
+               'dependencies': './requirements.txt',
                'notebooks_dir': 'tutorials',
                'use_jupyter_lab': True,
                },

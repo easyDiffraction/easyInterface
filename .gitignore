@@ -10,3 +10,5 @@ easyInterface.egg-info/
 src/
 
 docs/_build/
+
+docs/auto_examples/
