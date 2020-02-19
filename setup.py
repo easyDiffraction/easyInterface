@@ -1,7 +1,6 @@
 import os
 from setuptools import setup, find_packages
 import json
-from glob import glob
 
 try:
     with open(os.path.join('easyInterface', 'Release.json')) as json_file:
@@ -14,7 +13,6 @@ setup(
     version=project_info.get('version', '0.0.0'),
     packages=find_packages(),
     package_data={'': ['Release.json']},
-    data_files=[('examples', glob('examples/**/*', recursive=True))],
     include_package_data=True,
     url=project_info.get('url', 'https://github.com/easyDiffraction/easyInterface'),
     license='GPL3',
