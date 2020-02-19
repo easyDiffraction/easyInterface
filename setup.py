@@ -1,5 +1,5 @@
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 import json
 
 try:
@@ -11,11 +11,9 @@ except FileNotFoundError:
 setup(
     name=project_info.get('name', 'easyInterface'),
     version=project_info.get('version', '0.0.0'),
-    packages=['easyInterface', 'easyInterface.Utils', 'easyInterface.Diffraction',
-              'easyInterface.Diffraction.Calculators', 'easyInterface.Diffraction.DataClasses',
-              'easyInterface.Diffraction.DataClasses.Utils', 'easyInterface.Diffraction.DataClasses.DataObj',
-              'easyInterface.Diffraction.DataClasses.PhaseObj'],
+    packages=find_packages(),
     package_data={'': ['Release.json']},
+    data_files={'examples': ['examples/*']},
     include_package_data=True,
     url=project_info.get('url', 'https://github.com/easyDiffraction/easyInterface'),
     license='GPL3',
@@ -25,9 +23,11 @@ setup(
     install_requires=[
         'cryspy>=0.2.0',
         'dictdiffer',
-        'asteval',
-        'pyyaml'
+        'asteval'
     ],
+    tests_require=['pytest',
+                   'pytest_mock'
+                   ],
 
     classifiers=[
         'Development Status :: 3 - Alpha',

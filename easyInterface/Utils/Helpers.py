@@ -61,6 +61,10 @@ def get_num_refine_pars(project_dict):
     return numPars
 
 
+def getExamplesDir():
+    return os.path.join(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), 'examples')
+
+
 def getReleaseInfo(file_path):
     try:
         with open(file_path) as json_file:
