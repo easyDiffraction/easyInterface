@@ -1,21 +1,25 @@
 import os
 from setuptools import setup
-from easyInterface.Utils.Helpers import getReleaseInfo
+import json
 
-project_info = getReleaseInfo(os.path.join('easyInterface', 'Release.yml'))['release']
+try:
+    with open(os.path.join('easyInterface', 'Release.json')) as json_file:
+        project_info = json.load(json_file)
+except FileNotFoundError:
+    project_info = dict()
 
 setup(
-    name=project_info['name'],
-    version=project_info['version'],
+    name=project_info.get('name', 'easyInterface'),
+    version=project_info.get('version', '0.0.0'),
     packages=['easyInterface', 'easyInterface.Utils', 'easyInterface.Diffraction',
               'easyInterface.Diffraction.Calculators', 'easyInterface.Diffraction.DataClasses',
               'easyInterface.Diffraction.DataClasses.Utils', 'easyInterface.Diffraction.DataClasses.DataObj',
               'easyInterface.Diffraction.DataClasses.PhaseObj'],
-    package_data={'': ['Release.yml']},
+    package_data={'': ['Release.json']},
     include_package_data=True,
-    url=project_info['url'],
+    url=project_info.get('url', 'https://github.com/easyDiffraction/easyInterface'),
     license='GPL3',
-    author=project_info['author'],
+    author=project_info.get('author', 'Simon Ward'),
     author_email='',
     description='Description  easyInterface - The easy way to interface with crystallographic calculators ',
     install_requires=[

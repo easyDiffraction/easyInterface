@@ -18,7 +18,7 @@ from datetime import date
 sys.path.insert(0, os.path.abspath('../'))
 
 from easyInterface.Utils.Helpers import getReleaseInfo
-project_info = getReleaseInfo(os.path.join('..', 'easyInterface', 'Release.yml'))['release']
+project_info = getReleaseInfo(os.path.join('..', 'easyInterface', 'Release.json'))
 
 # -- Project information -----------------------------------------------------
 

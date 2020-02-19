@@ -1,0 +1,13 @@
+{
+    "name": "easyInterface",
+    "version": "0.0.5",
+    "date": "18 Feb 2020",
+    "author": "Simon Ward",
+    "url": "https://github.com/easyDiffraction/easyInterface",
+    "changes": [
+        "Docstring are updated",
+        "Website is live http://easyDiffraction.org/easyInterface",
+        "Python 3.6 compatibility fixed",
+        " Speed improvements"
+    ]
+}

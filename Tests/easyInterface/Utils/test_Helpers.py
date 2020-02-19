@@ -25,8 +25,8 @@ def test_find_in_obj():
 
 
 def test_getReleaseInfo():
-    file = os.path.join('easyInterface', 'Release.yml')
-    info = getReleaseInfo(file)['release']
+    file = os.path.join('easyInterface', 'Release.json')
+    info = getReleaseInfo(file)
     assert isinstance(info, dict)
     keys = info.keys()
     assert 'name' in keys

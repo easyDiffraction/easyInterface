@@ -1,4 +1,5 @@
 import os
+import json
 import operator
 import webbrowser
 from functools import reduce
@@ -61,19 +62,19 @@ def get_num_refine_pars(project_dict):
 
 
 def getReleaseInfo(file_path):
-    import yaml
-
-    default = {
-        'name': 'easyInterface',
-        'version': '0.0.0',
-        'url': 'http://easydiffraction.org'
-    }
-
-    if not os.path.isfile(file_path):
-        return default
-    with open(file_path, 'r') as file:
-        file_content = yaml.load(file, Loader=yaml.FullLoader)
-        return file_content
+    try:
+        with open(file_path) as json_file:
+            project_info = json.load(json_file)
+    except FileNotFoundError:
+        project_info = {
+            "name": "easyInterface",
+            "version": "0.0.0",
+            "date": "01 Jan 2020",
+            "author": "Simon Ward",
+            "url": "https://github.com/easyDiffraction/easyInterface",
+            "changes": []
+        }
+    return project_info
 
 
 # Useful decorators
@@ -85,6 +86,7 @@ def counted(func):
     :param func: Function to be counted
     :return: Results from function call
     """
+
     def wrapped(*args, **kwargs):
         wrapped.calls += 1
         return func(*args, **kwargs)

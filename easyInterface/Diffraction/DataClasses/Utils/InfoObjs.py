@@ -31,7 +31,7 @@ INFO_DETAILS = {
     }
 }
 
-INTERFACE_INFO = getReleaseInfo(join(dirname(dirname(dirname(dirname(__file__)))), 'Release.yml'))['release']
+INTERFACE_INFO = getReleaseInfo(join(dirname(dirname(dirname(dirname(__file__)))), 'Release.json'))
 
 
 class Info(PathDict):
