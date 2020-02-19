@@ -4,6 +4,7 @@ __version__ = "2020_02_01"
 from collections import deque, UserDict
 from copy import deepcopy
 from typing import Union, Any, NoReturn, Tuple, List
+import abc
 
 import dictdiffer
 
@@ -127,7 +128,7 @@ class UndoStack:
             return ''
 
 
-class UndoCommand:
+class UndoCommand(metaclass=abc.ABCMeta):
     """
     The Command interface pattern
     """
@@ -136,17 +137,19 @@ class UndoCommand:
         self._obj = obj
         self._text = None
 
+    @abc.abstractmethod
     def undo(self):
         """
         Undo implementation which should be overwritten
         """
-        raise NotImplementedError
+        pass
 
+    @abc.abstractmethod
     def redo(self):
         """
         Redo implementation which should be overwritten
         """
-        raise NotImplementedError
+        pass
 
     def setText(self, text: str):
         self._text = text
