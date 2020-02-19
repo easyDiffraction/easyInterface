@@ -18,10 +18,13 @@ value.
 
 
     import os
+    from easyInterface.Utils.Helpers import getExamplesDir
     from easyInterface.Diffraction.Calculators import CryspyCalculator
     from easyInterface.Diffraction.Interface import CalculatorInterface
 
-    main_rcif = os.path.join('examples', 'PbSO4_powder-1d_neutrons-unpol_D1A(ILL)', 'main.cif')
+    data_dir = getExamplesDir()
+    main_rcif = os.path.join(data_dir, 'PbSO4_powder-1d_neutrons-unpol_D1A(ILL)', 'main.cif')
+
     calculator = CryspyCalculator(main_rcif)
 
     interface = CalculatorInterface(calculator)

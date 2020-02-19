@@ -171,11 +171,12 @@
 about the project is then displayed.</p>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 
+<span class="kn">from</span> <span class="nn">easyInterface.Utils.Helpers</span> <span class="kn">import</span> <span class="n">getExamplesDir</span>
 <span class="kn">from</span> <span class="nn">easyInterface.Diffraction.Calculators</span> <span class="kn">import</span> <span class="n">CryspyCalculator</span>
 <span class="kn">from</span> <span class="nn">easyInterface.Diffraction.QtInterface</span> <span class="kn">import</span> <span class="n">QtCalculatorInterface</span>
 
-
-<span class="n">main_rcif</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;examples&#39;</span><span class="p">,</span> <span class="s1">&#39;Fe3O4_powder-1d_neutrons-pol_5C1(LLB)&#39;</span><span class="p">,</span> <span class="s1">&#39;main.cif&#39;</span><span class="p">)</span>
+<span class="n">data_dir</span> <span class="o">=</span> <span class="n">getExamplesDir</span><span class="p">()</span>
+<span class="n">main_rcif</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s1">&#39;Fe3O4_powder-1d_neutrons-pol_5C1(LLB)&#39;</span><span class="p">,</span> <span class="s1">&#39;main.cif&#39;</span><span class="p">)</span>
 <span class="n">calculator</span> <span class="o">=</span> <span class="n">CryspyCalculator</span><span class="p">(</span><span class="n">main_rcif</span><span class="p">)</span>
 
 <span class="n">interface</span> <span class="o">=</span> <span class="n">QtCalculatorInterface</span><span class="p">(</span><span class="n">calculator</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>

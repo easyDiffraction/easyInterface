@@ -170,10 +170,13 @@
 <p>This demonstrates an example of how to load an example and create a interface to a cryspy calculator and then fit a
 value.</p>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">easyInterface.Utils.Helpers</span> <span class="kn">import</span> <span class="n">getExamplesDir</span>
 <span class="kn">from</span> <span class="nn">easyInterface.Diffraction.Calculators</span> <span class="kn">import</span> <span class="n">CryspyCalculator</span>
 <span class="kn">from</span> <span class="nn">easyInterface.Diffraction.Interface</span> <span class="kn">import</span> <span class="n">CalculatorInterface</span>
 
-<span class="n">main_rcif</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;examples&#39;</span><span class="p">,</span> <span class="s1">&#39;PbSO4_powder-1d_neutrons-unpol_D1A(ILL)&#39;</span><span class="p">,</span> <span class="s1">&#39;main.cif&#39;</span><span class="p">)</span>
+<span class="n">data_dir</span> <span class="o">=</span> <span class="n">getExamplesDir</span><span class="p">()</span>
+<span class="n">main_rcif</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s1">&#39;PbSO4_powder-1d_neutrons-unpol_D1A(ILL)&#39;</span><span class="p">,</span> <span class="s1">&#39;main.cif&#39;</span><span class="p">)</span>
+
 <span class="n">calculator</span> <span class="o">=</span> <span class="n">CryspyCalculator</span><span class="p">(</span><span class="n">main_rcif</span><span class="p">)</span>
 
 <span class="n">interface</span> <span class="o">=</span> <span class="n">CalculatorInterface</span><span class="p">(</span><span class="n">calculator</span><span class="p">)</span>

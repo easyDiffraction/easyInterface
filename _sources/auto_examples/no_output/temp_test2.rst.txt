@@ -19,11 +19,12 @@ about the project is then displayed.
 
     import os
 
+    from easyInterface.Utils.Helpers import getExamplesDir
     from easyInterface.Diffraction.Calculators import CryspyCalculator
     from easyInterface.Diffraction.QtInterface import QtCalculatorInterface
 
-
-    main_rcif = os.path.join('examples', 'Fe3O4_powder-1d_neutrons-pol_5C1(LLB)', 'main.cif')
+    data_dir = getExamplesDir()
+    main_rcif = os.path.join(data_dir, 'Fe3O4_powder-1d_neutrons-pol_5C1(LLB)', 'main.cif')
     calculator = CryspyCalculator(main_rcif)
 
     interface = QtCalculatorInterface(calculator, None)
