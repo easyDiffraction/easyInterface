@@ -167,6 +167,7 @@
  | <a href="#I"><strong>I</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
@@ -178,16 +179,20 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.addExperiment">addExperiment() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
+</li>
       <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.addExperimentDefinition">addExperimentDefinition() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
 </li>
       <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.addPhase">addPhase() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
 </li>
       <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.addPhaseDefinition">addPhaseDefinition() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
 </li>
-      <li><a href="containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Atom.ADP">ADP (class in easyInterface.Diffraction.DataClasses.PhaseObj.Atom)</a>
+      <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.addPhaseToExp">addPhaseToExp() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Atom.ADP">ADP (class in easyInterface.Diffraction.DataClasses.PhaseObj.Atom)</a>
+</li>
       <li><a href="calculators.html#easyInterface.Diffraction.Calculators.CryspyCalculator.asCifDict">asCifDict() (easyInterface.Diffraction.Calculators.CryspyCalculator method)</a>
 
       <ul>
@@ -226,11 +231,17 @@
 </li>
       <li><a href="containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Calculation.Calculations">Calculations (class in easyInterface.Diffraction.DataClasses.DataObj.Calculation)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface">CalculatorInterface (class in easyInterface.Diffraction.Interface)</a>
 </li>
+      <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.canRedo">canRedo() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.canUndo">canUndo() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
+</li>
       <li><a href="containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Cell.Cell">Cell (class in easyInterface.Diffraction.DataClasses.PhaseObj.Cell)</a>
+</li>
+      <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.clearUndoStack">clearUndoStack() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
 </li>
       <li><a href="calculators.html#easyInterface.Diffraction.Calculators.CryspyCalculator">CryspyCalculator (class in easyInterface.Diffraction.Calculators)</a>
 </li>
@@ -328,10 +339,18 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.getPhase">getPhase() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
+      <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.getCalculation">getCalculation() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
+</li>
+      <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.getCalculations">getCalculations() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
+</li>
+      <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.getDictByPath">getDictByPath() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.getExperiment">getExperiment() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
+</li>
+      <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.getPhase">getPhase() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
+</li>
       <li><a href="calculators.html#easyInterface.Diffraction.Calculators.CryspyCalculator.getPhases">getPhases() (easyInterface.Diffraction.Calculators.CryspyCalculator method)</a>
 </li>
   </ul></td>
@@ -365,6 +384,14 @@
   </ul></td>
 </tr></table>
 
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.name">name() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -386,14 +413,22 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.redo">redo() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
+</li>
       <li><a href="calculators.html#easyInterface.Diffraction.Calculators.CryspyCalculator.refine">refine() (easyInterface.Diffraction.Calculators.CryspyCalculator method)</a>
 
       <ul>
         <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.refine">(easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
 </li>
       </ul></li>
+      <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.removeExperiment">removeExperiment() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.removePhase">removePhase() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
+</li>
+      <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.removePhaseFromExp">removePhaseFromExp() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
+</li>
       <li><a href="containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phases.renamePhase">renamePhase() (easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phases method)</a>
 </li>
       <li><a href="containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.Resolution">Resolution (class in easyInterface.Diffraction.DataClasses.DataObj.Experiment)</a>
@@ -406,6 +441,10 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.saveCifs">saveCifs() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
 </li>
+      <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.setCalculatorFromProject">setCalculatorFromProject() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
+</li>
+      <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.setDictByPath">setDictByPath() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
+</li>
       <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.setExperiment">setExperiment() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
 </li>
       <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.setExperimentDefinition">setExperimentDefinition() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
@@ -416,10 +455,10 @@
         <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.setExperiments">(easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
 </li>
       </ul></li>
-      <li><a href="calculators.html#easyInterface.Diffraction.Calculators.CryspyCalculator.setObjFromProjectDicts">setObjFromProjectDicts() (easyInterface.Diffraction.Calculators.CryspyCalculator method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="calculators.html#easyInterface.Diffraction.Calculators.CryspyCalculator.setObjFromProjectDicts">setObjFromProjectDicts() (easyInterface.Diffraction.Calculators.CryspyCalculator method)</a>
+</li>
       <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.setPhase">setPhase() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
 </li>
       <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.setPhaseDefinition">setPhaseDefinition() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
@@ -440,6 +479,14 @@
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.undo">undo() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
+</li>
+      <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.updateCalculations">updateCalculations() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.updateExperiments">updateExperiments() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
+</li>
       <li><a href="interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.updatePhases">updatePhases() (easyInterface.Diffraction.Interface.CalculatorInterface method)</a>
 </li>
   </ul></td>

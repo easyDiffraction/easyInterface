@@ -159,7 +159,7 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">easyInterface.Diffraction.DataClasses.DataObj.Calculation</span> <span class="kn">import</span> <span class="n">Calculation</span><span class="p">,</span> <span class="n">Calculations</span>
 <span class="kn">from</span> <span class="nn">easyInterface.Diffraction.DataClasses.DataObj.Experiment</span> <span class="kn">import</span> <span class="n">Experiments</span><span class="p">,</span> <span class="n">Experiment</span><span class="p">,</span> <span class="n">ExperimentPhase</span>
@@ -171,13 +171,14 @@
 
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">datetime64</span>
 
+
 <div class="viewcode-block" id="ProjectDict"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.ProjectDict">[docs]</a><span class="k">class</span> <span class="nc">ProjectDict</span><span class="p">(</span><span class="n">UndoableDict</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class deals with the creation and modification of the main project dictionary.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="n">Interface</span><span class="p">,</span> <span class="n">app</span><span class="p">:</span> <span class="n">App</span><span class="p">,</span> <span class="n">calculator</span><span class="p">:</span> <span class="n">Calculator</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">Info</span><span class="p">,</span> <span class="n">phases</span><span class="p">:</span> <span class="n">Phases</span><span class="p">,</span>
-                 <span class="n">experiments</span><span class="p">:</span> <span class="n">Experiments</span><span class="p">,</span> <span class="n">calculations</span><span class="p">:</span> <span class="n">Calculations</span><span class="p">):</span>
+                 <span class="n">experiments</span><span class="p">:</span> <span class="n">Experiments</span><span class="p">,</span> <span class="n">calculations</span><span class="p">:</span> <span class="n">Calculations</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create the main project dictionary from base constituent classes. Generally called from one of the constructor</span>
 <span class="sd">        methods.</span>
@@ -214,10 +215,11 @@
 <div class="viewcode-block" id="ProjectDict.fromPars"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.ProjectDict.fromPars">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">fromPars</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">experiments</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Experiments</span><span class="p">,</span> <span class="n">Experiment</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Experiment</span><span class="p">]],</span>
                  <span class="n">phases</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Phases</span><span class="p">,</span> <span class="n">Phase</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Phase</span><span class="p">]],</span>
-                 <span class="n">calculations</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Calculations</span><span class="p">,</span> <span class="n">Calculation</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Calculation</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="s1">&#39;ProjectDict&#39;</span><span class="p">:</span>
+                 <span class="n">calculations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Calculations</span><span class="p">,</span> <span class="n">Calculation</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Calculation</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{})</span> <span class="o">-&gt;</span> <span class="s1">&#39;ProjectDict&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a main project dictionary from phases and experiments.</span>
 
+<span class="sd">        :param calculations:</span>
 <span class="sd">        :param experiments: A collection of experiments to be compared to calculations</span>
 <span class="sd">        :param phases: A Collection of crystallographic phases to be calculated</span>
 
@@ -249,15 +251,15 @@
 <span class="sd">        :param calculator: Calculator of the `easyInterface.Diffraction.Calculator` class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span> <span class="o">=</span> <span class="n">ProjectDict</span><span class="o">.</span><span class="n">default</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">:</span> <span class="n">ProjectDict</span> <span class="o">=</span> <span class="n">ProjectDict</span><span class="o">.</span><span class="n">default</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span> <span class="o">=</span> <span class="n">calculator</span>
         <span class="c1"># Set the calculator info</span>
         <span class="n">CALCULATOR_INFO</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">calculatorInfo</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">CALCULATOR_INFO</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;calculator&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">CALCULATOR_INFO</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">max</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__last_calculated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">min</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">max</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__last_calculated</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">min</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setProjectFromCalculator</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Created: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
 
@@ -341,9 +343,9 @@
 
 <div class="viewcode-block" id="CalculatorInterface.addPhase"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.addPhase">[docs]</a>    <span class="k">def</span> <span class="nf">addPhase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase</span><span class="p">:</span> <span class="n">Phase</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Add a new phases from a cif file to the list of existing crystal phases.</span>
+<span class="sd">        Add a new phases from a phase object to the list of existing crystal phases.</span>
 
-<span class="sd">        :param phase:</span>
+<span class="sd">        :param phase: New phase to be added to the phase list.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">phase</span><span class="p">[</span><span class="s1">&#39;phasename&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;phases&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">setPhase</span><span class="p">(</span><span class="n">phase</span><span class="p">)</span>
@@ -352,28 +354,52 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">addPhase</span><span class="p">(</span><span class="n">phase</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">removePhase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="CalculatorInterface.removePhase"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.removePhase">[docs]</a>    <span class="k">def</span> <span class="nf">removePhase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove a phase of a given name from the dictionary and the calculator object.</span>
+
+<span class="sd">        :param phase_name: name of the phase to be removed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">removePhaseDefinition</span><span class="p">(</span><span class="n">phase_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">rmItemByPath</span><span class="p">([</span><span class="s1">&#39;phases&#39;</span><span class="p">,</span> <span class="n">phase_name</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">addPhaseToExp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exp_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">phase_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">):</span>
+<div class="viewcode-block" id="CalculatorInterface.addPhaseToExp"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.addPhaseToExp">[docs]</a>    <span class="k">def</span> <span class="nf">addPhaseToExp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exp_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">phase_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Link a phase in the project dictionary to an experiment in the project dictionary. Links in the calculator will</span>
+<span class="sd">        also be made.</span>
+
+<span class="sd">        :param exp_name: The name of the experiment</span>
+<span class="sd">        :param phase_name: The name od the phase to be associated with the experiment</span>
+<span class="sd">        :param scale: The scale of the crystallographic phase in the experimental system.</span>
+<span class="sd">        :raises KeyError: If the exp_name or phase_name are unknown</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">associatePhaseToExp</span><span class="p">(</span><span class="n">exp_name</span><span class="p">,</span> <span class="n">phase_name</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
         <span class="n">currentPhases</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">getItemByPath</span><span class="p">([</span><span class="s1">&#39;experiments&#39;</span><span class="p">,</span> <span class="s1">&#39;phase&#39;</span><span class="p">])</span>
         <span class="n">newPhase</span> <span class="o">=</span> <span class="n">ExperimentPhase</span><span class="o">.</span><span class="n">fromPars</span><span class="p">(</span><span class="n">phase_name</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
         <span class="n">currentPhases</span><span class="p">[</span><span class="n">phase_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">newPhase</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;experiments&#39;</span><span class="p">,</span> <span class="s1">&#39;phase&#39;</span><span class="p">],</span> <span class="n">currentPhases</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">removePhaseFromExp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exp_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">phase_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="CalculatorInterface.removePhaseFromExp"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.removePhaseFromExp">[docs]</a>    <span class="k">def</span> <span class="nf">removePhaseFromExp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exp_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">phase_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove the link between an experiment and a crystallographic phase. Links in the calculator will also be removed.</span>
+
+<span class="sd">        :param exp_name: The name of the experiment.</span>
+<span class="sd">        :param phase_name: The name of the phase to be removed.</span>
+<span class="sd">        :raises KeyError: If the exp_name or phase_name are unknown</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">disassociatePhaseToExp</span><span class="p">(</span><span class="n">exp_name</span><span class="p">,</span> <span class="n">phase_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">rmItemByPath</span><span class="p">([</span><span class="s1">&#39;experiments&#39;</span><span class="p">,</span> <span class="s1">&#39;phase&#39;</span><span class="p">,</span> <span class="n">phase_name</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span></div>
 
     <span class="c1"># Experiment section</span>
 <div class="viewcode-block" id="CalculatorInterface.setExperimentDefinition"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.setExperimentDefinition">[docs]</a>    <span class="k">def</span> <span class="nf">setExperimentDefinition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exp_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Parse the relevant phases file and update the corresponding model</span>
+<span class="sd">        Set an experiment/s to be simulated from a cif file. Note that this will not have any crystallographic phases</span>
+<span class="sd">        associated with it.</span>
+
+<span class="sd">        :param exp_path: Path to a experiment file (`.cif`)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">setExpsDefinition</span><span class="p">(</span><span class="n">exp_path</span><span class="p">)</span>
         <span class="c1"># This will re-create all local directories</span>
@@ -389,18 +415,28 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">addExpsDefinition</span><span class="p">(</span><span class="n">exp_path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">updateExperiments</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">addExperiment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment</span><span class="p">:</span> <span class="n">Experiment</span><span class="p">):</span>
+<div class="viewcode-block" id="CalculatorInterface.addExperiment"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.addExperiment">[docs]</a>    <span class="k">def</span> <span class="nf">addExperiment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment</span><span class="p">:</span> <span class="n">Experiment</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add an experiment to the list of experiments in both the project dict and the calculator.</span>
+
+<span class="sd">        :param experiment: Experiment object to be added to the system.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">experiment</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;experiments&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">setExperiment</span><span class="p">(</span><span class="n">experiment</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;experiments&#39;</span><span class="p">,</span> <span class="n">experiment</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]],</span> <span class="n">experiment</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">setExperiments</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;experiments&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">removeExperiment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="CalculatorInterface.removeExperiment"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.removeExperiment">[docs]</a>    <span class="k">def</span> <span class="nf">removeExperiment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove a experiment from both the project dictionary and the calculator.</span>
+
+<span class="sd">        :param experiment_name: Name of the experiment to be removed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">removeExpsDefinition</span><span class="p">(</span><span class="n">experiment_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">updateExperiments</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span></div>
 
     <span class="c1"># Output section</span>
 <div class="viewcode-block" id="CalculatorInterface.writeMainCif"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.writeMainCif">[docs]</a>    <span class="k">def</span> <span class="nf">writeMainCif</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
@@ -409,7 +445,6 @@
 <span class="sd">        information.</span>
 
 <span class="sd">        :param save_dir: Directory to where the main cif file should be saved.</span>
-<span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">writeMainCif</span><span class="p">(</span><span class="n">save_dir</span><span class="p">)</span></div>
 
@@ -419,7 +454,6 @@
 <span class="sd">        compatible with other crystallographic software.</span>
 
 <span class="sd">        :param save_dir: Directory to where the phases cif file should be saved.</span>
-<span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">writePhaseCif</span><span class="p">(</span><span class="n">save_dir</span><span class="p">)</span></div>
 
@@ -429,7 +463,6 @@
 <span class="sd">        instrumental parameters and which phases are in the experiment/s</span>
 
 <span class="sd">        :param save_dir: Directory to where the experiment cif file should be saved.</span>
-<span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">writeExpCif</span><span class="p">(</span><span class="n">save_dir</span><span class="p">)</span></div>
 
@@ -439,7 +472,6 @@
 <span class="sd">        contains all information needed to recreate the project dictionary.</span>
 
 <span class="sd">        :param save_dir: Directory to where the project cif files should be saved.</span>
-<span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">writeMainCif</span><span class="p">(</span><span class="n">save_dir</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">writePhaseCif</span><span class="p">(</span><span class="n">save_dir</span><span class="p">)</span>
@@ -452,8 +484,6 @@
     <span class="k">def</span> <span class="nf">updatePhases</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Synchronise the phases in project dictionary by queering the calculator object.</span>
-
-<span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">phases</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">getPhases</span><span class="p">()</span>
 
@@ -495,8 +525,11 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span></div>
 
-    <span class="nd">@time_it</span>
+<div class="viewcode-block" id="CalculatorInterface.updateExperiments"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.updateExperiments">[docs]</a>    <span class="nd">@time_it</span>
     <span class="k">def</span> <span class="nf">updateExperiments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Synchronise the project dictionary from the calculator.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">experiments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">getExperiments</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;experiments&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -519,32 +552,59 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">bulkUpdate</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="s1">&#39;Bulk update of experiments&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">getExperiment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Experiment</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">experiment</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;experiments&#39;</span><span class="p">]:</span>
-            <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;experiments&#39;</span><span class="p">][</span><span class="n">experiment</span><span class="p">])</span>
-        <span class="k">elif</span> <span class="n">experiment</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="CalculatorInterface.getExperiment"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.getExperiment">[docs]</a>    <span class="k">def</span> <span class="nf">getExperiment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment_name</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Experiment</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a experiment from the project dictionary by name if one is supplied. If the experiment name is none then</span>
+<span class="sd">        all experiments are returned. If the experiment name does not exist KeyError is thrown.</span>
+
+<span class="sd">        :param experiment_name: Name of the experiment to be returned or None for all experiments</span>
+<span class="sd">        :return: Copy of the project dictionaries phase object with name experiment_name</span>
+<span class="sd">        :raises KeyError: The supplied key is not a valid experiment name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">experiment_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;experiments&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;experiments&#39;</span><span class="p">][</span><span class="n">experiment_name</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">experiment_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;experiments&#39;</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span></div>
 
-    <span class="nd">@time_it</span>
+<div class="viewcode-block" id="CalculatorInterface.updateCalculations"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.updateCalculations">[docs]</a>    <span class="nd">@time_it</span>
     <span class="k">def</span> <span class="nf">updateCalculations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate all experiments and populate the calculations field in the project dictionary. Note that this will</span>
+<span class="sd">        only occur if a member of the phases or experiments section of the project dictionary has been modified since</span>
+<span class="sd">        the last call to `updateCalculations`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">__last_calculated</span><span class="p">:</span>
             <span class="n">calculations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">getCalculations</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;calculations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">calculations</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__last_calculated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__last_calculated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">getCalculations</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Calculations</span><span class="p">:</span>
+<div class="viewcode-block" id="CalculatorInterface.getCalculations"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.getCalculations">[docs]</a>    <span class="k">def</span> <span class="nf">getCalculations</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Calculations</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns all calculations in the project dictionary. Calculations will be updated if members of the phases or</span>
+<span class="sd">        experiments section of the project dictionary has been modified.</span>
+
+<span class="sd">        :return: Calculations object containing all calculations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">updateCalculations</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;calculations&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;calculations&#39;</span><span class="p">]</span></div>
 
-    <span class="k">def</span> <span class="nf">getCalculation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calculation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Calculation</span><span class="p">:</span>
+<div class="viewcode-block" id="CalculatorInterface.getCalculation"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.getCalculation">[docs]</a>    <span class="k">def</span> <span class="nf">getCalculation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calculation_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Calculation</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a specified calculation from the project dictionary.</span>
+
+<span class="sd">        :param calculation_name: Name of the calculation to be returned.</span>
+<span class="sd">        :raises KeyError: If the calculation_name is not known.</span>
+<span class="sd">        :return: Calculation requested.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">updateCalculations</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;calculations&#39;</span><span class="p">][</span><span class="n">calculation</span><span class="p">]</span>
+        <span class="n">calculation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;calculations&#39;</span><span class="p">][</span><span class="n">calculation_name</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">calculation</span></div>
 
-<div class="viewcode-block" id="CalculatorInterface.setPhase"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.setPhase">[docs]</a>    <span class="k">def</span> <span class="nf">setPhase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase</span><span class="p">:</span> <span class="n">Phase</span><span class="p">):</span>
+<div class="viewcode-block" id="CalculatorInterface.setPhase"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.setPhase">[docs]</a>    <span class="k">def</span> <span class="nf">setPhase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Phase</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]):</span>
         <span class="sd">&quot;&quot;&quot;Set phases (sample model tab in GUI)&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">phase</span><span class="p">,</span> <span class="n">Phase</span><span class="p">):</span>
             <span class="n">new_phase_name</span> <span class="o">=</span> <span class="n">phase</span><span class="p">[</span><span class="s1">&#39;phasename&#39;</span><span class="p">]</span>
@@ -572,7 +632,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_mappedBulkUpdate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mappedValueUpdater</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">setPhaseRefine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">setPhaseRefine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">phase</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;phases&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">KeyError</span>
         <span class="k">if</span> <span class="n">key</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">]:</span>
@@ -580,7 +640,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;phases&#39;</span><span class="p">,</span> <span class="n">phase</span><span class="p">,</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="s1">&#39;refine&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mappedRefineUpdater</span><span class="p">([</span><span class="s1">&#39;phases&#39;</span><span class="p">,</span> <span class="n">phase</span><span class="p">,</span> <span class="o">*</span><span class="n">key</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">setPhaseValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">setPhaseValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">phase</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;phases&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">KeyError</span>
         <span class="k">if</span> <span class="n">key</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">]:</span>
@@ -588,7 +648,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;phases&#39;</span><span class="p">,</span> <span class="n">phase</span><span class="p">,</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mappedValueUpdater</span><span class="p">([</span><span class="s1">&#39;phases&#39;</span><span class="p">,</span> <span class="n">phase</span><span class="p">,</span> <span class="o">*</span><span class="n">key</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CalculatorInterface.setExperiments"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.setExperiments">[docs]</a>    <span class="k">def</span> <span class="nf">setExperiments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiments</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Experiment</span><span class="p">,</span> <span class="n">Experiments</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="CalculatorInterface.setExperiment"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.setExperiment">[docs]</a>    <span class="k">def</span> <span class="nf">setExperiment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Experiment</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Set phases (sample model tab in GUI)&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">Experiment</span><span class="p">):</span>
+            <span class="n">new_phase_name</span> <span class="o">=</span> <span class="n">experiment</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">new_phase_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;experiments&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">getItemByPath</span><span class="p">([</span><span class="s1">&#39;experiments&#39;</span><span class="p">,</span> <span class="n">new_phase_name</span><span class="p">])</span><span class="o">.</span><span class="n">dictComparison</span><span class="p">(</span><span class="n">experiment</span><span class="p">)</span>
+                <span class="n">k</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;experiments&#39;</span><span class="p">,</span> <span class="n">new_phase_name</span><span class="p">,</span> <span class="o">*</span><span class="n">ik</span><span class="p">]</span> <span class="k">for</span> <span class="n">ik</span> <span class="ow">in</span> <span class="n">k</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_mappedBulkUpdate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mappedValueUpdater</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">addExperiment</span><span class="p">(</span><span class="n">experiment</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CalculatorInterface.setExperiments"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.setExperiments">[docs]</a>    <span class="k">def</span> <span class="nf">setExperiments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiments</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Experiment</span><span class="p">,</span> <span class="n">Experiments</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]):</span>
         <span class="sd">&quot;&quot;&quot;Set experiments (Experimental data tab in GUI)&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">experiments</span><span class="p">,</span> <span class="n">Experiment</span><span class="p">):</span>
             <span class="n">new_exp_name</span> <span class="o">=</span> <span class="n">experiments</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
@@ -600,7 +674,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">setExperiments</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;experiments&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">setExperimentRefine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">setExperimentRefine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">experiment</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;experiments&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">KeyError</span>
         <span class="k">if</span> <span class="n">key</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">]:</span>
@@ -608,7 +682,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;experiments&#39;</span><span class="p">,</span> <span class="n">experiment</span><span class="p">,</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="s1">&#39;refine&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mappedRefineUpdater</span><span class="p">([</span><span class="s1">&#39;experiments&#39;</span><span class="p">,</span> <span class="n">experiment</span><span class="p">,</span> <span class="o">*</span><span class="n">key</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">setExperimentValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">setExperimentValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">experiment</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;experiments&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">KeyError</span>
         <span class="k">if</span> <span class="n">key</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">]:</span>
@@ -616,40 +690,69 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">([</span><span class="s1">&#39;experiments&#39;</span><span class="p">,</span> <span class="n">experiment</span><span class="p">,</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mappedValueUpdater</span><span class="p">([</span><span class="s1">&#39;experiments&#39;</span><span class="p">,</span> <span class="n">experiment</span><span class="p">,</span> <span class="o">*</span><span class="n">key</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">setCalculatorFromProject</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CalculatorInterface.setCalculatorFromProject"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.setCalculatorFromProject">[docs]</a>    <span class="k">def</span> <span class="nf">setCalculatorFromProject</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resets the project phases and experiments fields of the project dictionary from the calculator.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">setObjFromProjectDicts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;phases&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;experiments&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">getDictByPath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">getItemByPath</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+<div class="viewcode-block" id="CalculatorInterface.getDictByPath"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.getDictByPath">[docs]</a>    <span class="k">def</span> <span class="nf">getDictByPath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns an object in the project dictionary by the path to the object.</span>
 
-    <span class="k">def</span> <span class="nf">setDictByPath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
+<span class="sd">        :param keys: Path to the object in the project dictionary</span>
+<span class="sd">        :raises KeyError: The supplied keys do not return an object in the project dictionary</span>
+<span class="sd">        :return: Object from the project dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">getItemByPath</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CalculatorInterface.setDictByPath"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.setDictByPath">[docs]</a>    <span class="k">def</span> <span class="nf">setDictByPath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set an object in the project dictionary by a key path.</span>
+
+<span class="sd">        :param keys: Path to the object to be modified/created</span>
+<span class="sd">        :param value: Value to be set at the key path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">setItemByPath</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setCalculatorFromProject</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">updateCalculations</span><span class="p">()</span>  <span class="c1"># IT IS SLOW</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updateCalculations</span><span class="p">()</span>  <span class="c1"># IT IS SLOW</span></div>
 
     <span class="c1">###</span>
     <span class="c1"># Project Information</span>
     <span class="c1">###</span>
 
 <div class="viewcode-block" id="CalculatorInterface.phasesCount"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.phasesCount">[docs]</a>    <span class="k">def</span> <span class="nf">phasesCount</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns number of phases in the project.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns number of phases in the project dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;phases&#39;</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="CalculatorInterface.experimentsCount"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.experimentsCount">[docs]</a>    <span class="k">def</span> <span class="nf">experimentsCount</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns number of experiments in the project.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns number of experiments in the project dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;experiments&#39;</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="CalculatorInterface.phasesIds"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.phasesIds">[docs]</a>    <span class="k">def</span> <span class="nf">phasesIds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns labels of the phases in the project.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="CalculatorInterface.phasesIds"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.phasesIds">[docs]</a>    <span class="k">def</span> <span class="nf">phasesIds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns labels of the phases in the project dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;phases&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="CalculatorInterface.experimentsIds"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.experimentsIds">[docs]</a>    <span class="k">def</span> <span class="nf">experimentsIds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns labels of the experiments in the project.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="CalculatorInterface.experimentsIds"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.experimentsIds">[docs]</a>    <span class="k">def</span> <span class="nf">experimentsIds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns labels of the experiments in the project dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;experiments&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="CalculatorInterface.asDict"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.asDict">[docs]</a>    <span class="k">def</span> <span class="nf">asDict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return data dict.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts the project dictionary info a standard python dictionary. If there is an error then an empty dictionary</span>
+<span class="sd">        is returned.</span>
+
+<span class="sd">        :return: Python dictionary of the project dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">project_dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">project_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">asDict</span><span class="p">()</span>
@@ -657,11 +760,20 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Error on copying `project_dict`. It is a python problem&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">project_dict</span></div>
 
-    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s2">&quot;info&quot;</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+<div class="viewcode-block" id="CalculatorInterface.name"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.name">[docs]</a>    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the name of  the current project.</span>
 
-<div class="viewcode-block" id="CalculatorInterface.asCifDict"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.asCifDict">[docs]</a>    <span class="k">def</span> <span class="nf">asCifDict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;...&quot;&quot;&quot;</span>
+<span class="sd">        :return: Name of the current project</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s2">&quot;info&quot;</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="CalculatorInterface.asCifDict"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.asCifDict">[docs]</a>    <span class="k">def</span> <span class="nf">asCifDict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts the project dictionary into a `cif` structure.</span>
+
+<span class="sd">        :return: Project dictionary as a string encoded to the cif specification.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">asCifDict</span><span class="p">()</span></div>
 
     <span class="c1">###</span>
@@ -669,7 +781,13 @@
     <span class="c1">###</span>
 
 <div class="viewcode-block" id="CalculatorInterface.refine"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.refine">[docs]</a>    <span class="k">def</span> <span class="nf">refine</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;refinement ...&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform a refinement on parameters which are marked in the project dictionary. If the refinement fails then only</span>
+<span class="sd">        the &quot;refinement_message&quot; will be returned in the results dictionary with an explanation of the error.</span>
+
+<span class="sd">        :return: Refinement results of the following fields: &quot;num_refined_parameters&quot;, &quot;refinement_message&quot;,</span>
+<span class="sd">                &quot;nfev&quot;, &quot;nit&quot;, &quot;njev&quot;, &quot;final_chi_sq&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">refinement_res</span><span class="p">,</span> <span class="n">scipy_refinement_res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">refine</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">startBulkUpdate</span><span class="p">(</span><span class="s1">&#39;Refinement&#39;</span><span class="p">)</span>
@@ -701,20 +819,41 @@
     <span class="c1"># Undo/Redo logic</span>
     <span class="c1">###</span>
 
-    <span class="k">def</span> <span class="nf">canUndo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">canUndo</span><span class="p">()</span>
+<div class="viewcode-block" id="CalculatorInterface.canUndo"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.canUndo">[docs]</a>    <span class="k">def</span> <span class="nf">canUndo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Informs on if the project dictionary can have undo() called.</span>
 
-    <span class="k">def</span> <span class="nf">canRedo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">canRedo</span><span class="p">()</span>
+<span class="sd">        :return: Can or Can&#39;t undo the project dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">canUndo</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">clearUndoStack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">clearUndoStack</span><span class="p">()</span>
+<div class="viewcode-block" id="CalculatorInterface.canRedo"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.canRedo">[docs]</a>    <span class="k">def</span> <span class="nf">canRedo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Informs on if the project dictionary can have redo() called. Typically called after an undo function call.</span>
 
-    <span class="k">def</span> <span class="nf">undo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">undo</span><span class="p">()</span>
+<span class="sd">        :return: Can or Can&#39;t redo the project dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">canRedo</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">redo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">redo</span><span class="p">()</span>
+<div class="viewcode-block" id="CalculatorInterface.clearUndoStack"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.clearUndoStack">[docs]</a>    <span class="k">def</span> <span class="nf">clearUndoStack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resets the Undo/Redo stack of the project dictionary.</span>
+
+<span class="sd">        ALL PREVIOUS UNDO/REDO EDITS WILL BE LOST</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">clearUndoStack</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CalculatorInterface.undo"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.undo">[docs]</a>    <span class="k">def</span> <span class="nf">undo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform an undo operation on the project dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">undo</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CalculatorInterface.redo"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.redo">[docs]</a>    <span class="k">def</span> <span class="nf">redo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform an redo operation on the project dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">redo</span><span class="p">()</span></div>
 
     <span class="c1">###</span>
     <span class="c1"># Hidden internal logic</span>
@@ -736,21 +875,9 @@
 
     <span class="k">def</span> <span class="nf">_mappedRefineUpdater</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="n">update_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">getItemByPath</span><span class="p">(</span><span class="n">key</span><span class="p">)[</span><span class="s1">&#39;mapping&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">_mappedRefineUpdater</span><span class="p">(</span><span class="n">update_str</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">_mappedRefineUpdater</span><span class="p">(</span><span class="n">update_str</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CalculatorInterface.setExperiment"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.setExperiment">[docs]</a>    <span class="k">def</span> <span class="nf">setExperiment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set phases (sample model tab in GUI)&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">Experiment</span><span class="p">):</span>
-            <span class="n">new_phase_name</span> <span class="o">=</span> <span class="n">experiment</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">new_phase_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;experiments&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">getItemByPath</span><span class="p">([</span><span class="s1">&#39;experiments&#39;</span><span class="p">,</span> <span class="n">new_phase_name</span><span class="p">])</span><span class="o">.</span><span class="n">dictComparison</span><span class="p">(</span><span class="n">experiment</span><span class="p">)</span>
-                <span class="n">k</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;experiments&#39;</span><span class="p">,</span> <span class="n">new_phase_name</span><span class="p">,</span> <span class="o">*</span><span class="n">ik</span><span class="p">]</span> <span class="k">for</span> <span class="n">ik</span> <span class="ow">in</span> <span class="n">k</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_mappedBulkUpdate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mappedValueUpdater</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">addExperiment</span><span class="p">(</span><span class="n">experiment</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__last_updated</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span></div></div>
+
 </pre></div>
 
            </div>
