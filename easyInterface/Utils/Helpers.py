@@ -76,14 +76,26 @@ def getReleaseInfo(file_path):
             "date": "01 Jan 2020",
             "author": "Simon Ward",
             "url": "https://github.com/easyDiffraction/easyInterface",
+            "comments": '',
             "changes": []
         }
     return project_info
 
 
+def createReleaseNotes(release_file_path, save_file='CHANGELOG.txt'):
+    release_info = getReleaseInfo(release_file_path)
+    release_body = '# {} - v{}\n'.format(release_info['name'], release_info['version'])
+    release_body += '\n'
+    release_body += '{}\n'.format(release_info['comments'])
+    release_body += '\n'
+    for feature in release_info['changes']:
+        release_body += '* {}\n'.format(feature)
+    with open(save_file, 'w') as file_writer:
+        file_writer.write(release_body)
+
+
+
 # Useful decorators
-
-
 def counted(func):
     """
     Counts how many times a function has been called and adds a `func.calls` to it's properties

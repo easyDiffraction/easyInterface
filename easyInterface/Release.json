@@ -4,10 +4,11 @@
     "date": "18 Feb 2020",
     "author": "Simon Ward",
     "url": "https://github.com/easyDiffraction/easyInterface",
+    "comments": "This release of easyInterface fixes bugs, introduces documentation, tests and bug fixes. Pretty great really!",
     "changes": [
         "Docstring are updated",
         "Website is live http://easyDiffraction.org/easyInterface",
         "Python 3.6 compatibility fixed",
-        " Speed improvements"
+        "Speed improvements"
     ]
 }
