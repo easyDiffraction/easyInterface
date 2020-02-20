@@ -2,15 +2,16 @@ from copy import deepcopy
 from typing import Union, Optional, Any, NoReturn
 
 from easyInterface.Utils.units import Unit
-from easyInterface.Utils.DictTools import PathDict
+from easyInterface.Utils.DictTools import PathDict, UndoableDict
 from easyInterface.Utils.Logging import logging
 from easyInterface import VERBOSE
 from abc import abstractmethod
 
 
-class LoggedPathDict(PathDict):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+class LoggedClasses:
+
+    def __init__(self):
+        pass
 
     def __deepcopy__(self, memo):
         """
@@ -32,10 +33,25 @@ class LoggedPathDict(PathDict):
         return newobj
 
 
+class LoggedUndoableDict(LoggedClasses, UndoableDict):
+
+    def __init__(self, *args, **kwargs):
+        LoggedClasses.__init__(self)
+        UndoableDict.__init__(self, *args, **kwargs)
+
+
+class LoggedPathDict(LoggedClasses, PathDict):
+
+    def __init__(self, *args, **kwargs):
+        LoggedClasses.__init__(self)
+        PathDict.__init__(self, *args, **kwargs)
+
+
 class ContainerObj(LoggedPathDict):
     """
     Container for multiple objects
     """
+
     def __init__(self, objs, in_type, identifier: str = 'name'):
         """
         Constructor for holding multiple objects

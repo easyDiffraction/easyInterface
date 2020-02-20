@@ -1,6 +1,8 @@
 import os
 import pytest
 
+from copy import deepcopy
+
 # module for testing
 from tests.easyInterface.Diffraction.DataClasses.Utils.Helpers import PathDictDerived
 from easyInterface.Diffraction.Calculators import CryspyCalculator
@@ -43,6 +45,11 @@ def test_creation_WrongStr():
 def test_creation_Empty():
     calc = CryspyCalculator()
     interface = CalculatorInterface(calc)
+
+
+def test_deepcopyProjectDict(cal):
+    # This might fail on python 3.6
+    new_project_dict = deepcopy(cal.project_dict)
 
 
 def test_init(cal):
@@ -431,3 +438,4 @@ def test_addExperimentDefinition(cal):
     assert exp_added['offset'].value == exp_ref['offset'].value
     assert exp_added['phase']['Fe3O4']['name'] == exp_ref['phase']['Fe3O4']['name']
     assert exp_added['phase']['Fe3O4']['scale'].value == exp_ref['phase']['Fe3O4']['scale'].value
+

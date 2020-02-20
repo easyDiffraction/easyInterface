@@ -9,7 +9,7 @@ from typing import List, Callable, Any, Union, Optional
 from easyInterface.Diffraction.DataClasses.DataObj.Calculation import Calculation, Calculations
 from easyInterface.Diffraction.DataClasses.DataObj.Experiment import Experiments, Experiment, ExperimentPhase
 from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import Phases, Phase
-from easyInterface.Utils.DictTools import UndoableDict
+from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import LoggedUndoableDict
 from easyInterface.Diffraction.DataClasses.Utils.InfoObjs import Interface, App, Calculator, Info
 from easyInterface.Utils.Helpers import time_it
 from easyInterface import logger as logging
@@ -17,7 +17,7 @@ from easyInterface import logger as logging
 from numpy import datetime64
 
 
-class ProjectDict(UndoableDict):
+class ProjectDict(LoggedUndoableDict):
     """
     This class deals with the creation and modification of the main project dictionary.
     """
@@ -42,7 +42,7 @@ class ProjectDict(UndoableDict):
         self._log.debug('Created a project dictionary')
 
     @classmethod
-    def default(cls) -> 'ProjectDict':
+    def default(cls) -> 'LoggedUndoableDict':
         """
         Create a default and empty project dictionary
 
@@ -60,7 +60,7 @@ class ProjectDict(UndoableDict):
     @classmethod
     def fromPars(cls, experiments: Union[Experiments, Experiment, List[Experiment]],
                  phases: Union[Phases, Phase, List[Phase]],
-                 calculations: Optional[Union[Calculations, Calculation, List[Calculation]]] = {}) -> 'ProjectDict':
+                 calculations: Optional[Union[Calculations, Calculation, List[Calculation]]] = {}) -> 'LoggedUndoableDict':
         """
         Create a main project dictionary from phases and experiments.
 
