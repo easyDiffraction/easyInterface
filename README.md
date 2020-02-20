@@ -9,7 +9,7 @@ The user manual can be found [here](https://easyDiffraction.org/easyInterface/_s
 
 [![][25]][20] [![][26]][20] [![][27]][20]
 
-[![Sphinx documentation][45]][40] [![][55]][50]
+[![Sphinx documentation][45]][40] [![][55]][50] [![][28]][21]
 
 <!---[![][28]][21]--->
 
