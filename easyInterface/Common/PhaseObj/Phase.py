@@ -1,10 +1,10 @@
-from typing import NoReturn
-from .Atom import *
-from .SpaceGroup import *
-from .Cell import *
+from typing import NoReturn, Union
+from easyInterface.Common.PhaseObj.Atom import Atom, Atoms
+from easyInterface.Common.PhaseObj.SpaceGroup import SpaceGroup
+from easyInterface.Common.PhaseObj.Cell import Cell
 
 from easyInterface import logger as logging
-from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import ContainerObj, LoggedPathDict
+from easyInterface.Common.Utils.BaseClasses import ContainerObj, LoggedPathDict
 
 
 class Phase(LoggedPathDict):
@@ -85,4 +85,3 @@ class Phases(ContainerObj):
 
     def __repr__(self):
         return '{} Phases'.format(len(self))
-

@@ -1,6 +1,5 @@
-import pytest
-from easyInterface.Diffraction.DataClasses.PhaseObj.Atom import *
-from tests.easyInterface.Diffraction.DataClasses.Utils.Helpers import PathDictDerived
+from easyInterface.Common.PhaseObj.Atom import *
+from tests.easyInterface.Common.Utils.Helpers import PathDictDerived
 
 
 def genericTestAtom(atom_constructor, *args):
@@ -70,7 +69,7 @@ def test_atom_from_xyz():
     atom = genericTestAtom(Atom.fromXYZ, site_label, type_symbol, pos, pos, pos)
 
     assert atom['atom_site_label'] == site_label
-    assert atom['type_symbol'].value == type_symbol
+    assert str(atom['type_symbol'].value) == type_symbol
     assert str(atom['type_symbol']['store']['unit']) == ATOM_DETAILS['type_symbol']['default'][1]
     assert atom['fract_x'].value == pos
     assert str(atom['fract_x']['store']['unit']) == ATOM_DETAILS['fract']['default'][1]
@@ -100,7 +99,7 @@ def test_atom_from_parsNoADP_MSP():
 
 
     assert atom['atom_site_label'] == site_label
-    assert atom['type_symbol'].value == type_symbol
+    assert str(atom['type_symbol'].value) == type_symbol
     assert str(atom['type_symbol']['store']['unit']) == ATOM_DETAILS['type_symbol']['default'][1]
     assert atom['scat_length_neutron'].value == scat_length_neutron
     assert str(atom['scat_length_neutron']['store']['unit']) == ATOM_DETAILS['scat_length_neutron']['default'][1]
@@ -132,7 +131,7 @@ def test_atom_from_parsNoMSP():
                     occupancy, adp_type, U_iso_or_equiv, None, MSp)
 
     assert atom['atom_site_label'] == site_label
-    assert atom['type_symbol'].value == type_symbol
+    assert str(atom['type_symbol'].value) == type_symbol
     assert str(atom['type_symbol']['store']['unit']) == ATOM_DETAILS['type_symbol']['default'][1]
     assert atom['scat_length_neutron'].value == scat_length_neutron
     assert str(atom['scat_length_neutron']['store']['unit']) == ATOM_DETAILS['scat_length_neutron']['default'][1]
@@ -164,7 +163,7 @@ def test_atom_from_parsNoADP():
                     occupancy, adp_type, U_iso_or_equiv, ADp, None)
 
     assert atom['atom_site_label'] == site_label
-    assert atom['type_symbol'].value == type_symbol
+    assert str(atom['type_symbol'].value) == type_symbol
     assert str(atom['type_symbol']['store']['unit']) == ATOM_DETAILS['type_symbol']['default'][1]
     assert atom['scat_length_neutron'].value == scat_length_neutron
     assert str(atom['scat_length_neutron']['store']['unit']) == ATOM_DETAILS['scat_length_neutron']['default'][1]
@@ -197,7 +196,7 @@ def test_atom_from_pars():
                     occupancy, adp_type, U_iso_or_equiv, ADp, MSp)
 
     assert atom['atom_site_label'] == site_label
-    assert atom['type_symbol'].value == type_symbol
+    assert str(atom['type_symbol'].value) == type_symbol
     assert str(atom['type_symbol']['store']['unit']) == ATOM_DETAILS['type_symbol']['default'][1]
     assert atom['scat_length_neutron'].value == scat_length_neutron
     assert str(atom['scat_length_neutron']['store']['unit']) == ATOM_DETAILS['scat_length_neutron']['default'][1]

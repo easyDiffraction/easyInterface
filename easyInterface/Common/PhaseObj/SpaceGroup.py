@@ -1,5 +1,5 @@
-from ..Utils.BaseClasses import Base, LoggedPathDict
 from easyInterface import logger as logging
+from easyInterface.Common.Utils.BaseClasses import Base, LoggedPathDict
 
 SG_DETAILS = {
     'crystal_system': {

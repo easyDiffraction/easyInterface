@@ -211,7 +211,7 @@ def test__create_proj_dict_from_obj(cal):
 
 
 def test_set_phases(cal):
-    from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import Phases
+    from easyInterface.Common.PhaseObj import Phases
     import copy
     phases = cal.getPhases()
     try:
@@ -285,7 +285,7 @@ def test_add_phase(cal):
     import copy
     phase = copy.deepcopy(phases['Fe3O4'])
     phase['phasename'] = 'FeBoop'
-    from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import Phases
+    from easyInterface.Common.PhaseObj import Phases
     phases = Phases([phases['Fe3O4'], phase])
     cal.setPhases(phases)
     assert len(phases) == 2

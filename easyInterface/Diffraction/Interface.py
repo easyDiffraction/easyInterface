@@ -6,15 +6,15 @@ from datetime import datetime
 from copy import deepcopy
 from typing import List, Callable, Any, Union, Optional
 
+from numpy import datetime64
+
+from easyInterface import logger as logging
+from easyInterface.Utils.Helpers import time_it
+from easyInterface.Common.PhaseObj.Phase import Phases, Phase
 from easyInterface.Diffraction.DataClasses.DataObj.Calculation import Calculation, Calculations
 from easyInterface.Diffraction.DataClasses.DataObj.Experiment import Experiments, Experiment, ExperimentPhase
-from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import Phases, Phase
 from easyInterface.Utils.DictTools import UndoableDict
-from easyInterface.Diffraction.DataClasses.Utils.InfoObjs import Interface, App, Calculator, Info
-from easyInterface.Utils.Helpers import time_it
-from easyInterface import logger as logging
-
-from numpy import datetime64
+from easyInterface.Common.Utils.InfoObjs import Interface, App, Calculator, Info
 
 
 class ProjectDict(UndoableDict):

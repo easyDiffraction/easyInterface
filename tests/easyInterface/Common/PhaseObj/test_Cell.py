@@ -1,5 +1,5 @@
-from easyInterface.Diffraction.DataClasses.PhaseObj.Cell import *
-from tests.easyInterface.Diffraction.DataClasses.Utils.Helpers import PathDictDerived
+from easyInterface.Common.PhaseObj.Cell import *
+from tests.easyInterface.Common.Utils.Helpers import PathDictDerived
 
 def genericTestCell(cell_constructor, *args):
     expected = ['length_a', 'length_b', 'length_c', 'angle_alpha', 'angle_beta', 'angle_gamma']

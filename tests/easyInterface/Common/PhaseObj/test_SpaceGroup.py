@@ -1,5 +1,5 @@
-from easyInterface.Diffraction.DataClasses.PhaseObj.SpaceGroup import *
-from tests.easyInterface.Diffraction.DataClasses.Utils.Helpers import PathDictDerived
+from easyInterface.Common.PhaseObj.SpaceGroup import *
+from tests.easyInterface.Common.Utils.Helpers import PathDictDerived
 
 
 def genericTestSG(sg_constructor, *args):

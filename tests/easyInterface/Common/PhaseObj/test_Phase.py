@@ -1,6 +1,5 @@
-import pytest
-from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import *
-from tests.easyInterface.Diffraction.DataClasses.Utils.Helpers import PathDictDerived
+from easyInterface.Common.PhaseObj.Phase import *
+from tests.easyInterface.Common.Utils.Helpers import PathDictDerived
 
 
 def genericTestPhase(phase_constructor, *args):

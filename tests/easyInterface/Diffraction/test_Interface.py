@@ -2,13 +2,13 @@ import os
 import pytest
 
 # module for testing
-from tests.easyInterface.Diffraction.DataClasses.Utils.Helpers import PathDictDerived
+from tests.easyInterface.Common.Utils.Helpers import PathDictDerived
 from easyInterface.Diffraction.Calculators import CryspyCalculator
 from easyInterface.Diffraction.Interface import CalculatorInterface, ProjectDict
-from easyInterface.Diffraction.DataClasses.Utils.InfoObjs import Interface, App, Calculator, Info
+from easyInterface.Common.Utils.InfoObjs import Interface, App, Calculator, Info
 from easyInterface.Diffraction.DataClasses.DataObj.Calculation import Calculation, Calculations
 from easyInterface.Diffraction.DataClasses.DataObj.Experiment import Experiments, Experiment
-from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import Phases, Phase
+from easyInterface.Common.PhaseObj import Phases, Phase
 
 test_data = os.path.join('tests', 'Data')
 

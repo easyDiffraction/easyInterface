@@ -1,4 +1,4 @@
-from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import Base, PathDict
+from easyInterface.Common.Utils.BaseClasses import Base, PathDict
 
 
 def PathDictDerived(input_constructor, expected:list, expected_type: list, *args):

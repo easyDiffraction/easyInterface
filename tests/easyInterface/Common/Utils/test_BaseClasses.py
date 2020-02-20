@@ -1,5 +1,4 @@
-import pytest
-from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import Base, Data, Unit
+from easyInterface.Common.Utils.BaseClasses import Base, Data, Unit
 
 
 def data_checker(data):

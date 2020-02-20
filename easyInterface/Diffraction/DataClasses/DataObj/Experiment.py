@@ -2,9 +2,8 @@ from typing import Union
 
 import numpy as np
 
-from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import LoggedPathDict
-from ..Utils.BaseClasses import Base, ContainerObj
 from easyInterface import logger as logging
+from easyInterface.Common.Utils.BaseClasses import Base, ContainerObj, LoggedPathDict
 
 EXPERIMENT_DETAILS = {
     'wavelength': {

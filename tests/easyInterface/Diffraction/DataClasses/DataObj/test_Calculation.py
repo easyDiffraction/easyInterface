@@ -1,5 +1,5 @@
 from easyInterface.Diffraction.DataClasses.DataObj.Calculation import *
-from tests.easyInterface.Diffraction.DataClasses.Utils.Helpers import PathDictDerived
+from tests.easyInterface.Common.Utils.Helpers import PathDictDerived
 
 
 def PathDictTest(path_dic, expected, expected_type):

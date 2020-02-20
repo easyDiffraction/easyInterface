@@ -1,7 +1,7 @@
 from typing import Union
 
 import numpy as np
-from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import LoggedPathDict
+from easyInterface.Common.Utils.BaseClasses import LoggedPathDict
 from easyInterface import logger as logging
 
 

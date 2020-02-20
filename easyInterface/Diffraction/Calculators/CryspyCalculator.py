@@ -7,10 +7,10 @@ import pycifstar
 
 from asteval import Interpreter
 
+from easyInterface.Common.PhaseObj import *
 from easyInterface.Diffraction.DataClasses.DataObj.Calculation import *
 from easyInterface.Diffraction.DataClasses.DataObj.Experiment import *
-from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import *
-from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import Base
+from easyInterface.Common.Utils.BaseClasses import Base
 
 from easyInterface.Utils.Helpers import time_it
 
