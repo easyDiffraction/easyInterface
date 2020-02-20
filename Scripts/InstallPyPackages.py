@@ -3,12 +3,14 @@
 import sys
 import BasicFunctions
 
+
 # FUNCTIONS
 
 def printSysPath():
     for path in sys.path:
         if path:
             print(path)
+
 
 def upgradePip():
     message = "upgrade PIP"
@@ -20,6 +22,7 @@ def upgradePip():
     else:
         BasicFunctions.printSuccessMessage(message)
 
+
 def installFromGit(owner, repo, branch, egg):
     url = "git://github.com/{0}/{1}.git@{2}#egg={3}".format(owner, repo, branch, egg)
     message = "install from '{}'".format(url)
@@ -27,9 +30,10 @@ def installFromGit(owner, repo, branch, egg):
         BasicFunctions.run('pip', 'install', '-e', url, exit_on_error=False)
     except Exception as exception:
         BasicFunctions.printFailMessage(message, exception)
-        #sys.exit()
+        # sys.exit()
     else:
         BasicFunctions.printSuccessMessage(message)
+
 
 def install(*packages):
     for package in packages:
@@ -42,7 +46,9 @@ def install(*packages):
         else:
             BasicFunctions.printSuccessMessage(message)
 
+
 # MAIN
+
 
 if __name__ == '__main__':
     BasicFunctions.printTitle('Upgrade PIP and install packages')
@@ -54,14 +60,13 @@ if __name__ == '__main__':
 
     install(
         'dictdiffer',
-        'pytest==5.3.0',
-        'pytest_mock==1.12.1',
-        'pytest-cov==2.8.1',
-        'wily==1.13.0',
-        'codecov==2.0.15',
         'asteval',
-        'pyyaml==5.1.2',
-        )
+        'pytest',
+        'pytest_mock',
+        'pytest-cov',
+        'wily',
+        'codecov',
+    )
 
     if BasicFunctions.osName() == 'windows':
         install('pypiwin32')

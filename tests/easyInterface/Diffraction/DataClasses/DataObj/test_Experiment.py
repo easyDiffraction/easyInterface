@@ -1,5 +1,5 @@
 from easyInterface.Diffraction.DataClasses.DataObj.Experiment import *
-from Tests.easyInterface.Diffraction.DataClasses.Utils.Helpers import PathDictDerived
+from tests.easyInterface.Diffraction.DataClasses.Utils.Helpers import PathDictDerived
 
 
 def genericTestResolution(res_constructor, *args):

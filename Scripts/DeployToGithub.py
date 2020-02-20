@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 
 import os, sys
-#import re
+# import re
 import requests
 import shutil
-import yaml # pip install pyyaml
-from uritemplate import URITemplate # pip install uritemplate
+import yaml  # pip install pyyaml
+from uritemplate import URITemplate  # pip install uritemplate
 import BasicFunctions
 import Project
 
+
 # CLASSES
 
-class GithubAgent: # Agent, Communicator, Connector?
+class GithubAgent:  # Agent, Communicator, Connector?
     def __init__(self, owner, repo, token):
         self._owner = owner
         self._repo = repo
@@ -35,9 +36,10 @@ class GithubAgent: # Agent, Communicator, Connector?
         self._assets_url = '{0}/assets'.format(self._releases_url)
         self._selected_release_assets_url = None
         self._selected_release_assets_dict = {}
-        #self._asset_file_name = None
+        # self._asset_file_name = None
 
-    def _printRequestStatus(self, response):
+    @staticmethod
+    def _printRequestStatus(response):
         print("* Status code: '{0}'".format(response.status_code))
         print("* Status info: '{0}'".format(response.text))
 
@@ -144,7 +146,8 @@ class GithubAgent: # Agent, Communicator, Connector?
                     sys.exit()
         # Upload asset
         asset_upload_url = URITemplate(self._selected_release_upload_url).expand(name=asset_file_name)
-        response = requests.post(asset_upload_url, headers=self._upload_zip_header, data=open(asset_file_path, 'rb').read())
+        response = requests.post(asset_upload_url, headers=self._upload_zip_header,
+                                 data=open(asset_file_path, 'rb').read())
         if response:
             print("+ Succeeded to upload local asset file '{0}'".format(asset_file_name))
         else:
@@ -162,6 +165,7 @@ class GithubAgent: # Agent, Communicator, Connector?
             self._printRequestStatus(response)
             sys.exit()
 
+
 # RELEASE CONFIG
 
 class ReleaseConfig:
@@ -174,19 +178,22 @@ class ReleaseConfig:
         self._target_commitish = self._targetCommitish(version=version, branch=branch)
 
     # try https://codereview.stackexchange.com/questions/124688/regex-to-extract-version-info
-    def _isPrerelease(self, version):
+    @staticmethod
+    def _isPrerelease(version):
         major = int(version.split('.')[0])
         if major == 0:
             return True
         return False
 
-    def _isMaster(self, branch):
+    @staticmethod
+    def _isMaster(branch):
         if branch == 'master':
             return True
         return False
 
-    def _isFinal(self, version, branch):
-        if branch == 'v{0}'.format(version): #re.search('v\d+\.\d+\.\d+', branch)
+    @staticmethod
+    def _isFinal(version, branch):
+        if branch == 'v{0}'.format(version):  # re.search('v\d+\.\d+\.\d+', branch)
             return True
         return False
 
@@ -221,7 +228,8 @@ class ReleaseConfig:
             "body": self._body,
             "draft": self._draft,
             "prerelease": self._prerelease
-            }
+        }
+
 
 # MAIN
 
@@ -241,7 +249,7 @@ if __name__ == "__main__":
     owner = config.getVal('github', 'owner')
     repo = config.getVal('github', 'repo')
     token = BasicFunctions.environmentVariable('GITHUB_TOKEN')
-    #token = BasicFunctions.environmentVariable('GITHUB_TOKEN', default='...')
+    # token = BasicFunctions.environmentVariable('GITHUB_TOKEN', default='...')
     github = GithubAgent(owner=owner, repo=repo, token=token)
 
     # Create release config
@@ -249,7 +257,7 @@ if __name__ == "__main__":
     date = config.getVal('release', 'date')
     changes = config.getVal('release', 'changes')
     branch = BasicFunctions.environmentVariable('TRAVIS_BRANCH')
-    #branch = BasicFunctions.environmentVariable('TRAVIS_BRANCH', default='upload-artifacts')
+    # branch = BasicFunctions.environmentVariable('TRAVIS_BRANCH', default='upload-artifacts')
     release = ReleaseConfig(version=version, branch=branch, date=date, changes=changes)
 
     # Select desired branch
@@ -268,4 +276,5 @@ if __name__ == "__main__":
         os_name = config.getVal('os', 'name')
         asset_dir = config.getVal('project', 'subdirs', 'distribution', 'path')
         installer_exe_name = config.getVal('app', 'installer', 'exe_name')
-        github.uploadAsset(asset_dir=asset_dir, installer_exe_name=installer_exe_name, app_name=app_name, os_name=os_name, tag_name=tag_name)
+        github.uploadAsset(asset_dir=asset_dir, installer_exe_name=installer_exe_name, app_name=app_name,
+                           os_name=os_name, tag_name=tag_name)

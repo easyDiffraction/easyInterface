@@ -8,7 +8,7 @@ logger.setLevel(logging.DEBUG)
 
 from easyInterface.Diffraction.Calculators import CryspyCalculator
 
-file_path = os.path.join("Tests", "Data", 'main.cif')
+file_path = os.path.join("tests", "Data", 'main.cif')
 
 
 @pytest.fixture

@@ -5,9 +5,9 @@ from easyInterface.Utils.Helpers import getReleaseInfo
 from os.path import dirname, join
 
 APP_INFO = {
-     'name': 'easyDiffraction',
+     'name': '-',
      'version': '0.0.0',
-     'url': 'http://easydiffraction.org'
+     'url': '-'
 }
 
 CALCULATOR_INFO = {

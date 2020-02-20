@@ -1,6 +1,6 @@
 import pytest
 from easyInterface.Diffraction.DataClasses.Utils.InfoObjs import *
-from Tests.easyInterface.Diffraction.DataClasses.Utils.Helpers import PathDictDerived
+from tests.easyInterface.Diffraction.DataClasses.Utils.Helpers import PathDictDerived
 
 
 def test_Info_Default():

@@ -3,7 +3,7 @@ from copy import deepcopy
 import pytest
 
 # module for testing
-from Tests.easyInterface.Diffraction.DataClasses.Utils.Helpers import PathDictDerived
+from tests.easyInterface.Diffraction.DataClasses.Utils.Helpers import PathDictDerived
 from easyInterface.Diffraction.Calculators import CryspyCalculator
 from easyInterface.Diffraction.Interface import CalculatorInterface, ProjectDict
 from easyInterface.Diffraction.DataClasses.Utils.InfoObjs import Interface, App, Calculator, Info
@@ -11,9 +11,9 @@ from easyInterface.Diffraction.DataClasses.DataObj.Calculation import Calculatio
 from easyInterface.Diffraction.DataClasses.DataObj.Experiment import Experiments, Experiment
 from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import Phases, Phase
 
-file_path = "Tests/Data/main.cif"
-phase_path = 'Tests/Data/phases.cif'
-exp_path = 'Tests/Data/experiments.cif'
+file_path = "tests/Data/main.cif"
+phase_path = 'tests/Data/phases.cif'
+exp_path = 'tests/Data/experiments.cif'
 
 
 @pytest.fixture
@@ -58,9 +58,11 @@ def test_init(cal):
 
 def test_setAppDict(cal):
     assert 'name' in cal.project_dict['app'].keys()
-    assert cal.project_dict['app']['name'] == 'easyDiffraction'
+    assert cal.project_dict['app']['name'] == '-'
     assert 'version' in cal.project_dict['app'].keys()
+    assert cal.project_dict['app']['version'] == '0.0.0'
     assert 'url' in cal.project_dict['app'].keys()
+    assert cal.project_dict['app']['url'] == '-'
 
 
 def test_setCalculatorDict(cal):
@@ -351,8 +353,10 @@ def test_setPhaseDefinition(cal):
     phase_ref = cal.getPhase('Fe3O4')
     assert phase_added['phasename'] == phase_ref['phasename']
     assert phase_added['spacegroup']['crystal_system'].value == phase_ref['spacegroup']['crystal_system'].value
-    assert phase_added['spacegroup']['space_group_name_HM_alt'].value == phase_ref['spacegroup']['space_group_name_HM_alt'].value
-    assert phase_added['spacegroup']['space_group_IT_number'].value == phase_ref['spacegroup']['space_group_IT_number'].value
+    assert phase_added['spacegroup']['space_group_name_HM_alt'].value == phase_ref['spacegroup'][
+        'space_group_name_HM_alt'].value
+    assert phase_added['spacegroup']['space_group_IT_number'].value == phase_ref['spacegroup'][
+        'space_group_IT_number'].value
     assert phase_added['spacegroup']['origin_choice'].value == phase_ref['spacegroup']['origin_choice'].value
     assert phase_added['cell']['length_a'].value == phase_ref['cell']['length_a'].value
     assert phase_added['cell']['length_b'].value == phase_ref['cell']['length_b'].value
@@ -373,8 +377,10 @@ def test_addPhaseDefinition(cal):
     phase_ref = cal.getPhase('Fe3O4')
     assert phase_added['phasename'] == phase_ref['phasename']
     assert phase_added['spacegroup']['crystal_system'].value == phase_ref['spacegroup']['crystal_system'].value
-    assert phase_added['spacegroup']['space_group_name_HM_alt'].value == phase_ref['spacegroup']['space_group_name_HM_alt'].value
-    assert phase_added['spacegroup']['space_group_IT_number'].value == phase_ref['spacegroup']['space_group_IT_number'].value
+    assert phase_added['spacegroup']['space_group_name_HM_alt'].value == phase_ref['spacegroup'][
+        'space_group_name_HM_alt'].value
+    assert phase_added['spacegroup']['space_group_IT_number'].value == phase_ref['spacegroup'][
+        'space_group_IT_number'].value
     assert phase_added['spacegroup']['origin_choice'].value == phase_ref['spacegroup']['origin_choice'].value
     assert phase_added['cell']['length_a'].value == phase_ref['cell']['length_a'].value
     assert phase_added['cell']['length_b'].value == phase_ref['cell']['length_b'].value

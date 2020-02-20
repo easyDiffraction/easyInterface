@@ -6,6 +6,7 @@ import requests
 import subprocess
 import BasicFunctions
 
+
 # FUNCTIONS
 
 def downloadFile(url, destination):
@@ -19,6 +20,7 @@ def downloadFile(url, destination):
     else:
         BasicFunctions.printSuccessMessage(message)
 
+
 def attachDmg(file):
     message = "attach '{0}'".format(file)
     try:
@@ -28,6 +30,7 @@ def attachDmg(file):
         sys.exit()
     else:
         BasicFunctions.printSuccessMessage(message)
+
 
 def setEnvVariable(name, value):
     message = "set environment variable '{0}' to '{1}'".format(name, value)
@@ -39,6 +42,7 @@ def setEnvVariable(name, value):
     else:
         BasicFunctions.printSuccessMessage(message)
 
+
 def addReadPermission(file):
     message = "add read permissions to '{0}'".format(file)
     try:
@@ -48,6 +52,7 @@ def addReadPermission(file):
         sys.exit()
     else:
         BasicFunctions.printSuccessMessage(message)
+
 
 def createFile(path, content):
     message = "create file '{0}'".format(path)
@@ -62,6 +67,7 @@ def createFile(path, content):
     else:
         BasicFunctions.printSuccessMessage(message)
 
+
 def createDir(path):
     message = "create dir '{0}'".format(path)
     try:
@@ -71,6 +77,7 @@ def createDir(path):
         sys.exit()
     else:
         BasicFunctions.printSuccessMessage(message)
+
 
 def copyFile(source, destination):
     message = "copy file to '{0}'".format(source, os.path.join(os.path.basename(source), destination))
@@ -82,6 +89,7 @@ def copyFile(source, destination):
     else:
         BasicFunctions.printSuccessMessage(message)
 
+
 def moveDir(source, destination):
     message = "move dir to '{0}'".format(source, os.path.join(os.path.basename(source), destination))
     try:
@@ -92,6 +100,7 @@ def moveDir(source, destination):
     else:
         BasicFunctions.printSuccessMessage(message)
 
+
 def installSilently(installer, silent_script):
     message = "install '{0}'".format(installer)
     try:
@@ -99,7 +108,7 @@ def installSilently(installer, silent_script):
             installer,
             '--script', silent_script,
             '--no-force-installations'
-            )
+        )
     except Exception as exception:
         BasicFunctions.printFailMessage(message, exception)
         sys.exit()
