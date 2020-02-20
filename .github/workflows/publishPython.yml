@@ -1,4 +1,4 @@
-name: Release and publish python package
+name: Publish python package
 
 on:
   push:
@@ -6,25 +6,6 @@ on:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v1
-        with:
-          python-version: '3.x'
-      - name: Generate Changelog
-        run: |
-          python Scripts/GenerateRelease.py ${{ github.workflow }}-CHANGELOG.txt
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          body_path: ${{ github.workflow }}-CHANGELOG.txt
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   deploy:
     runs-on: ubuntu-latest
     steps:
