@@ -1,5 +1,4 @@
-from copy import deepcopy
-
+import os
 import pytest
 
 # module for testing
@@ -11,9 +10,11 @@ from easyInterface.Diffraction.DataClasses.DataObj.Calculation import Calculatio
 from easyInterface.Diffraction.DataClasses.DataObj.Experiment import Experiments, Experiment
 from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import Phases, Phase
 
-file_path = "tests/Data/main.cif"
-phase_path = 'tests/Data/phases.cif'
-exp_path = 'tests/Data/experiments.cif'
+test_data = os.path.join('tests', 'Data')
+
+file_path = os.path.join(test_data, 'main.cif')
+phase_path = os.path.join(test_data, 'phases.cif')
+exp_path = os.path.join(test_data, 'experiments.cif')
 
 
 @pytest.fixture
@@ -34,7 +35,8 @@ def test_creation_EmptyStr():
 
 
 def test_creation_WrongStr():
-    calc = CryspyCalculator("Tests/Data/mainf.cif")
+    path = os.path.join(test_data, 'mainf.cif')
+    calc = CryspyCalculator(path)
     interface = CalculatorInterface(calc)
 
 

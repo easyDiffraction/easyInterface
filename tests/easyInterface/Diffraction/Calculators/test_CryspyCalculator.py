@@ -8,7 +8,8 @@ logger.setLevel(logging.DEBUG)
 
 from easyInterface.Diffraction.Calculators import CryspyCalculator
 
-file_path = os.path.join("tests", "Data", 'main.cif')
+test_data = os.path.join("tests", "Data")
+file_path = os.path.join(test_data, 'main.cif')
 
 
 @pytest.fixture
@@ -61,7 +62,7 @@ def test__parse_segment(cal):
 
 
 def test_set_exps_definition(cal):
-    file = os.path.join("Tests", "Data", 'experiments.cif')
+    file = os.path.join(test_data, 'experiments.cif')
     cal.setExpsDefinition(file)
     assert len(cal._cryspy_obj.experiments) == 1
     assert cal._experiments_path == file
@@ -69,7 +70,7 @@ def test_set_exps_definition(cal):
 
 
 def test_add_exps_definition(cal):
-    file = os.path.join("Tests", "Data", 'experiments2.cif')
+    file = os.path.join(test_data, 'experiments2.cif')
     cal.addExpsDefinition(file)
     assert len(cal._cryspy_obj.experiments) == 2
     assert cal._experiment_name == ['pd', 'pd2']
@@ -85,7 +86,7 @@ def test_set_phase_definition(cal):
     """
     Load another phase file and check if the content is correctly updated
     """
-    NEW_PHASE_FILE = os.path.join("Tests", "Data", 'phases_2.cif')
+    NEW_PHASE_FILE = os.path.join(test_data, 'phases_2.cif')
     file_path = NEW_PHASE_FILE
     cal.setPhaseDefinition(file_path)
     assert 'Fe2Co1O4' in cal._phase_name
@@ -93,7 +94,7 @@ def test_set_phase_definition(cal):
 
 
 def test_add_phase_definition(cal):
-    file = os.path.join("Tests", "Data", 'phases_2.cif')
+    file = os.path.join(test_data, 'phases_2.cif')
     cal.addPhaseDefinition(file)
     assert len(cal._phase_name) == 2
     assert len(cal._cryspy_obj.crystals) == 2
@@ -107,7 +108,7 @@ def test_remove_phase_definition(cal):
 
 
 def test_write_main_cif(cal, file_io_fixture):
-    out_file = os.path.join("Tests", "Data")
+    out_file = test_data
     filename = 'main_testing.cif'
 
     save_to = file_io_fixture(out_file, filename)
@@ -116,7 +117,7 @@ def test_write_main_cif(cal, file_io_fixture):
 
 
 def test_write_phase_cif(cal, file_io_fixture):
-    out_file = os.path.join("Tests", "Data")
+    out_file = test_data
     filename = 'phases_testing.cif'
     save_to = file_io_fixture(out_file, filename)
     cal.writePhaseCif(out_file, filename)
@@ -124,7 +125,7 @@ def test_write_phase_cif(cal, file_io_fixture):
 
 
 def test_write_exp_cif(cal, file_io_fixture):
-    out_file = os.path.join("Tests", "Data")
+    out_file = test_data
     filename = 'experiments_testing.cif'
     save_to = file_io_fixture(out_file, filename)
     cal.writeExpCif(out_file, filename)
@@ -132,7 +133,7 @@ def test_write_exp_cif(cal, file_io_fixture):
 
 
 def test_save_cifs(cal, file_io_fixture):
-    out_file = os.path.join("Tests", "Data")
+    out_file = test_data
     main_filename = 'main_testing.cif'
     main_save_to = file_io_fixture(out_file, main_filename)
     phases_filename = 'phases_testing.cif'
