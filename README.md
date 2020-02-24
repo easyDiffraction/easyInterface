@@ -5,7 +5,7 @@
 
 easyInterface is tested for Python 3.6-3.8 on Mac, Windows and Ubuntu. Please, visit <https://easyDiffraction.org/easyInterface> for more details.
 
-The user manual can be found [here](https://easyDiffraction.org/easyInterface/_static/easyinterface.pdf])
+The user manual can be found [here](https://easydiffraction.org/easyInterface/_static/easyinterface.pdf)
 
 [![][25]][20] [![][26]][20] [![][27]][20]
 

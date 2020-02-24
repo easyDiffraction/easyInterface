@@ -1,6 +1,8 @@
 import os
 import pytest
 
+from copy import deepcopy
+
 # module for testing
 from tests.easyInterface.Common.Utils.Helpers import PathDictDerived
 from easyInterface.Diffraction.Calculators import CryspyCalculator
@@ -43,6 +45,11 @@ def test_creation_WrongStr():
 def test_creation_Empty():
     calc = CryspyCalculator()
     interface = CalculatorInterface(calc)
+
+
+def test_deepcopyProjectDict(cal):
+    # This might fail on python 3.6
+    new_project_dict = deepcopy(cal.project_dict)
 
 
 def test_init(cal):
@@ -431,3 +438,64 @@ def test_addExperimentDefinition(cal):
     assert exp_added['offset'].value == exp_ref['offset'].value
     assert exp_added['phase']['Fe3O4']['name'] == exp_ref['phase']['Fe3O4']['name']
     assert exp_added['phase']['Fe3O4']['scale'].value == exp_ref['phase']['Fe3O4']['scale'].value
+
+
+def test_addPhaseToExp():
+    calc = CryspyCalculator('')
+    interface = CalculatorInterface(calc)
+    interface.addExperimentDefinition(exp_path)
+    interface.addPhaseDefinition(phase_path)
+    interface.removePhaseFromExp('pd', 'Fe3O4')
+    interface.addPhaseToExp('pd', 'Fe3O4', scale=1.0)
+
+    exp_ref = interface.getExperiment('pd')
+    assert exp_ref['name'] == 'pd'
+    assert 'Fe3O4' in exp_ref['phase'].keys()
+    assert exp_ref['phase']['Fe3O4']['scale'].value == 1.0
+
+
+def test_removePhaseFromExp(cal):
+
+    cal.removePhaseFromExp('pd', 'Fe3O4')
+
+    exp_ref = cal.getExperiment('pd')
+    assert exp_ref['name'] == 'pd'
+    assert 'Fe3O4' not in exp_ref['phase'].keys()
+
+
+def test_addExperiment(cal):
+    exp2 = cal.getExperiment('pd')
+    exp2['name'] = 'Testing'
+
+    cal.addExperiment(exp2)
+
+    assert len(cal.project_dict['experiments']) == 2
+    assert 'Testing' in cal.project_dict['experiments'].keys()
+    assert cal.project_dict['experiments']['Testing']['name'] == 'Testing'
+    assert cal.project_dict['experiments']['Testing'] == exp2
+
+
+def test_removeExperiment(cal):
+    exp2 = cal.getExperiment('pd')
+    exp2['name'] = 'Testing'
+    cal.addExperiment(exp2)
+    cal.removeExperiment('pd')
+
+    assert len(cal.project_dict['experiments']) == 1
+    assert 'pd' not in cal.project_dict['experiments'].keys()
+    assert 'Testing' in cal.project_dict['experiments'].keys()
+    assert cal.project_dict['experiments']['Testing']['name'] == 'Testing'
+    assert cal.project_dict['experiments']['Testing'] == exp2
+
+
+def test_getExperiment_None(cal):
+    exp2 = cal.getExperiment('pd')
+    exp2['name'] = 'Testing'
+    cal.addExperiment(exp2)
+
+    exps = cal.getExperiment(None)
+    assert len(exps) == 2
+    assert 'pd' in exps.keys()
+    assert 'Testing' in exps.keys()
+    assert exps['Testing']['name'] == 'Testing'
+    assert exps['pd']['name'] == 'pd'

@@ -13,11 +13,11 @@ from easyInterface.Utils.Helpers import time_it
 from easyInterface.Common.PhaseObj.Phase import Phases, Phase
 from easyInterface.Diffraction.DataClasses.DataObj.Calculation import Calculation, Calculations
 from easyInterface.Diffraction.DataClasses.DataObj.Experiment import Experiments, Experiment, ExperimentPhase
-from easyInterface.Utils.DictTools import UndoableDict
 from easyInterface.Common.Utils.InfoObjs import Interface, App, Calculator, Info
+from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import LoggedUndoableDict
 
 
-class ProjectDict(UndoableDict):
+class ProjectDict(LoggedUndoableDict):
     """
     This class deals with the creation and modification of the main project dictionary.
     """
@@ -42,7 +42,7 @@ class ProjectDict(UndoableDict):
         self._log.debug('Created a project dictionary')
 
     @classmethod
-    def default(cls) -> 'ProjectDict':
+    def default(cls) -> 'LoggedUndoableDict':
         """
         Create a default and empty project dictionary
 
@@ -60,7 +60,7 @@ class ProjectDict(UndoableDict):
     @classmethod
     def fromPars(cls, experiments: Union[Experiments, Experiment, List[Experiment]],
                  phases: Union[Phases, Phase, List[Phase]],
-                 calculations: Optional[Union[Calculations, Calculation, List[Calculation]]] = {}) -> 'ProjectDict':
+                 calculations: Optional[Union[Calculations, Calculation, List[Calculation]]] = {}) -> 'LoggedUndoableDict':
         """
         Create a main project dictionary from phases and experiments.
 
@@ -215,15 +215,18 @@ class CalculatorInterface:
         also be made.
 
         :param exp_name: The name of the experiment
-        :param phase_name: The name od the phase to be associated with the experiment
+        :param phase_name: The name of the phase to be associated with the experiment
         :param scale: The scale of the crystallographic phase in the experimental system.
         :raises KeyError: If the exp_name or phase_name are unknown
         """
         self.calculator.associatePhaseToExp(exp_name, phase_name, scale)
         currentPhases = self.project_dict.getItemByPath(['experiments', 'phase'])
         newPhase = ExperimentPhase.fromPars(phase_name, scale)
-        currentPhases[phase_name] = newPhase
-        self.project_dict.setItemByPath(['experiments', 'phase'], currentPhases)
+        if currentPhases is None:
+            currentPhases = {phase_name: newPhase}
+        else:
+            currentPhases[phase_name] = newPhase
+        self.project_dict.setItemByPath(['experiments', exp_name, 'phase'], currentPhases)
         self.__last_updated = datetime.now()
 
     def removePhaseFromExp(self, exp_name: str, phase_name: str):
@@ -235,7 +238,10 @@ class CalculatorInterface:
         :raises KeyError: If the exp_name or phase_name are unknown
         """
         self.calculator.disassociatePhaseToExp(exp_name, phase_name)
-        self.project_dict.rmItemByPath(['experiments', 'phase', phase_name])
+        try:
+            self.project_dict.rmItemByPath(['experiments', exp_name, 'phase', phase_name])
+        except TypeError:
+            raise KeyError
         self.__last_updated = datetime.now()
 
     # Experiment section
