@@ -1,14 +1,15 @@
 
 .idea/
-
-*.pyc
-
+build/
+docs/build/
+docs/auto_examples/
+dist/
 easyInterface.egg-info/
-
-.coverage
-
 src/
 
-docs/_build/
+*.pyc
+.coverage
 
-docs/auto_examples/
+
+
+

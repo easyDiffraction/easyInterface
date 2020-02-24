@@ -215,14 +215,17 @@ class CalculatorInterface:
         also be made.
 
         :param exp_name: The name of the experiment
-        :param phase_name: The name od the phase to be associated with the experiment
+        :param phase_name: The name of the phase to be associated with the experiment
         :param scale: The scale of the crystallographic phase in the experimental system.
         :raises KeyError: If the exp_name or phase_name are unknown
         """
         self.calculator.associatePhaseToExp(exp_name, phase_name, scale)
         currentPhases = self.project_dict.getItemByPath(['experiments', 'phase'])
         newPhase = ExperimentPhase.fromPars(phase_name, scale)
-        currentPhases[phase_name] = newPhase
+        if currentPhases is None:
+            currentPhases = {phase_name: newPhase}
+        else:
+            currentPhases[phase_name] = newPhase
         self.project_dict.setItemByPath(['experiments', 'phase'], currentPhases)
         self.__last_updated = datetime.now()
 

@@ -8,6 +8,16 @@ try:
 except FileNotFoundError:
     project_info = dict()
 
+from os import path
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
+
+long_description += '\n\n## Changelog -v{}\n'.format(project_info['version'])
+long_description += '\n{}'.format(project_info['comments'])
+for comment in project_info['changes']:
+    long_description += '\n* {}'.format(comment)
+
 setup(
     name=project_info.get('name', 'easyInterface'),
     version=project_info.get('version', '0.0.0'),
@@ -17,12 +27,15 @@ setup(
     license='GPL3',
     author=project_info.get('author', 'Simon Ward'),
     author_email='',
-    description='Description  easyInterface - The easy way to interface with crystallographic calculators ',
+    description='easyInterface - The easy way to interface with crystallographic calculators ',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     install_requires=[
         'cryspy>=0.2.0',
         'dictdiffer',
         'asteval'
     ],
+    platforms=['any'],
     tests_require=['pytest',
                    'pytest_mock'
                    ],
