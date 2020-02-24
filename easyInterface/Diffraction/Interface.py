@@ -226,7 +226,7 @@ class CalculatorInterface:
             currentPhases = {phase_name: newPhase}
         else:
             currentPhases[phase_name] = newPhase
-        self.project_dict.setItemByPath(['experiments', 'phase'], currentPhases)
+        self.project_dict.setItemByPath(['experiments', exp_name, 'phase'], currentPhases)
         self.__last_updated = datetime.now()
 
     def removePhaseFromExp(self, exp_name: str, phase_name: str):
@@ -238,7 +238,10 @@ class CalculatorInterface:
         :raises KeyError: If the exp_name or phase_name are unknown
         """
         self.calculator.disassociatePhaseToExp(exp_name, phase_name)
-        self.project_dict.rmItemByPath(['experiments', 'phase', phase_name])
+        try:
+            self.project_dict.rmItemByPath(['experiments', exp_name, 'phase', phase_name])
+        except TypeError:
+            raise KeyError
         self.__last_updated = datetime.now()
 
     # Experiment section

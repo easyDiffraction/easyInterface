@@ -445,9 +445,10 @@ def test_addPhaseToExp():
     interface = CalculatorInterface(calc)
     interface.addExperimentDefinition(exp_path)
     interface.addPhaseDefinition(phase_path)
+    interface.removePhaseFromExp('pd', 'Fe3O4')
     interface.addPhaseToExp('pd', 'Fe3O4', scale=1.0)
 
-    exp_ref = cal.getExperiment('pd')
+    exp_ref = interface.getExperiment('pd')
     assert exp_ref['name'] == 'pd'
     assert 'Fe3O4' in exp_ref['phase'].keys()
     assert exp_ref['phase']['Fe3O4']['scale'].value == 1.0
@@ -493,7 +494,7 @@ def test_getExperiment_None(cal):
     cal.addExperiment(exp2)
 
     exps = cal.getExperiment(None)
-    assert len(exps) == 1
+    assert len(exps) == 2
     assert 'pd' in exps.keys()
     assert 'Testing' in exps.keys()
     assert exps['Testing']['name'] == 'Testing'

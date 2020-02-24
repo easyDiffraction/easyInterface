@@ -222,6 +222,11 @@ class _RemoveItemCommand(_EmptyCommand):
         self._dictionary._realDelItem(self._key)
 
 
+class RmItem:
+    def __init__(self):
+        pass
+
+
 class PathDict(UserDict):
     """
     The PathDict class extends a python dictionary with methods to access its nested
@@ -319,7 +324,9 @@ class PathDict(UserDict):
         key_list = []
         value_list = []
 
-        for item in dictdiffer.diff(self, another_dict, ignore=ignore):
+        items = list(dictdiffer.diff(self, another_dict, ignore=ignore))
+
+        for item in items:
             type = item[0]
             path = item[1]
             changes = item[2]
@@ -346,7 +353,8 @@ class PathDict(UserDict):
                 if path[0] == '':
                     del path[0]
             elif type == 'remove':
-                continue
+                path = [item[2][0][0]]
+                new_value = RmItem()
 
             key_list.append(path)
             value_list.append(new_value)
@@ -371,10 +379,13 @@ class UndoableDict(PathDict):
         Calls the undoable command to override PathDict assignment to self[key]
         implementation and pushes this command on the stack.
         """
-        if key in self:
-            self.__stack.push(_SetItemCommand(self, key, val))
+        if isinstance(val, RmItem):
+            self.__stack.push(_RemoveItemCommand(self, key))
         else:
-            self.__stack.push(_AddItemCommand(self, key, val))
+            if key in self:
+                self.__stack.push(_SetItemCommand(self, key, val))
+            else:
+                self.__stack.push(_AddItemCommand(self, key, val))
             
     @property
     def macro_running(self) -> bool:
@@ -385,7 +396,10 @@ class UndoableDict(PathDict):
         Calls the undoable command to set a value in a nested object
         by key sequence and pushes this command on the stack.
         """
-        self.__stack.push(_SetItemCommand(self, keys, value))
+        if isinstance(value, RmItem):
+            self.__stack.push(_RemoveItemCommand(self, keys))
+        else:
+            self.__stack.push(_SetItemCommand(self, keys, value))
 
     def rmItemByPath(self, keys: list) -> NoReturn:
         self.__stack.push(_RemoveItemCommand(self, keys))
