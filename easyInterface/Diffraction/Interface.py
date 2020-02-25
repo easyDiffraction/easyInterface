@@ -14,7 +14,7 @@ from easyInterface.Common.PhaseObj.Phase import Phases, Phase
 from easyInterface.Diffraction.DataClasses.DataObj.Calculation import Calculation, Calculations
 from easyInterface.Diffraction.DataClasses.DataObj.Experiment import Experiments, Experiment, ExperimentPhase
 from easyInterface.Common.Utils.InfoObjs import Interface, App, Calculator, Info
-from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import LoggedUndoableDict
+from easyInterface.Common.Utils.BaseClasses import LoggedUndoableDict
 
 
 class ProjectDict(LoggedUndoableDict):

@@ -1,3 +1,4 @@
+import easyInterface
 from easyInterface.Utils.DictTools import PathDict
 from .BaseClasses import Base
 from datetime import datetime
@@ -31,7 +32,7 @@ INFO_DETAILS = {
     }
 }
 
-INTERFACE_INFO = getReleaseInfo(join(dirname(dirname(dirname(dirname(__file__)))), 'Release.json'))
+INTERFACE_INFO = getReleaseInfo(join(dirname(easyInterface.__file__), 'Release.json'))
 
 
 class Info(PathDict):
