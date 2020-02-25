@@ -1,7 +1,7 @@
 from typing import Union
 
 from easyInterface import logger as logging
-from easyInterface.Common.periodic_table import Specie
+from easyInterface.Common.periodicTable import Specie
 from easyInterface.Common.Utils.BaseClasses import Base, ContainerObj, LoggedPathDict
 
 ATOM_DETAILS = {
@@ -162,7 +162,7 @@ class Atom(LoggedPathDict):
         :return: Atom with name type and position filled in
         """
         obj = cls.default(atom_site_label)
-        obj.setItemByPath(['type_symbol', 'store', 'value'], Specie.from_string(type_symbol))
+        obj.setItemByPath(['type_symbol', 'store', 'value'], Specie(type_symbol))
         obj.setItemByPath(['fract_x', 'store', 'value'], x)
         obj.setItemByPath(['fract_y', 'store', 'value'], y)
         obj.setItemByPath(['fract_z', 'store', 'value'], z)
@@ -187,7 +187,7 @@ class Atom(LoggedPathDict):
         :param U_iso_or_equiv: Isotropic atomic displacement parameter
         :return: Fully formed atom data store
         """
-        type_symbol = Base(Specie.from_string(type_symbol), ATOM_DETAILS['type_symbol']['default'][1])
+        type_symbol = Base(Specie(type_symbol), ATOM_DETAILS['type_symbol']['default'][1])
         scat_length_neutron = Base(scat_length_neutron, ATOM_DETAILS['scat_length_neutron']['default'][1])
         occupancy = Base(occupancy, ATOM_DETAILS['occupancy']['default'][1])
         adp_type = Base(adp_type, ATOM_DETAILS['adp_type']['default'][1])

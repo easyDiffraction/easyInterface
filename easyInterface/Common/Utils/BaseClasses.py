@@ -7,7 +7,6 @@ from easyInterface.Utils.Logging import logging
 from easyInterface import VERBOSE
 from abc import abstractmethod
 
-
 class LoggedClasses:
 
     def __init__(self):
