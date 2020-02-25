@@ -360,22 +360,21 @@ class Element:
             elif isinstance(val, dict):
                 if new_item == 'n_scattering_lengths':
                     for isotope in val.keys():
-                        for details in val[isotope].keys():
-                            if val[isotope][details] is None:
-                                del val[isotope][details]
-                            if details[-1:] == 's':
-                                val[isotope][details] = FloatWithUnit(val[isotope][details], 'barn')
-                            elif details[-1:] == 'b':
-                                if isinstance(val[isotope][details], list):
-                                    val[isotope][details] = ComplexWithUnit(complex(val[isotope][details][0],val[isotope][details][1]), 'fm')
+                        for detail in val[isotope].keys():
+                            if val[isotope][detail] is None:
+                                continue
+                            if detail[-1:] == 's':
+                                val[isotope][detail] = FloatWithUnit(val[isotope][detail], 'barn')
+                            elif detail[-1:] == 'b':
+                                if isinstance(val[isotope][detail], list):
+                                    val[isotope][detail] = ComplexWithUnit(complex(val[isotope][detail][0],val[isotope][detail][1]), 'fm')
                                 else:
-                                    val[isotope][details] = FloatWithUnit(val[isotope][details], 'fm')
+                                    val[isotope][detail] = FloatWithUnit(val[isotope][detail], 'fm')
                             else:
-                                if isinstance(val[isotope][details], str):
-                                    val[isotope][details] = None
+                                if isinstance(val[isotope][detail], str):
+                                    val[isotope][detail] = None
                                 else:
-                                    val[isotope][details] /= 100
-
+                                    val[isotope][detail] /= 100
             else:
                 try:
                     if new_item == 'atomic_radius':
