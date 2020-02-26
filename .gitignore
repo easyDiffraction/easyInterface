@@ -5,6 +5,7 @@ docs/build/
 docs/auto_examples/
 dist/
 easyInterface.egg-info/
+old_work/
 src/
 
 *.pyc

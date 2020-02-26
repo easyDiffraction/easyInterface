@@ -1,3 +1,10 @@
+#   Licensed under the GNU General Public License v3.0
+#   Copyright (c) of the author (github.com/wardsimon)
+#   Created: 01/2/2020
+
+__author__ = 'github.com/wardsimon'
+__version__ = '0.0.10'
+
 from copy import deepcopy
 from typing import Union, Optional, Any, NoReturn
 

@@ -94,7 +94,6 @@ def createReleaseNotes(release_file_path, save_file='CHANGELOG.txt'):
         file_writer.write(release_body)
 
 
-
 # Useful decorators
 def counted(func):
     """

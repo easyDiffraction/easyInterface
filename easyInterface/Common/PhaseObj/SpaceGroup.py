@@ -1,3 +1,10 @@
+#   Licensed under the GNU General Public License v3.0
+#   Copyright (c) of the author (github.com/wardsimon)
+#   Created: 01/2/2020
+
+__author__ = 'github.com/wardsimon'
+__version__ = '0.0.06'
+
 from easyInterface import logger as logging
 from easyInterface.Common.Utils.BaseClasses import Base, LoggedPathDict
 

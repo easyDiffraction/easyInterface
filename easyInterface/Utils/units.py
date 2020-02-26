@@ -683,15 +683,15 @@ class ComplexWithUnit(complex):
         # the use of decorators (property and unitized). In particular I have problems with "amu"
         # likely due to weight in core.composition
         if hasattr(self, "_unit_type"):
-            args = float(self), self._unit, self._unit_type
+            args = complex(self), self._unit, self._unit_type
         else:
-            args = float(self), self._unit, None
+            args = complex(self), self._unit, None
 
         return args
 
     def __getstate__(self):
         state = self.__dict__.copy()
-        state["val"] = float(self)
+        state["val"] = complex(self)
         #print("in getstate %s" % state)
         return state
 

@@ -1,7 +1,7 @@
 import logging
 
 # Default logging level
-LEVEL = logging.WARNING
+LEVEL = logging.DEBUG
 
 # Logging format
 FORMAT = "\033[1;{};49m%(asctime)s  |  %(name)s — %(levelname)s | %(lineno)-4d |  %(funcName)-5s  |  %(" \

@@ -1,0 +1,701 @@
+[
+	[
+		"Pm",
+		{
+			"Atomic mass": 145.0,
+			"Atomic no": 61,
+			"Atomic orbitals": {
+				"1s": -1562.980284,
+				"2p": -233.455114,
+				"2s": -245.970548,
+				"3d": -37.625433,
+				"3p": -47.921132,
+				"3s": -53.429311,
+				"4d": -4.596822,
+				"4f": -0.200159,
+				"4p": -8.320495,
+				"4s": -10.422756,
+				"5p": -0.817702,
+				"5s": -1.372265,
+				"6s": -0.127053
+			},
+			"Atomic radius": 1.85,
+			"Atomic radius calculated": 2.05,
+			"Boiling point": "3273 K",
+			"Brinell hardness": "no data MN m<sup>-2</sup>",
+			"Bulk modulus": "33 GPa",
+			"Coefficient of linear thermal expansion": "11 x10<sup>-6</sup>K<sup>-1</sup>",
+			"Common oxidation states": [
+				3
+			],
+			"Critical temperature": "no data K",
+			"Density of solid": "7264 kg m<sup>-3</sup>",
+			"Electrical resistivity": "about 75 10<sup>-8</sup> &Omega; m",
+			"Electronic structure": [
+				[
+					1,
+					"s",
+					2
+				],
+				[
+					2,
+					"s",
+					2
+				],
+				[
+					2,
+					"p",
+					6
+				],
+				[
+					3,
+					"s",
+					2
+				],
+				[
+					3,
+					"p",
+					6
+				],
+				[
+					3,
+					"d",
+					10
+				],
+				[
+					4,
+					"s",
+					2
+				],
+				[
+					4,
+					"p",
+					6
+				],
+				[
+					4,
+					"d",
+					10
+				],
+				[
+					5,
+					"s",
+					2
+				],
+				[
+					5,
+					"p",
+					6
+				],
+				[
+					4,
+					"f",
+					5
+				],
+				[
+					6,
+					"s",
+					2
+				]
+			],
+			"Ionic radii": {
+				"3": 1.11
+			},
+			"Liquid range": "1900 K",
+			"Melting point": "1373 K",
+			"Mendeleev no": 29,
+			"Mineral hardness": "no data",
+			"Molar volume": "20.23 cm<sup>3</sup>",
+			"Name": "Promethium",
+			"Oxidation states": [
+				3
+			],
+			"Poissons ratio": "0.28",
+			"Reflectivity": "no data %",
+			"Refractive index": "no data",
+			"Rigidity modulus": "18 GPa",
+			"Shannon radii": {
+				"3": {
+					"VI": {
+						"": {
+							"crystal_radius": 1.11,
+							"ionic_radius": 0.97
+						}
+					},
+					"VIII": {
+						"": {
+							"crystal_radius": 1.233,
+							"ionic_radius": 1.093
+						}
+					},
+					"IX": {
+						"": {
+							"crystal_radius": 1.284,
+							"ionic_radius": 1.144
+						}
+					}
+				}
+			},
+			"Superconduction temperature": "no data K",
+			"Thermal conductivity": "15 W m<sup>-1</sup> K<sup>-1</sup>",
+			"Van der waals radius": "no data",
+			"Velocity of sound": "no data m s<sup>-1</sup>",
+			"Vickers hardness": "no data MN m<sup>-2</sup>",
+			"X": 1.13,
+			"Youngs modulus": "46 GPa",
+			"Metallic radius": 1.811,
+			"iupac_ordering": 43,
+			"IUPAC ordering": 43,
+			"N Scattering Lengths": {},
+			"Group": 7,
+			"Block": "f",
+			"isNG": false,
+			"isTM": false,
+			"ispTM": false,
+			"isRE": true,
+			"isM": true,
+			"isMo": false,
+			"isAC": false,
+			"isAL": false,
+			"isAK": false,
+			"isH": false,
+			"isC": false,
+			"isLa": true,
+			"isQP": false,
+			"nmr_moment": {}
+		}
+	],
+	[
+		"Rh",
+		{
+			"Atomic mass": 102.9055,
+			"Atomic no": 45,
+			"Atomic orbitals": {
+				"1s": -821.136773,
+				"2p": -108.357665,
+				"2s": -116.80695,
+				"3d": -11.21725,
+				"3p": -17.415299,
+				"3s": -20.765603,
+				"4d": -0.239422,
+				"4p": -1.806456,
+				"4s": -2.825505,
+				"5s": -0.154624
+			},
+			"Atomic radius": 1.35,
+			"Atomic radius calculated": 1.73,
+			"Boiling point": "3968 K",
+			"Brinell hardness": "1100 MN m<sup>-2</sup>",
+			"Bulk modulus": "380 GPa",
+			"Coefficient of linear thermal expansion": "8.2 x10<sup>-6</sup>K<sup>-1</sup>",
+			"Common oxidation states": [
+				3
+			],
+			"Critical temperature": "no data K",
+			"Density of solid": "12450 kg m<sup>-3</sup>",
+			"Electrical resistivity": "4.3 10<sup>-8</sup> &Omega; m",
+			"Electronic structure": [
+				[
+					1,
+					"s",
+					2
+				],
+				[
+					2,
+					"s",
+					2
+				],
+				[
+					2,
+					"p",
+					6
+				],
+				[
+					3,
+					"s",
+					2
+				],
+				[
+					3,
+					"p",
+					6
+				],
+				[
+					3,
+					"d",
+					10
+				],
+				[
+					4,
+					"s",
+					2
+				],
+				[
+					4,
+					"p",
+					6
+				],
+				[
+					4,
+					"d",
+					8
+				],
+				[
+					5,
+					"s",
+					1
+				]
+			],
+			"ICSD oxidation states": [
+				3,
+				4
+			],
+			"Ionic radii": {
+				"3": 0.805,
+				"4": 0.74,
+				"5": 0.69
+			},
+			"Liquid range": "1731 K",
+			"Melting point": "2237 K",
+			"Mendeleev no": 65,
+			"Mineral hardness": "6.0",
+			"Molar volume": "8.28 cm<sup>3</sup>",
+			"Name": "Rhodium",
+			"Oxidation states": [
+				-1,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6
+			],
+			"Poissons ratio": "0.26",
+			"Reflectivity": "84 %",
+			"Refractive index": "no data",
+			"Rigidity modulus": "150 GPa",
+			"Shannon radii": {
+				"3": {
+					"VI": {
+						"": {
+							"crystal_radius": 0.805,
+							"ionic_radius": 0.665
+						}
+					}
+				},
+				"4": {
+					"VI": {
+						"": {
+							"crystal_radius": 0.74,
+							"ionic_radius": 0.6
+						}
+					}
+				},
+				"5": {
+					"VI": {
+						"": {
+							"crystal_radius": 0.69,
+							"ionic_radius": 0.55
+						}
+					}
+				}
+			},
+			"Superconduction temperature": "no data K",
+			"Thermal conductivity": "150 W m<sup>-1</sup> K<sup>-1</sup>",
+			"Van der waals radius": "no data",
+			"Velocity of sound": "4700 m s<sup>-1</sup>",
+			"Vickers hardness": "1246 MN m<sup>-2</sup>",
+			"X": 2.28,
+			"Youngs modulus": "275 GPa",
+			"Metallic radius": 1.345,
+			"iupac_ordering": 66,
+			"IUPAC ordering": 66,
+			"N Scattering Lengths": {},
+			"Group": 9,
+			"Block": "d",
+			"isNG": false,
+			"isTM": true,
+			"ispTM": false,
+			"isRE": false,
+			"isM": true,
+			"isMo": false,
+			"isAC": false,
+			"isAL": false,
+			"isAK": false,
+			"isH": false,
+			"isC": false,
+			"isLa": false,
+			"isQP": false,
+			"nmr_moment": {}
+		}
+	],
+	[
+		"Ca",
+		{
+			"Atomic mass": 40.078,
+			"Atomic no": 20,
+			"Atomic orbitals": {
+				"1s": -143.935181,
+				"2p": -12.285376,
+				"2s": -15.046905,
+				"3p": -1.030572,
+				"3s": -1.706331,
+				"4s": -0.141411
+			},
+			"Atomic radius": 1.8,
+			"Atomic radius calculated": 1.94,
+			"Boiling point": "1757 K",
+			"Brinell hardness": "167 MN m<sup>-2</sup>",
+			"Bulk modulus": "17 GPa",
+			"Coefficient of linear thermal expansion": "22.3 x10<sup>-6</sup>K<sup>-1</sup>",
+			"Common oxidation states": [
+				2
+			],
+			"Critical temperature": "no data K",
+			"Density of solid": "1550 kg m<sup>-3</sup>",
+			"Electrical resistivity": "3.4 10<sup>-8</sup> &Omega; m",
+			"Electronic structure": [
+				[
+					1,
+					"s",
+					2
+				],
+				[
+					2,
+					"s",
+					2
+				],
+				[
+					2,
+					"p",
+					6
+				],
+				[
+					3,
+					"s",
+					2
+				],
+				[
+					3,
+					"p",
+					6
+				],
+				[
+					4,
+					"s",
+					2
+				]
+			],
+			"ICSD oxidation states": [
+				2
+			],
+			"Ionic radii": {
+				"2": 1.14
+			},
+			"Liquid range": "642 K",
+			"Melting point": "1115 K",
+			"Mendeleev no": 16,
+			"Mineral hardness": "1.75",
+			"Molar volume": "26.20 cm<sup>3</sup>",
+			"Name": "Calcium",
+			"Oxidation states": [
+				2
+			],
+			"Poissons ratio": "0.31",
+			"Reflectivity": "no data %",
+			"Refractive index": "no data",
+			"Rigidity modulus": "7.4 GPa",
+			"Shannon radii": {
+				"2": {
+					"VI": {
+						"": {
+							"crystal_radius": 1.14,
+							"ionic_radius": 1.0
+						}
+					},
+					"VII": {
+						"": {
+							"crystal_radius": 1.2,
+							"ionic_radius": 1.06
+						}
+					},
+					"VIII": {
+						"": {
+							"crystal_radius": 1.26,
+							"ionic_radius": 1.12
+						}
+					},
+					"IX": {
+						"": {
+							"crystal_radius": 1.32,
+							"ionic_radius": 1.18
+						}
+					},
+					"X": {
+						"": {
+							"crystal_radius": 1.37,
+							"ionic_radius": 1.23
+						}
+					},
+					"XII": {
+						"": {
+							"crystal_radius": 1.48,
+							"ionic_radius": 1.34
+						}
+					}
+				}
+			},
+			"Superconduction temperature": "no data K",
+			"Thermal conductivity": "200 W m<sup>-1</sup> K<sup>-1</sup>",
+			"Van der waals radius": 2.31,
+			"Velocity of sound": "3810 m s<sup>-1</sup>",
+			"Vickers hardness": "no data MN m<sup>-2</sup>",
+			"X": 1.0,
+			"Youngs modulus": "20 GPa",
+			"NMR Quadrupole Moment": {
+				"Ca-41": -66.5,
+				"Ca-43": -40.8
+			},
+			"Metallic radius": 1.976,
+			"iupac_ordering": 15,
+			"IUPAC ordering": 15,
+			"N Scattering Lengths": {
+				"40Ca": {
+					"Abs xs": 0.41,
+					"Coh b": 4.8,
+					"Coh xs": 2.9,
+					"Inc b": 0,
+					"Inc xs": 0,
+					"Scatt xs": 2.9,
+					"conc": 96.941
+				},
+				"42Ca": {
+					"Abs xs": 0.68,
+					"Coh b": 3.36,
+					"Coh xs": 1.42,
+					"Inc b": 0,
+					"Inc xs": 0,
+					"Scatt xs": 1.42,
+					"conc": 0.647
+				},
+				"43Ca": {
+					"Abs xs": 6.2,
+					"Coh b": -1.56,
+					"Coh xs": 0.31,
+					"Inc b": null,
+					"Inc xs": 0.5,
+					"Scatt xs": 0.8,
+					"conc": 0.135
+				},
+				"44Ca": {
+					"Abs xs": 0.88,
+					"Coh b": 1.42,
+					"Coh xs": 0.25,
+					"Inc b": 0,
+					"Inc xs": 0,
+					"Scatt xs": 0.25,
+					"conc": 2.086
+				},
+				"46Ca": {
+					"Abs xs": 0.74,
+					"Coh b": 3.6,
+					"Coh xs": 1.6,
+					"Inc b": 0,
+					"Inc xs": 0,
+					"Scatt xs": 1.6,
+					"conc": 0.004
+				},
+				"48Ca": {
+					"Abs xs": 1.09,
+					"Coh b": 0.39,
+					"Coh xs": 0.019,
+					"Inc b": 0,
+					"Inc xs": 0,
+					"Scatt xs": 0.019,
+					"conc": 0.187
+				}
+			},
+			"Group": 2,
+			"Block": "s",
+			"isNG": false,
+			"isTM": false,
+			"ispTM": false,
+			"isRE": false,
+			"isM": true,
+			"isMo": false,
+			"isAC": false,
+			"isAL": false,
+			"isAK": true,
+			"isH": false,
+			"isC": false,
+			"isLa": false,
+			"isQP": true,
+			"nmr_moment": {
+				"Ca-41": -66.5,
+				"Ca-43": -40.8
+			}
+		}
+	],
+	[
+		"Kr",
+		{
+			"Atomic mass": 83.798,
+			"Atomic no": 36,
+			"Atomic orbitals": {
+				"1s": -509.982989,
+				"2p": -60.017328,
+				"2s": -66.285953,
+				"3d": -3.074109,
+				"3p": -7.086634,
+				"3s": -9.315192,
+				"4p": -0.34634,
+				"4s": -0.820574
+			},
+			"Atomic radius": "no data",
+			"Atomic radius calculated": 0.88,
+			"Boiling point": "119.93 K",
+			"Brinell hardness": "no data MN m<sup>-2</sup>",
+			"Bulk modulus": "no data GPa",
+			"Coefficient of linear thermal expansion": "no data x10<sup>-6</sup>K<sup>-1</sup>",
+			"Critical temperature": "209.4 K",
+			"Density of solid": "no data kg m<sup>-3</sup>",
+			"Electrical resistivity": "no data 10<sup>-8</sup> &Omega; m",
+			"Electronic structure": [
+				[
+					1,
+					"s",
+					2
+				],
+				[
+					2,
+					"s",
+					2
+				],
+				[
+					2,
+					"p",
+					6
+				],
+				[
+					3,
+					"s",
+					2
+				],
+				[
+					3,
+					"p",
+					6
+				],
+				[
+					3,
+					"d",
+					10
+				],
+				[
+					4,
+					"s",
+					2
+				],
+				[
+					4,
+					"p",
+					6
+				]
+			],
+			"Liquid range": "4.14 K",
+			"Max oxidation state": 0.0,
+			"Melting point": "115.79 K",
+			"Mendeleev no": 4,
+			"Min oxidation state": 0.0,
+			"Mineral hardness": "no data",
+			"Molar volume": "27.99 cm<sup>3</sup>",
+			"Name": "Krypton",
+			"Poissons ratio": "no data",
+			"Reflectivity": "no data %",
+			"Refractive index": "1.000427",
+			"Rigidity modulus": "no data GPa",
+			"Superconduction temperature": "no data K",
+			"Thermal conductivity": "0.00943 W m<sup>-1</sup> K<sup>-1</sup>",
+			"Van der waals radius": 2.02,
+			"Velocity of sound": "1120 m s<sup>-1</sup>",
+			"Vickers hardness": "no data MN m<sup>-2</sup>",
+			"X": 3.0,
+			"Youngs modulus": "no data GPa",
+			"Metallic radius": "no data",
+			"iupac_ordering": 2,
+			"IUPAC ordering": 2,
+			"N Scattering Lengths": {
+				"78Kr": {
+					"Abs xs": 6.4,
+					"Coh b": null,
+					"Coh xs": null,
+					"Inc b": 0,
+					"Inc xs": 0,
+					"Scatt xs": null,
+					"conc": 0.35
+				},
+				"80Kr": {
+					"Abs xs": 11.8,
+					"Coh b": null,
+					"Coh xs": null,
+					"Inc b": 0,
+					"Inc xs": 0,
+					"Scatt xs": null,
+					"conc": 2.25
+				},
+				"82Kr": {
+					"Abs xs": 29.0,
+					"Coh b": null,
+					"Coh xs": null,
+					"Inc b": 0,
+					"Inc xs": 0,
+					"Scatt xs": null,
+					"conc": 11.6
+				},
+				"83Kr": {
+					"Abs xs": 185.0,
+					"Coh b": null,
+					"Coh xs": null,
+					"Inc b": null,
+					"Inc xs": null,
+					"Scatt xs": null,
+					"conc": 11.5
+				},
+				"84Kr": {
+					"Abs xs": 0.113,
+					"Coh b": null,
+					"Coh xs": null,
+					"Inc b": 0,
+					"Inc xs": 0,
+					"Scatt xs": 6.6,
+					"conc": 57
+				},
+				"86Kr": {
+					"Abs xs": 0.003,
+					"Coh b": 8.1,
+					"Coh xs": 8.2,
+					"Inc b": 0,
+					"Inc xs": 0,
+					"Scatt xs": 8.2,
+					"conc": 17.3
+				}
+			},
+			"Group": 18,
+			"Block": "p",
+			"isNG": true,
+			"isTM": false,
+			"ispTM": false,
+			"isRE": false,
+			"isM": false,
+			"isMo": false,
+			"isAC": false,
+			"isAL": false,
+			"isAK": false,
+			"isH": false,
+			"isC": false,
+			"isLa": false,
+			"isQP": false,
+			"nmr_moment": {}
+		}
+	]
+]

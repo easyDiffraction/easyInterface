@@ -40,6 +40,7 @@ def genericTestAtom(atom_constructor, *args):
 
     return atom
 
+
 def test_atom_default():
     site_label = 'Au1'
     atom = genericTestAtom(Atom.default, site_label)
@@ -259,6 +260,7 @@ def genericTestADP(adp_constructor, *args):
 
     return adp
 
+
 def test_ADP_default():
     adp = genericTestADP(ADP.default)
 
@@ -347,6 +349,7 @@ def genericTestMSP(msp_constructor, *args):
     assert msp.getItemByPath(['chi_23', 'url']) == ATOM_DETAILS['MSP']['url']
 
     return msp
+
 
 def test_MSP_default():
     msp = genericTestMSP(MSP.default)

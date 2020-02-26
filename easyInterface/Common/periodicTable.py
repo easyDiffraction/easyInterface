@@ -5,15 +5,17 @@
 __author__ = 'github.com/wardsimon'
 __version__ = '0.0.1'
 
-from copy import deepcopy
-from typing import Callable, List, Tuple, Union
 
 import json
 import re
 import warnings
+
+from copy import deepcopy
 from pathlib import Path
+from typing import Callable, List, Tuple, Union
 
 import numpy as np
+
 from easyInterface import logger, logging
 from easyInterface.Utils.units import Mass, Length, FloatWithUnit, ComplexWithUnit, Unit, SUPPORTED_UNIT_NAMES
 
@@ -43,46 +45,78 @@ class Element:
             raise KeyError
 
         self.long_name = self._data["name"]
+        self._log.debug('Element {} created from symbol'.format(symbol))
 
     @classmethod
     def from_Z(cls, z: int):
         """
-        Get an element from an atomic number.
+        Create an element from atomic number
 
-        Args:
-            z (int): Atomic number
+        :param z : Atomic number of element to be created
 
-        Returns:
-            Element with atomic number z.
+        :return: Element with atomic number z
+        :raises: ValueError: When the value of `z` does not correspond to a known element.
         """
         for sym, data in _pt_data.items():
             if data["Atomic no"] == z:
                 return cls(sym)
         raise ValueError("No element with this atomic number %s" % z)
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
+        """
+        Comparison of two Elements, checking if the atomic number is the same
+
+        :param other: other Element to be checked.
+        :return: If Element `other` is the same as this Element
+        """
         return isinstance(other, Element) and self.Z == other.Z
 
-    def __ne__(self, other):
+    def __ne__(self, other) -> bool:
+        """
+        Comparison of two Elements, checking if the atomic number is not the same
+
+        :param other: other Element to be checked.
+        :return: If Element `other` is not the same as this Element
+        """
         return not self.__eq__(other)
 
-    def __hash__(self):
+    def __hash__(self) -> int:
+        """
+        Each element has a unique atomic number. This is used as the hash
+
+        :return: Atomic number as hash value
+        """
         return self.Z
 
-    def __repr__(self):
+    def __repr__(self) -> str:
+        """
+        Representation of the element by the element symbol
+
+        :return: 'Element `symbol`'
+        """
         return "Element " + self.symbol
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """
+        Element symbol for printing.
+
+        :return: Element symbol.
+        """
         return self.symbol
 
-    def str(self):
+    def str(self) -> str:
+        """
+        Explicit cast of Element to element symbol
+
+        :return: Element symbol
+        """
         return self.__str__()
 
     def __deepcopy__(self, memo={}):
         """
-        We can't deepcopy log objects on python 3.6 :-(
-        :param memo:
-        :return:
+        We can't deepcopy log objects on python 3.6, so override the default deep copying.
+
+        :return: deepcopy of Element
         """
         cls = self.__class__
         newobj = cls.__new__(cls)
@@ -98,17 +132,29 @@ class Element:
         return newobj
 
     @property
-    def symbol(self):
+    def symbol(self) -> str:
+        """
+        Common symbol for an Element i.e. 'H', 'Be', 'Fe', etc...
+
+        :return: Elemental symbol
+        """
         return self._symbol
 
     @property
     def Z(self) -> int:
+        """
+        Atomic number of Element
+
+        :return: Atomic number
+        """
         return int(self._atomic_no)
 
     @property
     def atomic_radius(self) -> float:
         """
-        Returns: The atomic radius of the element in Ångstroms.
+        Atomic radius of an element if known in Ångstroms. If unknown a default of `None` is given
+
+        :return: The atomic radius of the element.
         """
         # Note that we have to do it like this due to He
         return getattr(self, '_atomic_radius', None)
@@ -116,43 +162,66 @@ class Element:
     @property
     def atomic_mass(self) -> float:
         """
-        Returns: The atomic mass of the element in amu.
+        The atomic mass of the element in amu.
+
+        :return: Atomic mass.
         """
         return self._atomic_mass
 
     @property
     def number(self) -> float:
-        """Alternative attribute for atomic number"""
+        """
+        Alternative attribute for atomic number
+
+        :return: Atomic number
+        """
         return self._atomic_no
 
     @property
     def max_oxidation_state(self) -> float:
-        """Maximum oxidation state for element"""
+        """
+        Maximum oxidation state for the element. Returns zero if there are no oxidation states.
+
+        :return maximum oxidation state.
+        """
         return max(getattr(self, '_oxidation_states', [0]))
 
     @property
     def min_oxidation_state(self) -> float:
-        """Minimum oxidation state for element"""
+        """
+        Minimum oxidation state for element. Returns zero if there are no oxidation states.
+
+        :return: Minimum oxidation state
+        """
         return min(getattr(self, '_oxidation_states', [0]))
 
     @property
     def oxidation_states(self) -> tuple:
-        """Tuple of all known oxidation states"""
+        """
+        Tuple of all known oxidation states for an element. Returns an empty tuple if there are no oxidation states.
+
+        :return: Known oxidation states.
+        """
         return tuple(getattr(self, "_oxidation_states", list()))
 
     @property
     def common_oxidation_states(self) -> tuple:
-        """Tuple of all known oxidation states"""
+        """
+        Tuple of all common oxidation states. Returns an empty tuple if there are no common oxidation states.
+        """
         return tuple(getattr(self, "_common_oxidation_states", list()))
 
     @property
     def full_electronic_structure(self) -> List[Tuple]:
         """
-        Full electronic structure as tuple.
+        Full electronic structure of an element.
         E.g., The electronic structure for Fe is represented as:
         [(1, "s", 2), (2, "s", 2), (2, "p", 6), (3, "s", 2), (3, "p", 6),
         (3, "d", 6), (4, "s", 2)]
+
+        :return: Electronic structure in a list of tuples of the form (n, l, filling)
         """
+        self._log.debug('Creating full electronic structure for element %s', self.symbol)
         estr = self._electronic_structure
 
         def parse_orbital(orbstr):
@@ -165,12 +234,16 @@ class Element:
         if data[0][0] == "[":
             sym = data[0].replace("[", "").replace("]", "")
             data = Element(sym).full_electronic_structure + data[1:]
+        self._log.debug('Electronic structure created for element %s', self.symbol)
+
         return data
 
     @property
-    def group(self):
+    def group(self) -> int:
         """
         Returns the periodic table group of the element.
+
+        :return: Group of element.
         """
         z = self.Z
         if z == 1:
@@ -196,14 +269,17 @@ class Element:
         return (z - 54) % 32
 
     @property
-    def valence(self) -> tuple:
+    def valence(self) -> Tuple[int, int]:
         """
         # From full electron config obtain valence subshell
         # angular moment (L) and number of valence e- (v_e)
 
+        :raises: ValueError: If the valance is ambiguous.
         """
+        self._log.debug('Calculating valance for element %s', self.symbol)
         # the number of valence of noble gas is 0
         if self.group == 18:
+            self._log.debug('Element %s is a Nobel Gas', self.symbol)
             return (np.nan, 0)
 
         L_symbols = 'SPDFGHIKLMNOQRTUVWXYZ'
@@ -214,18 +290,32 @@ class Element:
             if ne < (2 * l + 1) * 2:
                 valence.append((l, ne))
         if len(valence) > 1:
+            self._log.info('Possible valencies for element %s: %s', self.symbol, valence)
             raise ValueError("Ambiguous valence")
-
+        if len(valence) == 0:
+            l = L_symbols.lower().index(full_electron_config[-1][1])
+            ne = full_electron_config[-1][-1]
+            valence.append((l, ne))
+            self._log.info('Valence for element %s has full outer, so suggesting %s', self.symbol, valence[0])
         return valence[0]
 
     @property
     def scattering_lengths(self) -> dict:
+        """
+        The neutron scattering lengths for isotopes of the Element
+
+        :return: All isotopes with their scattering lengths.
+        """
         return self._data['n_scattering_lengths']
 
     @property
     def block(self) -> str:
         """
-        Return the block character "s,p,d,f"
+        Block character "s,p,d,f" of the periodic table
+
+        :return: "s,p,d,f"
+
+        :raises ValueError: If the block is unknown
         """
         if (self.is_actinoid or self.is_lanthanoid) and self.Z not in [71, 103]:
             return "f"
@@ -242,14 +332,14 @@ class Element:
     @property
     def is_noble_gas(self) -> bool:
         """
-        True if element is noble gas.
+        Is the element a noble gas?
         """
         return self.Z in (2, 10, 18, 36, 54, 86, 118)
 
     @property
     def is_transition_metal(self) -> bool:
         """
-        True if element is a transition metal.
+        Is the element is a transition metal?
         """
         ns = list(range(21, 31))
         ns.extend(list(range(39, 49)))
@@ -262,20 +352,22 @@ class Element:
     @property
     def is_post_transition_metal(self) -> bool:
         """
-        True if element is a post-transition or poor metal.
+        Is the element is a post-transition or poor metal?
         """
         return self.symbol in ("Al", "Ga", "In", "Tl", "Sn", "Pb", "Bi")
 
     @property
     def is_rare_earth_metal(self) -> bool:
         """
-        True if element is a rare earth metal.
+        Is the element is a rare earth metal?
         """
         return self.is_lanthanoid or self.is_actinoid
 
     @property
     def is_metal(self) -> bool:
         """
+        Is the element a metal?
+
         :return: True if is a metal.
         """
         return (self.is_alkali or self.is_alkaline or
@@ -366,8 +458,11 @@ class Element:
                             if detail[-1:] == 's':
                                 val[isotope][detail] = FloatWithUnit(val[isotope][detail], 'barn')
                             elif detail[-1:] == 'b':
-                                if isinstance(val[isotope][detail], list):
-                                    val[isotope][detail] = ComplexWithUnit(complex(val[isotope][detail][0],val[isotope][detail][1]), 'fm')
+                                if isinstance(val[isotope][detail], list) or isinstance(val[isotope][detail], ComplexWithUnit):
+                                    if isinstance(val[isotope][detail], ComplexWithUnit):
+                                        val[isotope][detail] = ComplexWithUnit(val[isotope][detail], val[isotope][detail].unit)
+                                    else:
+                                        val[isotope][detail] = ComplexWithUnit(complex(val[isotope][detail][0], val[isotope][detail][1]), 'fm')
                                 else:
                                     val[isotope][detail] = FloatWithUnit(val[isotope][detail], 'fm')
                             else:
@@ -420,7 +515,13 @@ class Element:
 
     @staticmethod
     def __gitem(key: str) -> Callable:
-        return lambda obj: obj._data[key]
+        def inner(obj):
+            try:
+                data = obj._data[key]
+                return data
+            except KeyError:
+                raise AttributeError
+        return lambda obj: inner(obj)
 
     @staticmethod
     def __sitem(key):
