@@ -5,14 +5,15 @@
 __author__ = 'github.com/wardsimon'
 __version__ = '0.0.10'
 
+from abc import abstractmethod
 from copy import deepcopy
 from typing import Union, Optional, Any, NoReturn
 
+from easyInterface import VERBOSE
 from easyInterface.Utils.units import Unit
 from easyInterface.Utils.DictTools import PathDict, UndoableDict
 from easyInterface.Utils.Logging import logging
-from easyInterface import VERBOSE
-from abc import abstractmethod
+
 
 class LoggedClasses:
 

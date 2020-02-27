@@ -1,2 +1,3 @@
 include easyInterface/Release.json
 recursive-include examples/ *.cif
+recursive-exclude tests *
