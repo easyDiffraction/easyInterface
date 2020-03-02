@@ -1,7 +1,7 @@
 {
     "name": "easyInterface",
-    "version": "0.0.6",
-    "date": "21 Feb 2020",
+    "version": "0.0.7",
+    "date": "02 Mar 2020",
     "author": "Simon Ward",
     "url": "https://github.com/easyDiffraction/easyInterface",
     "comments": "This release of easyInterface fixes bugs, introduces documentation, tests and bug fixes. Pretty great really!",

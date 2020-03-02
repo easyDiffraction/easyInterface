@@ -3,39 +3,44 @@
 #   Created: 26/2/2020
 
 __author__ = 'github.com/wardsimon'
-__version__ = '0.0.2'
+__version__ = '0.0.3'
 
+from types import MappingProxyType
 from typing import Tuple
 
 import numpy as np
 
 from easyInterface import logger as logging
+from easyInterface.Common.Utils.BaseClasses import Parameter, ParContainer
 from easyInterface.Utils.Typing import Vector3Like
-from easyInterface.Common.Utils.BaseClasses import Base, LoggedPathDict
 
-LATTICE_DETAILS = {
+__LATTICE_DETAILS = {
     'length': {
         'header': '',
         'tooltip': 'Unit-cell length of the selected structure in angstroms.',
         'url': 'https://www.iucr.org/__data/iucr/cifdic_html/1/cif_core.dic/Icell_length_.html',
-        'default': (3, 'ang')
+        'default': (3.0, 'ang'),
+        'mapping': ''
     },
     'angle': {
         'header': '',
         'tooltip': 'Unit-cell angle of the selected structure in degrees.',
         'url': 'https://www.iucr.org/__data/iucr/cifdic_html/1/cif_core.dic/Icell_angle_.html',
-        'default': (90, 'deg')
+        'default': (90.0, 'deg'),
+        'mapping': ''
     }
 }
 
+LENGTH_DEFAULTS = MappingProxyType(__LATTICE_DETAILS['length'])
+ANGLE_DEFAULTS = MappingProxyType(__LATTICE_DETAILS['angle'])
 
-class Lattice(LoggedPathDict):
+
+class Lattice(ParContainer):
     """
     Container for a crystallographic unit cell
     """
 
-    def __init__(self, length_a: Base, length_b: Base, length_c: Base,
-                 angle_alpha: Base, angle_beta: Base, angle_gamma: Base):
+    def __init__(self, length_a, length_b, length_c, angle_alpha, angle_beta, angle_gamma):
         """
         Constructor for the crystallographic unit cell
 
@@ -52,29 +57,13 @@ class Lattice(LoggedPathDict):
         self._log = logging.getLogger(__class__.__module__)
         self._log.debug('Lattice created: %s', self)
 
-        self.setItemByPath(['length_a', 'header'], 'a (Å)')
-        self.setItemByPath(['length_a', 'tooltip'], LATTICE_DETAILS['length']['tooltip'])
-        self.setItemByPath(['length_a', 'url'], LATTICE_DETAILS['length']['url'])
+        self['length_a'].modify_meta_data('header', 'a (Å)')
+        self['length_b'].modify_meta_data('header', 'b (Å)')
+        self['length_c'].modify_meta_data('header', 'c (Å)')
 
-        self.setItemByPath(['length_b', 'header'], 'b (Å)')
-        self.setItemByPath(['length_b', 'tooltip'], LATTICE_DETAILS['length']['tooltip'])
-        self.setItemByPath(['length_b', 'url'], LATTICE_DETAILS['length']['url'])
-
-        self.setItemByPath(['length_c', 'header'], 'c (Å)')
-        self.setItemByPath(['length_c', 'tooltip'], LATTICE_DETAILS['length']['tooltip'])
-        self.setItemByPath(['length_c', 'url'], LATTICE_DETAILS['length']['url'])
-
-        self.setItemByPath(['angle_alpha', 'header'], 'alpha (°)')
-        self.setItemByPath(['angle_alpha', 'tooltip'], LATTICE_DETAILS['angle']['tooltip'])
-        self.setItemByPath(['angle_alpha', 'url'], LATTICE_DETAILS['angle']['url'])
-
-        self.setItemByPath(['angle_beta', 'header'], 'beta (°)')
-        self.setItemByPath(['angle_beta', 'tooltip'], LATTICE_DETAILS['angle']['tooltip'])
-        self.setItemByPath(['angle_beta', 'url'], LATTICE_DETAILS['angle']['url'])
-
-        self.setItemByPath(['angle_gamma', 'header'], 'gamma (°)')
-        self.setItemByPath(['angle_gamma', 'tooltip'], LATTICE_DETAILS['angle']['tooltip'])
-        self.setItemByPath(['angle_gamma', 'url'], LATTICE_DETAILS['angle']['url'])
+        self['angle_alpha'].modify_meta_data('header', 'alpha (°)')
+        self['angle_beta'].modify_meta_data('header', 'beta (°)')
+        self['angle_gamma'].modify_meta_data('header', 'gamma (°)')
 
     @classmethod
     def default(cls) -> 'Lattice':
@@ -83,12 +72,13 @@ class Lattice(LoggedPathDict):
 
         :return: Default crystolographic unit cell container
         """
-        length_a = Base(*LATTICE_DETAILS['length']['default'])
-        length_b = Base(*LATTICE_DETAILS['length']['default'])
-        length_c = Base(*LATTICE_DETAILS['length']['default'])
-        angle_alpha = Base(*LATTICE_DETAILS['angle']['default'])
-        angle_beta = Base(*LATTICE_DETAILS['angle']['default'])
-        angle_gamma = Base(*LATTICE_DETAILS['angle']['default'])
+        length_a = Parameter(*LENGTH_DEFAULTS['default'], **LENGTH_DEFAULTS)
+        length_b = Parameter(*LENGTH_DEFAULTS['default'], **LENGTH_DEFAULTS)
+        length_c = Parameter(*LENGTH_DEFAULTS['default'], **LENGTH_DEFAULTS)
+        angle_alpha = Parameter(*ANGLE_DEFAULTS['default'], **ANGLE_DEFAULTS)
+        angle_beta = Parameter(*ANGLE_DEFAULTS['default'], **ANGLE_DEFAULTS)
+        angle_gamma = Parameter(*ANGLE_DEFAULTS['default'], **ANGLE_DEFAULTS)
+
         return cls(length_a, length_b, length_c, angle_alpha, angle_beta, angle_gamma)
 
     @classmethod
@@ -105,24 +95,24 @@ class Lattice(LoggedPathDict):
         :param angle_gamma:  Unit cell angle gamma
         :return:
         """
-        length_a = Base(length_a, LATTICE_DETAILS['length']['default'][1])
-        length_b = Base(length_b, LATTICE_DETAILS['length']['default'][1])
-        length_c = Base(length_c, LATTICE_DETAILS['length']['default'][1])
-        angle_alpha = Base(angle_alpha, LATTICE_DETAILS['angle']['default'][1])
-        angle_beta = Base(angle_beta, LATTICE_DETAILS['angle']['default'][1])
-        angle_gamma = Base(angle_gamma, LATTICE_DETAILS['angle']['default'][1])
+        length_a = Parameter(length_a, LENGTH_DEFAULTS['default'][1], **LENGTH_DEFAULTS)
+        length_b = Parameter(length_b, LENGTH_DEFAULTS['default'][1], **LENGTH_DEFAULTS)
+        length_c = Parameter(length_c, LENGTH_DEFAULTS['default'][1], **LENGTH_DEFAULTS)
+        angle_alpha = Parameter(angle_alpha, ANGLE_DEFAULTS['default'][1], **ANGLE_DEFAULTS)
+        angle_beta = Parameter(angle_beta, ANGLE_DEFAULTS['default'][1], **ANGLE_DEFAULTS)
+        angle_gamma = Parameter(angle_gamma, ANGLE_DEFAULTS['default'][1], **ANGLE_DEFAULTS)
 
-        return cls(length_a=length_a, length_b=length_b, length_c=length_c,
-                   angle_alpha=angle_alpha, angle_beta=angle_beta, angle_gamma=angle_gamma)
+        return cls(length_a, length_b, length_c, angle_alpha, angle_beta, angle_gamma)
 
     def __repr__(self) -> str:
         return 'Lattice: (a:{}, b:{}, c:{}, alpha:{}, beta:{}, gamma:{}) '.format(self['length_a'], self['length_b'],
-                                                                               self['length_c'],
-                                                                               self['angle_alpha'], self['angle_beta'],
-                                                                               self['angle_gamma'])
+                                                                                  self['length_c'],
+                                                                                  self['angle_alpha'],
+                                                                                  self['angle_beta'],
+                                                                                  self['angle_gamma'])
 
     @property
-    def matrix(self):
+    def matrix(self) -> np.ndarray:
         angles_r = self.abg_rad
         cos_alpha, cos_beta, cos_gamma = np.cos(angles_r)
         sin_alpha, sin_beta, sin_gamma = np.sin(angles_r)
@@ -138,30 +128,6 @@ class Lattice(LoggedPathDict):
         ]
         vector_c = [0.0, 0.0, self.c]
         return np.array([vector_a, vector_b, vector_c], dtype=np.float64)
-
-    @property
-    def length_a(self) -> float:
-        return self['length_a'].value
-
-    @length_a.setter
-    def length_a(self, value: float):
-        self['length_a'].value = value
-
-    @property
-    def length_b(self) -> float:
-        return self['length_b'].value
-
-    @length_b.setter
-    def length_b(self, value: float):
-        self['length_b'].value = value
-
-    @property
-    def length_c(self) -> float:
-        return self['length_c'].value
-
-    @length_c.setter
-    def length_c(self, value: float):
-        self['length_c'].value = value
 
     @property
     def a(self) -> float:
@@ -192,59 +158,59 @@ class Lattice(LoggedPathDict):
         return self.a, self.b, self.c
 
     @property
-    def angle_alpha(self) -> float:
-        return self['angle_alpha'].value
-
-    @angle_alpha.setter
-    def angle_alpha(self, value: float):
-        self['angle_alpha'].value = value
-
-    @property
-    def angle_beta(self) -> float:
-        return self['angle_beta'].value
-
-    @angle_beta.setter
-    def angle_beta(self, value: float):
-        self['angle_beta'].value = value
-
-    @property
-    def angle_gamma(self) -> float:
-        return self['angle_gamma'].value
-
-    @angle_gamma.setter
-    def angle_gamma(self, value: float):
-        self['angle_gamma'].value = value
-
-    @property
     def alpha(self) -> float:
+        """
+        First lattice angle in degrees
+        """
         return self['angle_alpha'].value
 
     @alpha.setter
     def alpha(self, value: float):
+        """
+        Set the first lattice angle in degrees
+        """
         self['angle_alpha'].value = value
 
     @property
     def beta(self) -> float:
+        """
+        Second lattice angle in degrees
+        """
         return self['angle_beta'].value
 
     @beta.setter
     def beta(self, value: float):
+        """
+        Set the second lattice angle in degrees
+        """
         self['angle_beta'].value = value
 
     @property
     def gamma(self) -> float:
+        """
+        Third lattice angle in degrees
+        """
         return self['angle_gamma'].value
 
     @gamma.setter
     def gamma(self, value: float):
+        """
+        Set the third lattice angle in degrees
+        """
         self['angle_gamma'].value = value
 
     @property
     def abg(self) -> Tuple[float, float, float]:
+        """
+        Alpha, Beta, Gamma as a tuple
+        """
         return self.alpha, self.beta, self.gamma
 
     @property
     def abg_rad(self) -> Tuple[float, float, float]:
+        """
+        Alpha, Beta, Gamma in radians as a tuple
+        """
         return np.deg2rad(self.alpha), np.deg2rad(self.beta), np.deg2rad(self.gamma)
 
     @property
@@ -252,21 +218,21 @@ class Lattice(LoggedPathDict):
         """
         First lattice angle in radians
         """
-        return self.abg_rad[0]
+        return np.deg2rad(self.alpha)
 
     @property
     def beta_rad(self) -> float:
         """
         Second lattice angle in radians
         """
-        return self.abg_rad[1]
+        return np.deg2rad(self.beta)
 
     @property
     def gamma_rad(self) -> float:
         """
         Third lattice angle in radians
         """
-        return self.abg_rad[2]
+        return np.deg2rad(self.gamma)
 
     @property
     def astar(self) -> float:
@@ -372,12 +338,12 @@ class Lattice(LoggedPathDict):
         elif len(np.unique(self.abc)) == 3 and np.all(np.array(self.abg) == 90):
             return 'orthorhombic'
         elif len(np.unique(self.abc)) == 1 and len(np.unique(self.abg)) == 1 and np.all(
-                        np.array(self.abg) < 120) and np.all(np.array(self.abg) != 90):
+                np.array(self.abg) < 120) and np.all(np.array(self.abg) != 90):
             return 'rhombohedral'
         elif len(np.unique(self.abc)) == 2 and self.abc[0] == self.abc[1] and np.all(np.array(self.abg) == 90):
             return 'tetragonal'
         elif len(np.unique(self.abc)) == 2 and self.abc[0] == self.abc[1] and np.all(np.array(self.abg)[0:2] == 90) and \
-                        self.abg[2] == 120:
+                self.abg[2] == 120:
             return 'hexagonal'
         elif len(np.unique(self.abc)) == 1 and np.all(np.array(self.abg) == 90):
             return 'cubic'
@@ -386,20 +352,19 @@ class Lattice(LoggedPathDict):
 
     @property
     def volume(self) -> float:
-        u"""
+        """
         Volume of the unit cell in \u212B\ :sup:`3`
         """
-        return np.sqrt(np.linalg.det(self.G))
+        return np.sqrt(np.linalg.det(self.get_G()))
 
     @property
     def reciprocal_volume(self) -> float:
-        u"""
+        """
         Volume of the reciprocal unit cell in (\u212B\ :sup:`-1`\ )\ :sup:`3`
         """
-        return np.sqrt(np.linalg.det(self.Gstar))
+        return np.sqrt(np.linalg.det(self.get_Gstar()))
 
-    @property
-    def G(self) -> np.ndarray:
+    def get_G(self) -> np.ndarray:
         """
         Metric tensor of the real space lattice
         """
@@ -408,38 +373,38 @@ class Lattice(LoggedPathDict):
         alpha, beta, gamma = self.abg_rad
 
         return np.array([[a ** 2, a * b * np.cos(gamma), a * c * np.cos(beta)],
-                          [a * b * np.cos(gamma), b ** 2, b * c * np.cos(alpha)],
-                          [a * c * np.cos(beta), b * c * np.cos(alpha), c ** 2]], dtype=float)
+                         [a * b * np.cos(gamma), b ** 2, b * c * np.cos(alpha)],
+                         [a * c * np.cos(beta), b * c * np.cos(alpha), c ** 2]], dtype=float)
 
-    @property
-    def Gstar(self) -> np.ndarray:
+    def get_Gstar(self) -> np.ndarray:
         """
         Metric tensor of the reciprocal lattice
         """
 
-        return np.linalg.inv(self.G) * 4 * np.pi ** 2
+        return np.linalg.inv(self.get_G()) * 4 * np.pi ** 2
 
-    @property
-    def Bmatrix(self) -> np.ndarray:
+    def get_Bmatrix(self) -> np.ndarray:
         """
         Cartesian basis matrix in reciprocal units such that
         Bmatrix*Bmatrix.T = Gstar
         """
 
-        return np.array([[self.astar, self.bstar * np.cos(self.gammastar_rad),  self.cstar * np.cos(self.betastar_rad)],
-                          [0, self.bstar * np.sin(self.gammastar_rad), -self.cstar * np.sin(self.betastar_rad) * np.cos(self.alpha_rad)],
-                          [0, 0, self.cstar * np.sin(self.betastar_rad) * np.sin(self.alphastar_rad)]], dtype=float)
+        return np.array([[self.astar, self.bstar * np.cos(self.gammastar_rad), self.cstar * np.cos(self.betastar_rad)],
+                         [0, self.bstar * np.sin(self.gammastar_rad),
+                          -self.cstar * np.sin(self.betastar_rad) * np.cos(self.alpha_rad)],
+                         [0, 0, self.cstar * np.sin(self.betastar_rad) * np.sin(self.alphastar_rad)]], dtype=float)
 
     def get_d_spacing(self, hkl: Vector3Like) -> float:
-        u"""
+        """
         Returns the d-spacing of a given reciprocal lattice vector.
 
         :param hkl: Reciprocal lattice vector in r.l.u.
+
         :return d: The d-spacing in \u212B
         """
         hkl = np.array(hkl)
 
-        return float(1 / np.sqrt(np.dot(np.dot(hkl, self.Gstar / 4 / np.pi ** 2), hkl)))
+        return float(1 / np.sqrt(np.dot(np.dot(hkl, self.get_Gstar() / 4 / np.pi ** 2), hkl)))
 
     def get_angle_between_planes(self, v1: Vector3Like, v2: Vector3Like) -> float:
         """
@@ -454,12 +419,13 @@ class Lattice(LoggedPathDict):
 
         v1, v2 = np.array(v1), np.array(v2)
 
-        return float(np.rad2deg(np.arccos(np.inner(np.inner(v1, self.Gstar), v2) /
-                                          np.sqrt(np.inner(np.inner(v1, self.Gstar), v1)) /
-                                          np.sqrt(np.inner(np.inner(v2, self.Gstar), v2)))))
+        return float(np.rad2deg(np.arccos(np.inner(np.inner(v1, self.get_Gstar()), v2) /
+                                          np.sqrt(np.inner(np.inner(v1, self.get_Gstar()), v1)) /
+                                          np.sqrt(np.inner(np.inner(v2, self.get_Gstar()), v2)))))
 
     def get_two_theta(self, hkl: Vector3Like, wavelength: float) -> float:
-        u"""Returns the detector angle 2\U0001D703 for a given reciprocal
+        """
+        Returns the detector angle 2\U0001D703 for a given reciprocal
         lattice vector and incident wavelength.
 
         :param hkl: Reciprocal lattice vector in r.l.u.
@@ -472,7 +438,8 @@ class Lattice(LoggedPathDict):
                                         self.get_d_spacing(hkl)))
 
     def get_q(self, hkl: Vector3Like) -> float:
-        u"""Returns the magnitude of *Q* for a given reciprocal lattice
+        """
+        Returns the magnitude of *Q* for a given reciprocal lattice
         vector in \u212B\ :sup:`-1`.
 
         :param hkl: Reciprocal lattice vector in r.l.u.
@@ -488,7 +455,8 @@ class Lattice(LoggedPathDict):
         """
         Compute the scalar product of vector(s).
 
-        :param coords_a, coords_b: Array-like objects with the coordinates.
+        :param coords_a: Array-like objects with the coordinates.
+        :param coords_b: Array-like objects with the coordinates.
         :param frac_coords: Boolean stating whether the vector corresponds to fractional or cartesian coordinates.
 
         :return: Dot product
@@ -514,18 +482,126 @@ class Lattice(LoggedPathDict):
                 [self.get_cartesian_coords(vec) for vec in coords_b], (-1, 3)
             )
 
-        return np.array([dot(a, b) for a, b in zip(cart_a, cart_b)])
+        return np.array([np.dot(a, b) for a, b in zip(cart_a, cart_b)])
 
     def norm(self, coords: Vector3Like, frac_coords: bool = True) -> float:
         """
         Compute the norm of vector(s).
-        Args:
-            coords:
-                Array-like object with the coordinates.
-            frac_coords:
-                Boolean stating whether the vector corresponds to fractional or
-                cartesian coordinates.
-        Returns:
-            one-dimensional `numpy` array.
+
+        :param coords: The coordinates.
+        :param frac_coords: Are the vector corresponding to fractional or cartesian coordinates.
+
+        :return: Norm
         """
         return np.sqrt(self.dot(coords, coords, frac_coords=frac_coords))
+
+    def get_cartesian_coords(self, fract_co_ords: Vector3Like, mod: bool = False) -> Vector3Like:
+        """
+        Converts fractional crystal co-ordinates into cartesian co-ordinates.
+
+        :param fract_co_ords: Fractional co-ordinates in the system.
+        :param mod: Should the fractional co-ordinates extend out of the unit-cell
+
+        :return: Converted co-ordinates.
+        """
+        fract_co_ords = np.reshape(fract_co_ords, (-1, 3))
+        abc = np.array(self.abc)
+        cart_co_ords = fract_co_ords * abc
+
+        if mod:
+            cart_co_ords = np.mod(cart_co_ords, abc)
+
+        return cart_co_ords
+
+    def get_fractional_coords(self, cart_co_ords: Vector3Like, mod: bool = False) -> Vector3Like:
+        """
+        Converts cartesian crystal co-ordinates into fractional co-ordinates.
+
+        :param cart_co_ords: Cartesian co-ordinates in the system.
+        :param mod: Should the cartesian co-ordinates extend out of the unit-cell
+
+        :return: Converted co-ordinates.
+        """
+        cart_co_ords = np.reshape(cart_co_ords, (-1, 3))
+        abc = np.array(self.abc)
+        fract_co_ords = cart_co_ords / abc
+
+        if mod:
+            fract_co_ords = np.mod(fract_co_ords, 1.0)
+
+        return fract_co_ords
+
+    @classmethod
+    def cubic(cls, a: float):
+        """
+        Convenience constructor for a cubic lattice.
+
+        :param a: The *a* lattice parameter of the cubic cell.
+
+        :return Cubic lattice of dimensions a x a x a.
+        """
+        return cls.fromPars(a, a, a, 90.0, 90.0, 90.0)
+
+    @classmethod
+    def tetragonal(cls, a: float, c: float):
+        """
+        Convenience constructor for a tetragonal lattice.
+
+        :param a: *a* lattice parameter of the tetragonal cell.
+        :param c: *c* lattice parameter of the tetragonal cell.
+
+        :returns Tetragonal lattice of dimensions a x a x c.
+        """
+        return cls.fromPars(a, a, c, 90.0, 90.0, 90.0)
+
+    @classmethod
+    def orthorhombic(cls, a: float, b: float, c: float):
+        """
+        Convenience constructor for an orthorhombic lattice.
+
+        :param a: *a* lattice parameter of the orthorhombic cell.
+        :param b: *b* lattice parameter of the orthorhombic cell.
+        :param c: *c* lattice parameter of the orthorhombic cell.
+
+        :returns Orthorhombic lattice of dimensions a x b x c.
+        """
+        return cls.fromPars(a, b, c, 90.0, 90.0, 90.0)
+
+    @classmethod
+    def monoclinic(cls, a: float, b: float, c: float, beta: float):
+        """
+        Convenience constructor for a monoclinic lattice.
+
+        :param a: *a* lattice parameter of the monoclinc cell.
+        :param b: *b* lattice parameter of the monoclinc cell.
+        :param c: *c* lattice parameter of the monoclinc cell.
+        :param beta: *beta* angle between lattice vectors b and c in degrees.
+
+        :returns Monoclinic lattice of dimensions a x b x c with non right-angle beta between
+        lattice vectors a and c.
+        """
+        return cls.fromPars(a, b, c, 90, beta, 90)
+
+    @classmethod
+    def hexagonal(cls, a: float, c: float):
+        """
+        Convenience constructor for a hexagonal lattice.
+
+        :param a: *a* lattice parameter of the hexagonal cell.
+        :param c: *c* lattice parameter of the hexagonal cell.
+
+        :returns Hexagonal lattice of dimensions a x a x c.
+        """
+        return cls.fromPars(a, a, c, 90, 90, 120)
+
+    @classmethod
+    def rhombohedral(cls, a: float, alpha: float):
+        """
+        Convenience constructor for a rhombohedral lattice.
+
+        :param: *a* lattice parameter of the rhombohedral cell.
+        :param alpha: Angle for the rhombohedral lattice in degrees.
+
+        :returns Rhombohedral lattice of dimensions a x a x a.
+        """
+        return cls.fromPars(a, a, a, alpha, alpha, alpha)

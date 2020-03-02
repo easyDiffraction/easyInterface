@@ -1,10 +1,10 @@
 __author__ = 'simonward'
 __version__ = "2020_02_01"
 
+import abc
 from collections import deque, UserDict
 from copy import deepcopy
 from typing import Union, Any, NoReturn, Tuple, List
-import abc
 
 import dictdiffer
 
@@ -213,13 +213,45 @@ class _RemoveItemCommand(_EmptyCommand):
 
     def __init__(self, dictionary: 'UndoableDict', key: Union[str, list]):
         super().__init__(dictionary, key, None)
-        self.setText("Removing: {}".format(self._key))
+        self.setText("Modifying attribute: {}".format(self._key))
 
     def undo(self) -> NoReturn:
         self._dictionary._realSetItemByPath(self._key, self._old_value)
 
     def redo(self) -> NoReturn:
         self._dictionary._realDelItem(self._key)
+
+
+class _SetItemValueCommand(_EmptyCommand):
+    """
+    The _SetItemCommand class implements a command to modify the value of
+    the existing key in the UndoableDict-base_dict dictionary.
+    """
+
+    def __init__(self, dictionary: 'UndoableDict', key: Union[str, list], attribute: str, value: Any):
+        super().__init__(dictionary, key, value)
+        self._attribute = attribute
+        if self._attribute in self._dictionary.getItem(self._key).__dict__.keys():
+            self._old_attribute = self._dictionary.getItem(self._key).__dict__.__getitem__(self._attribute)
+        else:
+            prop_base = self._dictionary.getItem(self._key)
+            self._old_value = prop_base.__class__.__dict__[self._attribute].fget(prop_base)
+            self._old_attribute = prop_base.__class__.__dict__[self._attribute]
+        self.setText("Changing attribute: {}.{} = {}".format(self._key, attribute, self._new_value))
+
+    def undo(self) -> NoReturn:
+        if self._new_value is not self._old_value:
+            if self._attribute in self._dictionary.getItem(self._key).__dict__.keys():
+                self._dictionary.getItem(self._key).__dict__.__setitem__(self._attribute, self._old_attribute)
+            else:
+                self._old_attribute.fset(self._dictionary.getItem(self._key), self._old_value)
+
+    def redo(self) -> NoReturn:
+        if self._new_value is not self._old_value:
+            try:
+                self._dictionary._realSetItemValue(self._key, self._attribute, self._new_value)
+            except AttributeError:
+                raise AttributeError('Attribute {} is not read-only'.format(self._attribute))
 
 
 class RmItem:
@@ -241,6 +273,14 @@ class PathDict(UserDict):
             self.getItemByPath(key[:-1])[key[-1]] = value
         else:
             super().__setitem__(key, value)
+
+    def _realSetItemValue(self, key: Union[str, List], attr: str, value: Any) -> NoReturn:
+        """Actually changes the value for the existing key in dictionary."""
+        if isinstance(key, list):
+            item = self.getItemByPath(key)
+        else:
+            item = super().__getitem__(key)
+        item.__setattr__(attr, value)
 
     def _realAddItem(self, key: str, value: Any) -> NoReturn:
         """Actually adds a key-value pair to dictionary."""
@@ -270,6 +310,10 @@ class PathDict(UserDict):
         """Set a value in a nested object by key sequence."""
         self._realSetItem(keys, value)
 
+    def setItemValueByPath(self, keys: list, attr: str, value: Any) -> NoReturn:
+        """Set a value in a nested object by key sequence."""
+        self._realSetItemValue(keys, attr, value)
+
     def setItem(self, key: Union[str, list], value: Any) -> NoReturn:
         """Set a value in a nested object by key sequence or by simple key."""
         if isinstance(key, list):
@@ -289,6 +333,14 @@ class PathDict(UserDict):
                 else:
                     return default
         return item
+
+    def getItemValueByPath(self, key: Union[str, List], attr: str) -> Any:
+        """Actually changes the value for the existing key in dictionary."""
+        if isinstance(key, list):
+            item = self.getItemByPath(key)
+        else:
+            item = super().__getitem__(key)
+        return item.__getattribute__(attr)
 
     def rmItemByPath(self, keys: list):
         self._realDelItem(keys)
@@ -386,10 +438,14 @@ class UndoableDict(PathDict):
                 self.__stack.push(_SetItemCommand(self, key, val))
             else:
                 self.__stack.push(_AddItemCommand(self, key, val))
-            
+
     @property
     def macro_running(self) -> bool:
         return self.__stack._macro_running
+
+    def setItemValueByPath(self, keys: list, attr: str, value: Any) -> NoReturn:
+        """Set a value in a nested object by key sequence."""
+        self.__stack.push(_SetItemValueCommand(self, keys, attr, value))
 
     def setItemByPath(self, keys: list, value: Any) -> NoReturn:
         """

@@ -1,33 +1,27 @@
 import os
-
 from typing import Tuple
 
 import cryspy
 import pycifstar
-
 from asteval import Interpreter
-
-from easyInterface.Common.PhaseObj import *
-from easyInterface.Diffraction.DataClasses.DataObj.Calculation import *
-from easyInterface.Diffraction.DataClasses.DataObj.Experiment import *
-from easyInterface.Common.Utils.BaseClasses import Base
-
-from easyInterface.Utils.Helpers import time_it
-
-# Imports needed to create a cryspyObj
-from cryspy.scripts.cl_rhochi import RhoChi
 from cryspy.cif_like.cl_crystal import Crystal
-from cryspy.cif_like.cl_pd import Phase as cpPhase
 from cryspy.cif_like.cl_pd import Pd, PdBackground, PdBackgroundL, PdInstrResolution, PdMeas, PdMeasL, PhaseL, Setup
-
-# Imports needed to create a phase
-from cryspy.corecif.cl_cell import Cell as cpCell
+from cryspy.cif_like.cl_pd import Phase as cpPhase
 from cryspy.corecif.cl_atom_site import AtomSite, AtomSiteL
 from cryspy.corecif.cl_atom_site_aniso import AtomSiteAniso, AtomSiteAnisoL
+# Imports needed to create a phase
+from cryspy.corecif.cl_cell import Cell as cpCell
 from cryspy.magneticcif.cl_atom_site_susceptibility import AtomSiteSusceptibility, AtomSiteSusceptibilityL
+# Imports needed to create a cryspyObj
+from cryspy.scripts.cl_rhochi import RhoChi
 from cryspy.symcif.cl_space_group import SpaceGroup as cpSpaceGroup
 
 from easyInterface import logger as logging
+from easyInterface.Common.PhaseObj import *
+from easyInterface.Common.Utils.BaseClasses import Base
+from easyInterface.Diffraction.DataClasses.DataObj.Calculation import *
+from easyInterface.Diffraction.DataClasses.DataObj.Experiment import *
+from easyInterface.Utils.Helpers import time_it
 
 PHASE_SEGMENT = "_phases"
 EXPERIMENT_SEGMENT = "_experiments"
@@ -599,12 +593,19 @@ class CryspyCalculator:
                                                  calculator_phase.cell.angle_beta,
                                                  calculator_phase.cell.angle_gamma])
 
+        # unit_cell['length_a'].modify_meta_data('mapping', mapping_phase + '.cell.length_a')
+        # unit_cell['length_b'].modify_meta_data('mapping', mapping_phase + '.cell.length_b')
+        # unit_cell['length_c'].modify_meta_data('mapping', mapping_phase + '.cell.length_c')
+        # unit_cell['angle_alpha'].modify_meta_data('mapping', mapping_phase + '.cell.angle_alpha')
+        # unit_cell['angle_beta'].modify_meta_data('mapping', mapping_phase + '.cell.angle_beta')
+        # unit_cell['angle_gamma'].modify_meta_data('mapping', mapping_phase + '.cell.angle_gamma')
         unit_cell['length_a']['mapping'] = mapping_phase + '.cell.length_a'
         unit_cell['length_b']['mapping'] = mapping_phase + '.cell.length_b'
         unit_cell['length_c']['mapping'] = mapping_phase + '.cell.length_c'
         unit_cell['angle_alpha']['mapping'] = mapping_phase + '.cell.angle_alpha'
         unit_cell['angle_beta']['mapping'] = mapping_phase + '.cell.angle_beta'
         unit_cell['angle_gamma']['mapping'] = mapping_phase + '.cell.angle_gamma'
+
         return unit_cell
 
     @time_it

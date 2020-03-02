@@ -1,6 +1,7 @@
 from easyInterface.Common.PhaseObj.Cell import *
 from tests.easyInterface.Common.Utils.Helpers import PathDictDerived
 
+
 def genericTestCell(cell_constructor, *args):
     expected = ['length_a', 'length_b', 'length_c', 'angle_alpha', 'angle_beta', 'angle_gamma']
 
@@ -15,14 +16,14 @@ def genericTestCell(cell_constructor, *args):
     assert cell.getItemByPath(['angle_alpha', 'header']) == 'alpha (°)'
     assert cell.getItemByPath(['angle_beta', 'header']) == 'beta (°)'
     assert cell.getItemByPath(['angle_gamma', 'header']) == 'gamma (°)'
-    
+
     assert cell.getItemByPath(['length_a', 'tooltip']) == CELL_DETAILS['length']['tooltip']
     assert cell.getItemByPath(['length_b', 'tooltip']) == CELL_DETAILS['length']['tooltip']
     assert cell.getItemByPath(['length_c', 'tooltip']) == CELL_DETAILS['length']['tooltip']
     assert cell.getItemByPath(['angle_alpha', 'tooltip']) == CELL_DETAILS['angle']['tooltip']
     assert cell.getItemByPath(['angle_beta', 'tooltip']) == CELL_DETAILS['angle']['tooltip']
     assert cell.getItemByPath(['angle_gamma', 'tooltip']) == CELL_DETAILS['angle']['tooltip']
-    
+
     assert cell.getItemByPath(['length_a', 'url']) == CELL_DETAILS['length']['url']
     assert cell.getItemByPath(['length_b', 'url']) == CELL_DETAILS['length']['url']
     assert cell.getItemByPath(['length_c', 'url']) == CELL_DETAILS['length']['url']
@@ -56,7 +57,6 @@ def test_cell_default():
 
 
 def test_cell_from_pars():
-
     length = 5
     angle = 60
 

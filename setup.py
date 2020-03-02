@@ -1,6 +1,7 @@
-import os
-from setuptools import setup, find_packages
 import json
+import os
+
+from setuptools import setup, find_packages
 
 try:
     with open(os.path.join('easyInterface', 'Release.json')) as json_file:
@@ -33,7 +34,8 @@ setup(
     install_requires=[
         'cryspy>=0.2.0',
         'dictdiffer',
-        'asteval'
+        'asteval',
+        'numpy'
     ],
     platforms=['any'],
     tests_require=['pytest',

@@ -7,19 +7,16 @@ __version__ = '0.0.10'
 
 from abc import abstractmethod
 from copy import deepcopy
-from typing import Union, Optional, Any, NoReturn
+from typing import Union, Optional, Any, NoReturn, Callable
 
 from easyInterface import VERBOSE
-from easyInterface.Utils.units import Unit
+from easyInterface.Utils.Depreciated import deprecated_function
 from easyInterface.Utils.DictTools import PathDict, UndoableDict
 from easyInterface.Utils.Logging import logging
+from easyInterface.Utils.units import Unit, FloatWithUnit
 
 
 class LoggedClasses:
-
-    def __init__(self):
-        pass
-
     def __deepcopy__(self, memo):
         """
         We can't deepcopy log objects on python 3.6 :-(
@@ -52,6 +49,105 @@ class LoggedPathDict(LoggedClasses, PathDict):
     def __init__(self, *args, **kwargs):
         LoggedClasses.__init__(self)
         PathDict.__init__(self, *args, **kwargs)
+
+
+class ParContainer(LoggedPathDict):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._log = None
+        for key in kwargs.keys():
+            if isinstance(self[key], Parameter):
+                setattr(self.__class__, key, property(self.__gitem(key)))
+            else:
+                setattr(self.__class__, key, property(self.__gitem(key), self.__sitem(key)))
+
+    def __setitem__(self, key, value):
+        if key in self.keys():
+            if isinstance(self[key], Parameter):
+                self[key].value = value
+                return
+        super().__setitem__(key, value)
+
+    @staticmethod
+    def __gitem(key: str) -> Callable:
+        def inner(obj):
+            try:
+                data = obj[key]
+                return data
+            except KeyError:
+                raise AttributeError
+
+        return lambda obj: inner(obj)
+
+    @staticmethod
+    def __sitem(key):
+        return lambda obj, value: obj.__setitem__(key, value)
+
+
+class Parameter:
+    def __init__(self, value, unit, **kwargs):
+        self._value = FloatWithUnit(value, unit)
+        self.__properties = kwargs
+        self.fittable = False
+        self.error = None
+        self.hidden = False
+        self.constraint = lambda x: True
+        self.max_min_scale = 0.2
+        for key in self.__properties.keys():
+            setattr(self.__class__, key, property(self.__gitem(key)))
+
+    def __repr__(self):
+        return self._value.__repr__()
+
+    def __str__(self):
+        base = self._value.__repr__()
+        if self.error is not None:
+            base += ' \u00B1 {}'.format(self.error)
+        if self._value.unit is not None:
+            base += ' {}'.format(self._value.unit)
+        return base
+
+    def modify_meta_data(self, key, value):
+        self.__properties[key] = value
+
+    @property
+    def unit(self) -> Unit:
+        return self.value.unit
+
+    @unit.setter
+    def unit(self, new_unit: str):
+        factor = self._value.unit.get_conversion_factor(new_unit)
+        self._value = FloatWithUnit(self._value * factor, new_unit, unit_type=self._value.unit_type)
+
+    @property
+    def max(self):
+        return FloatWithUnit(self._value * (1 + self.max_min_scale), self._value.unit, unit_type=self._value.unit_type)
+
+    @property
+    def min(self):
+        return FloatWithUnit(self._value * (1 - self.max_min_scale), self._value.unit, unit_type=self._value.unit_type)
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, value):
+        if self.constraint(value):
+            self._value = FloatWithUnit(value, self._value.unit, unit_type=self._value.unit_type)
+        else:
+            raise ValueError('The supplied value fails validation')
+
+    @staticmethod
+    def __gitem(key: str) -> Callable:
+        def inner(obj):
+            try:
+                data = obj.__properties[key]
+                return data
+            except KeyError:
+                raise AttributeError
+
+        return lambda obj: inner(obj)
 
 
 class ContainerObj(LoggedPathDict):

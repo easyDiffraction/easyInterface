@@ -5,10 +5,10 @@
 __author__ = 'github.com/wardsimon'
 __version__ = '0.0.1'
 
-from typing import Union, List
 from pathlib import Path
-import numpy as np
+from typing import Union, List
 
+import numpy as np
 
 Vector3Like = Union[List[float], np.ndarray]
 PathLike = Union[str, Path]
