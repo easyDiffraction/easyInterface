@@ -1,7 +1,7 @@
 
 <img src="https://raw.githubusercontent.com/easyDiffraction/easyInterface/master/docs/_static/easyInterface_logo.png" height="80"><img>
 
-**easyInterface** is he easy way to interface with crystallographic calculators.
+**easyInterface** is the easy way to interface with crystallographic calculators.
 
 easyInterface is tested for Python 3.6-3.8 on Mac, Windows and Ubuntu. Please, visit <https://easyDiffraction.org/easyInterface> for more details.
 

@@ -173,7 +173,7 @@ class CalculatorInterface:
 
     def addPhaseDefinition(self, phase_path: str):
         """
-        Add a new phases from a cif file to the list of existing crystal phases.
+        Add new phases from a cif file to the list of existing crystal phases in the calculator.
 
         :param phase_path: Path to a phase definition file (`.cif`)
 
@@ -188,7 +188,7 @@ class CalculatorInterface:
 
     def addPhase(self, phase: Phase):
         """
-        Add a new phases from a phase object to the list of existing crystal phases.
+        Add a new phase from an easyInterface phase object to the list of existing crystal phases in the calculator.
 
         :param phase: New phase to be added to the phase list.
         """
@@ -362,7 +362,7 @@ class CalculatorInterface:
 
     def getPhase(self, phase_name: Union[str, None]) -> Phase:
         """
-        Returns a phase from the project dictionary by name if one is supplied. If the phase name is none then all
+        Returns a phase from the project dictionary by name if one is supplied. If the phase name is None then all
         phases are returned. If the phase name does not exist KeyError is thrown.
 
         :param phase_name: Name of the phase to be returned or None for all phases
@@ -379,7 +379,7 @@ class CalculatorInterface:
     @time_it
     def updateExperiments(self):
         """
-        Synchronise the project dictionary from the calculator.
+        Synchronise the experiments portion of the project dictionary from the calculator.
         """
         experiments = self.calculator.getExperiments()
 
@@ -407,7 +407,7 @@ class CalculatorInterface:
 
     def getExperiment(self, experiment_name: Union[str, None]) -> Experiment:
         """
-        Returns a experiment from the project dictionary by name if one is supplied. If the experiment name is none then
+        Returns a experiment from the project dictionary by name if one is supplied. If the experiment name is None then
         all experiments are returned. If the experiment name does not exist KeyError is thrown.
 
         :param experiment_name: Name of the experiment to be returned or None for all experiments
@@ -456,7 +456,12 @@ class CalculatorInterface:
         return calculation
 
     def setPhase(self, phase: Union[Phase, dict]):
-        """Set phases (sample model tab in GUI)"""
+        """
+        Modify a phase in the calculator. THe phase will be added if it does not currently exist.
+
+        :param phase: easyInterface phase object to be added.
+        :raises TypeError: If the phase object is not a easyInterface phase object or dictionary object.
+        """
         if isinstance(phase, Phase):
             new_phase_name = phase['phasename']
             if new_phase_name in self.project_dict['phases'].keys():
@@ -470,7 +475,13 @@ class CalculatorInterface:
             raise TypeError
 
     def setPhases(self, phases: Union[Phase, Phases, None] = None):
-        """Set phases (sample model tab in GUI)"""
+        """
+        Set the phases in the calculator to an easyInterface phases object. If a phase in the supplied phases exists
+        then the phase will be modified, if not, it will be added.
+
+        :param phases: phases to be added to the calculator.
+        :raises TypeError: If the phase object is not a easyInterface phase/phases object or dictionary object.
+        """
         if isinstance(phases, Phase):
             new_phase_name = phases['phasename']
             k, v = self.project_dict.getItemByPath(['phases', new_phase_name]).dictComparison(phases)

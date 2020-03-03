@@ -70,7 +70,7 @@ class Lattice(ParContainer):
         """
         Default constructor for a crystallographic unit cell
 
-        :return: Default crystolographic unit cell container
+        :return: Default crystallographic unit cell container
         """
         length_a = Parameter(*LENGTH_DEFAULTS['default'], **LENGTH_DEFAULTS)
         length_b = Parameter(*LENGTH_DEFAULTS['default'], **LENGTH_DEFAULTS)
