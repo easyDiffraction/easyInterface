@@ -1,7 +1,7 @@
 .. image:: ./_static/easyInterface_logo.png
    :target: https::www.github.com/easyDiffraction/easyInterface
 
-``easyInterface`` is a library to interface crystallographic calculators to front end applications, JuPyter notebooks
+``easyInterface`` is a library to interface crystallographic calculators to front end applications, jupyter notebooks
 and scripting interfaces.
 
 =========================================
@@ -13,7 +13,11 @@ The code of the project is on Github: `easyInterface <https://github.com/easyDif
 Features of easyInterface
 =========================
 
-Boom!
+easyInterface is a way of storing information about crystal structures, providing commonly used functions in an easy to use package. The data structure interfaces to crystallographic libraries, making a common way to calculate observable phenomena regardless of your choice of backend calculator. Currently we support:
+
+* `Cryspy <https://github.com/ikibalin/cryspy>`_ - a crystallographic library for neutron data analysis.
+
+With more interfaces coming.
 
 
 Projects using easyInterface
@@ -21,9 +25,8 @@ Projects using easyInterface
 
 easyInterface is currently being used in the following projects:
 
-* `easyDiffraction <https://github.com/easyDiffraction/easyDiffraction>`_ - A scientific software for modelling and analysis of the neutron diffraction data
+* `easyDiffraction <https://github.com/easyDiffraction/easyDiffraction>`_ - Scientific software for modelling and analysis of neutron diffraction data
 
-.. installation-begin-content
 
 Installation
 ============
