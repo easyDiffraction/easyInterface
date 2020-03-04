@@ -328,7 +328,7 @@
 
 <div class="viewcode-block" id="CalculatorInterface.addPhaseDefinition"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.addPhaseDefinition">[docs]</a>    <span class="k">def</span> <span class="nf">addPhaseDefinition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Add a new phases from a cif file to the list of existing crystal phases.</span>
+<span class="sd">        Add new phases from a cif file to the list of existing crystal phases in the calculator.</span>
 
 <span class="sd">        :param phase_path: Path to a phase definition file (`.cif`)</span>
 
@@ -343,7 +343,7 @@
 
 <div class="viewcode-block" id="CalculatorInterface.addPhase"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.addPhase">[docs]</a>    <span class="k">def</span> <span class="nf">addPhase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase</span><span class="p">:</span> <span class="n">Phase</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Add a new phases from a phase object to the list of existing crystal phases.</span>
+<span class="sd">        Add a new phase from an easyInterface phase object to the list of existing crystal phases in the calculator.</span>
 
 <span class="sd">        :param phase: New phase to be added to the phase list.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -370,7 +370,7 @@
 <span class="sd">        also be made.</span>
 
 <span class="sd">        :param exp_name: The name of the experiment</span>
-<span class="sd">        :param phase_name: The name od the phase to be associated with the experiment</span>
+<span class="sd">        :param phase_name: The name of the phase to be associated with the experiment</span>
 <span class="sd">        :param scale: The scale of the crystallographic phase in the experimental system.</span>
 <span class="sd">        :raises KeyError: If the exp_name or phase_name are unknown</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -511,7 +511,7 @@
 
 <div class="viewcode-block" id="CalculatorInterface.getPhase"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.getPhase">[docs]</a>    <span class="k">def</span> <span class="nf">getPhase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase_name</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Phase</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns a phase from the project dictionary by name if one is supplied. If the phase name is none then all</span>
+<span class="sd">        Returns a phase from the project dictionary by name if one is supplied. If the phase name is None then all</span>
 <span class="sd">        phases are returned. If the phase name does not exist KeyError is thrown.</span>
 
 <span class="sd">        :param phase_name: Name of the phase to be returned or None for all phases</span>
@@ -528,7 +528,7 @@
 <div class="viewcode-block" id="CalculatorInterface.updateExperiments"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.updateExperiments">[docs]</a>    <span class="nd">@time_it</span>
     <span class="k">def</span> <span class="nf">updateExperiments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Synchronise the project dictionary from the calculator.</span>
+<span class="sd">        Synchronise the experiments portion of the project dictionary from the calculator.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">experiments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculator</span><span class="o">.</span><span class="n">getExperiments</span><span class="p">()</span>
 
@@ -556,7 +556,7 @@
 
 <div class="viewcode-block" id="CalculatorInterface.getExperiment"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.getExperiment">[docs]</a>    <span class="k">def</span> <span class="nf">getExperiment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment_name</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Experiment</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns a experiment from the project dictionary by name if one is supplied. If the experiment name is none then</span>
+<span class="sd">        Returns a experiment from the project dictionary by name if one is supplied. If the experiment name is None then</span>
 <span class="sd">        all experiments are returned. If the experiment name does not exist KeyError is thrown.</span>
 
 <span class="sd">        :param experiment_name: Name of the experiment to be returned or None for all experiments</span>
@@ -605,7 +605,12 @@
         <span class="k">return</span> <span class="n">calculation</span></div>
 
 <div class="viewcode-block" id="CalculatorInterface.setPhase"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.setPhase">[docs]</a>    <span class="k">def</span> <span class="nf">setPhase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Phase</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]):</span>
-        <span class="sd">&quot;&quot;&quot;Set phases (sample model tab in GUI)&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Modify a phase in the calculator. The phase will be added if it does not currently exist.</span>
+
+<span class="sd">        :param phase: easyInterface phase object to be added.</span>
+<span class="sd">        :raises TypeError: If the phase object is not a easyInterface phase object or dictionary object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">phase</span><span class="p">,</span> <span class="n">Phase</span><span class="p">):</span>
             <span class="n">new_phase_name</span> <span class="o">=</span> <span class="n">phase</span><span class="p">[</span><span class="s1">&#39;phasename&#39;</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">new_phase_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="p">[</span><span class="s1">&#39;phases&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -619,7 +624,13 @@
             <span class="k">raise</span> <span class="ne">TypeError</span></div>
 
 <div class="viewcode-block" id="CalculatorInterface.setPhases"><a class="viewcode-back" href="../../../interface.html#easyInterface.Diffraction.Interface.CalculatorInterface.setPhases">[docs]</a>    <span class="k">def</span> <span class="nf">setPhases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phases</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Phase</span><span class="p">,</span> <span class="n">Phases</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set phases (sample model tab in GUI)&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the phases in the calculator to an easyInterface phases object. If a phase in the supplied phases exists</span>
+<span class="sd">        then the phase will be modified, if not, it will be added.</span>
+
+<span class="sd">        :param phases: phases to be added to the calculator.</span>
+<span class="sd">        :raises TypeError: If the phase object is not a easyInterface phase/phases object or dictionary object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">phases</span><span class="p">,</span> <span class="n">Phase</span><span class="p">):</span>
             <span class="n">new_phase_name</span> <span class="o">=</span> <span class="n">phases</span><span class="p">[</span><span class="s1">&#39;phasename&#39;</span><span class="p">]</span>
             <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dict</span><span class="o">.</span><span class="n">getItemByPath</span><span class="p">([</span><span class="s1">&#39;phases&#39;</span><span class="p">,</span> <span class="n">new_phase_name</span><span class="p">])</span><span class="o">.</span><span class="n">dictComparison</span><span class="p">(</span><span class="n">phases</span><span class="p">)</span>

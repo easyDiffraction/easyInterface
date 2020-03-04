@@ -9,6 +9,26 @@ Introduction to  easyInterface
 
 Here we can see some examples of easyInterface in action
 
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This demonstrates an example of how to load an example and create a QT interface to a cryspy ca...">
+
+.. only:: html
+
+ .. figure:: /auto_examples/images/thumb/sphx_glr_depreciated_QTinterface_thumb.png
+
+     :ref:`sphx_glr_auto_examples_depreciated_QTinterface.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/depreciated_QTinterface
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>
@@ -42,26 +62,6 @@ This section gathers examples which don't produce any figures. These examples sh
    :hidden:
 
    /auto_examples/no_output/temp_test
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="This demonstrates an example of how to load an example and create a QT interface to a cryspy ca...">
-
-.. only:: html
-
- .. figure:: /auto_examples/no_output/images/thumb/sphx_glr_temp_test2_thumb.png
-
-     :ref:`sphx_glr_auto_examples_no_output_temp_test2.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_examples/no_output/temp_test2
 
 .. raw:: html
 

@@ -193,7 +193,7 @@ associated with it.</p>
 <dl class="method">
 <dt id="easyInterface.Diffraction.Interface.CalculatorInterface.addPhase">
 <code class="sig-name descname">addPhase</code><span class="sig-paren">(</span><em class="sig-param">phase</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.addPhase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.addPhase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a new phases from a phase object to the list of existing crystal phases.</p>
+<dd><p>Add a new phase from an easyInterface phase object to the list of existing crystal phases in the calculator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>phase</strong> (<a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase" title="easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase"><code class="xref py py-class docutils literal notranslate"><span class="pre">Phase</span></code></a>) – New phase to be added to the phase list.</p>
@@ -204,7 +204,7 @@ associated with it.</p>
 <dl class="method">
 <dt id="easyInterface.Diffraction.Interface.CalculatorInterface.addPhaseDefinition">
 <code class="sig-name descname">addPhaseDefinition</code><span class="sig-paren">(</span><em class="sig-param">phase_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.addPhaseDefinition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.addPhaseDefinition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a new phases from a cif file to the list of existing crystal phases.</p>
+<dd><p>Add new phases from a cif file to the list of existing crystal phases in the calculator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>phase_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path to a phase definition file (<cite>.cif</cite>)</p>
@@ -227,7 +227,7 @@ also be made.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>exp_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the experiment</p></li>
-<li><p><strong>phase_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name od the phase to be associated with the experiment</p></li>
+<li><p><strong>phase_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the phase to be associated with the experiment</p></li>
 <li><p><strong>scale</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The scale of the crystallographic phase in the experimental system.</p></li>
 </ul>
 </dd>
@@ -396,7 +396,7 @@ experiments section of the project dictionary has been modified.</p>
 <dl class="method">
 <dt id="easyInterface.Diffraction.Interface.CalculatorInterface.getExperiment">
 <code class="sig-name descname">getExperiment</code><span class="sig-paren">(</span><em class="sig-param">experiment_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.getExperiment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.getExperiment" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a experiment from the project dictionary by name if one is supplied. If the experiment name is none then
+<dd><p>Returns a experiment from the project dictionary by name if one is supplied. If the experiment name is None then
 all experiments are returned. If the experiment name does not exist KeyError is thrown.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -417,7 +417,7 @@ all experiments are returned. If the experiment name does not exist KeyError is 
 <dl class="method">
 <dt id="easyInterface.Diffraction.Interface.CalculatorInterface.getPhase">
 <code class="sig-name descname">getPhase</code><span class="sig-paren">(</span><em class="sig-param">phase_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.getPhase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.getPhase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a phase from the project dictionary by name if one is supplied. If the phase name is none then all
+<dd><p>Returns a phase from the project dictionary by name if one is supplied. If the phase name is None then all
 phases are returned. If the phase name does not exist KeyError is thrown.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -599,7 +599,15 @@ associated with it.</p>
 <dl class="method">
 <dt id="easyInterface.Diffraction.Interface.CalculatorInterface.setPhase">
 <code class="sig-name descname">setPhase</code><span class="sig-paren">(</span><em class="sig-param">phase</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.setPhase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.setPhase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set phases (sample model tab in GUI)</p>
+<dd><p>Modify a phase in the calculator. The phase will be added if it does not currently exist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>phase</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase" title="easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase"><code class="xref py py-class docutils literal notranslate"><span class="pre">Phase</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – easyInterface phase object to be added.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – If the phase object is not a easyInterface phase object or dictionary object.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -622,7 +630,16 @@ associated with it.</p>
 <dl class="method">
 <dt id="easyInterface.Diffraction.Interface.CalculatorInterface.setPhases">
 <code class="sig-name descname">setPhases</code><span class="sig-paren">(</span><em class="sig-param">phases=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.setPhases"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.setPhases" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set phases (sample model tab in GUI)</p>
+<dd><p>Set the phases in the calculator to an easyInterface phases object. If a phase in the supplied phases exists
+then the phase will be modified, if not, it will be added.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>phases</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase" title="easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase"><code class="xref py py-class docutils literal notranslate"><span class="pre">Phase</span></code></a>, <a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phases" title="easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phases"><code class="xref py py-class docutils literal notranslate"><span class="pre">Phases</span></code></a>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]) – phases to be added to the calculator.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – If the phase object is not a easyInterface phase/phases object or dictionary object.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -649,7 +666,7 @@ the last call to <cite>updateCalculations</cite>.</p>
 <dl class="method">
 <dt id="easyInterface.Diffraction.Interface.CalculatorInterface.updateExperiments">
 <code class="sig-name descname">updateExperiments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.updateExperiments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.updateExperiments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Synchronise the project dictionary from the calculator.</p>
+<dd><p>Synchronise the experiments portion of the project dictionary from the calculator.</p>
 </dd></dl>
 
 <dl class="method">

@@ -174,13 +174,13 @@
 
 <div class="viewcode-block" id="Cell"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Cell.Cell">[docs]</a><span class="k">class</span> <span class="nc">Cell</span><span class="p">(</span><span class="n">LoggedPathDict</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Container for crysolagraphic unit cell parameters</span>
+<span class="sd">    Container for crystallographic unit cell parameters</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length_a</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">length_b</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">length_c</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span>
                  <span class="n">angle_alpha</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">angle_beta</span><span class="p">:</span> <span class="n">Base</span><span class="p">,</span> <span class="n">angle_gamma</span><span class="p">:</span> <span class="n">Base</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Constructor for the crystolographic unit cell</span>
+<span class="sd">        Constructor for the crystallographic unit cell</span>
 
 <span class="sd">        :param length_a: Unit cell length a</span>
 <span class="sd">        :param length_b: Unit cell length b</span>
@@ -222,9 +222,9 @@
 <div class="viewcode-block" id="Cell.default"><a class="viewcode-back" href="../../../../../containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Cell.Cell.default">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Cell&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Default constructor for a crystolographic unit cell</span>
+<span class="sd">        Default constructor for a crystallographic unit cell</span>
 
-<span class="sd">        :return: Default crystolographic unit cell container</span>
+<span class="sd">        :return: Default crystallographic unit cell container</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">length_a</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">CELL_DETAILS</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
         <span class="n">length_b</span> <span class="o">=</span> <span class="n">Base</span><span class="p">(</span><span class="o">*</span><span class="n">CELL_DETAILS</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">][</span><span class="s1">&#39;default&#39;</span><span class="p">])</span>
@@ -238,7 +238,7 @@
     <span class="k">def</span> <span class="nf">fromPars</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">length_a</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">length_b</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">length_c</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
                  <span class="n">angle_alpha</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">angle_beta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">angle_gamma</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Cell&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Constructor of a crystolographic unit cell when parameters are known</span>
+<span class="sd">        Constructor of a crystallographic unit cell when parameters are known</span>
 
 <span class="sd">        :param length_a: Unit cell length a</span>
 <span class="sd">        :param length_b: Unit cell length b</span>
