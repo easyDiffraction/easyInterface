@@ -9,13 +9,13 @@ from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import ContainerObj
 
 class Phase(LoggedPathDict):
     """
-    Container for crysolographic phase information
+    Container for crystallographic phase information
     """
     def __init__(self, name: str, spacegroup: SpaceGroup, cell: Cell, atoms: Union[Atom, dict, Atoms], sites: dict):
         """
         Constructor for a crystallographic phase
 
-        :param name: The name of the crystolographic phase
+        :param name: The name of the crystallographic phase
         :param spacegroup: The phase spacegroup information
         :param cell: The unit cell parameters
         :param atoms: A collection of atoms for the unit cell

@@ -314,7 +314,7 @@ class CryspyCalculator:
             self._log.info('Writing phase cif files')
             phase_str = ''
             for crystal in self._cryspy_obj.crystals:
-                phase_str + crystal.to_cif() + '\n'
+                phase_str += crystal.to_cif() + '\n'
             phases_block.take_from_string(phase_str)
         else:
             self._log.info('No experiments to save. creating empty file: %s', save_to)
@@ -334,7 +334,7 @@ class CryspyCalculator:
         if self._cryspy_obj.experiments is not None:
             exp_str = ''
             for experiment in self._cryspy_obj.experiments:
-                exp_str + experiment.to_cif() + '\n'
+                exp_str += experiment.to_cif() + '\n'
             exp_block.take_from_string(exp_str)
         else:
             self._log.info('No experiments to save. creating empty file: %s', save_to)

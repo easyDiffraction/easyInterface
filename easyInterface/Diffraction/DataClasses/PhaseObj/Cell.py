@@ -19,13 +19,13 @@ CELL_DETAILS = {
 
 class Cell(LoggedPathDict):
     """
-    Container for crysolagraphic unit cell parameters
+    Container for crystallographic unit cell parameters
     """
 
     def __init__(self, length_a: Base, length_b: Base, length_c: Base,
                  angle_alpha: Base, angle_beta: Base, angle_gamma: Base):
         """
-        Constructor for the crystolographic unit cell
+        Constructor for the crystallographic unit cell
 
         :param length_a: Unit cell length a
         :param length_b: Unit cell length b
@@ -67,9 +67,9 @@ class Cell(LoggedPathDict):
     @classmethod
     def default(cls) -> 'Cell':
         """
-        Default constructor for a crystolographic unit cell
+        Default constructor for a crystallographic unit cell
 
-        :return: Default crystolographic unit cell container
+        :return: Default crystallographic unit cell container
         """
         length_a = Base(*CELL_DETAILS['length']['default'])
         length_b = Base(*CELL_DETAILS['length']['default'])
@@ -83,7 +83,7 @@ class Cell(LoggedPathDict):
     def fromPars(cls, length_a: float, length_b: float, length_c: float,
                  angle_alpha: float, angle_beta: float, angle_gamma: float) -> 'Cell':
         """
-        Constructor of a crystolographic unit cell when parameters are known
+        Constructor of a crystallographic unit cell when parameters are known
 
         :param length_a: Unit cell length a
         :param length_b: Unit cell length b
