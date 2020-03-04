@@ -13,7 +13,7 @@ class UndoStack:
     """
     Implement a version of QUndoStack without the QT
     """
-    def __init__(self, max_history=None) -> None:
+    def __init__(self, max_history: Union[int, type(None)] = None):
         self._history = deque(maxlen=max_history)
         self._future = deque(maxlen=max_history)
         self._macro_running = False
@@ -21,10 +21,10 @@ class UndoStack:
         self._max_history = max_history
 
     @property
-    def history(self):
+    def history(self) -> deque:
         return self._history
 
-    def push(self, command) -> None:
+    def push(self, command):
         """
         Add a command to the history stack
         """
@@ -51,7 +51,7 @@ class UndoStack:
         if self.canUndo():
             command = self._history[0]
             self._future.appendleft(command)
-            self._history.remove(command)
+            self._history.popleft()
             if isinstance(command, dict):
                 for item in command['commands'][::-1]:
                     item.undo()
@@ -66,7 +66,7 @@ class UndoStack:
             command = self._future[0]
             if not self._macro_running:
                 self._history.appendleft(command)
-            self._future.remove(command)
+            self._future.popleft()
             if isinstance(command, dict):
                 for item in command['commands']:
                     item.redo()
@@ -324,7 +324,7 @@ class PathDict(UserDict):
         key_list = []
         value_list = []
 
-        items = list(dictdiffer.diff(self, another_dict, ignore=ignore))
+        items = list(dictdiffer.diff(self, another_dict, ignore=ignore, tolerance=1E-8))
 
         for item in items:
             type = item[0]
