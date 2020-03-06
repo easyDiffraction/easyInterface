@@ -171,9 +171,6 @@ class CryspyCalculator:
         else:
             self._log.info('Experiment set from cif content')
             self._cryspy_obj.experiments = [experiment]
-            # if self._cryspy_obj.crystals is not None:
-            #     self._log.debug('Setting Experiment to be the pattern for the first phase')
-            #     self._cryspy_obj.experiments[0].phase.items[0] = (self._phase_name[0])
         self._experiment_name = [experiment.data_name for experiment in self._cryspy_obj.experiments]
         self._log.debug('<---- End')
 

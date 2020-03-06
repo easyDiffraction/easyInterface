@@ -64,14 +64,12 @@ def test_createReleaseNotes():
             file = 'CHANGELOG.txt'
         else:
             file = args[0]
-        try:
-            with open(file, 'r') as file_reader:
-                file_contents = file_reader.read()
-            assert '# easyInterface' in file_contents
-            assert '* ' in file_contents
-            os.remove(file)
-        except FileNotFoundError:
-            print('File not found :-(')
+        assert os.path.isfile(file)
+        with open(file, 'r') as file_reader:
+            file_contents = file_reader.read()
+        assert '# easyInterface' in file_contents
+        assert '* ' in file_contents
+        os.remove(file)
 
     save_file = 'test.txt'
     writeRL()

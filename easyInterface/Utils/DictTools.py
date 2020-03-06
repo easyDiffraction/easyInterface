@@ -13,6 +13,7 @@ class UndoStack:
     """
     Implement a version of QUndoStack without the QT
     """
+
     def __init__(self, max_history: Union[int, type(None)] = None):
         self._history = deque(maxlen=max_history)
         self._future = deque(maxlen=max_history)
@@ -24,7 +25,7 @@ class UndoStack:
     def history(self) -> deque:
         return self._history
 
-    def push(self, command):
+    def push(self, command) -> NoReturn:
         """
         Add a command to the history stack
         """
@@ -35,7 +36,7 @@ class UndoStack:
         command.redo()
         self._future = deque(maxlen=self._max_history)
 
-    def clear(self):
+    def clear(self) -> NoReturn:
         """
         Remove any commands on the stack and reset the state
         """
@@ -44,7 +45,7 @@ class UndoStack:
         self._macro_running = False
         self._macro = dict(text="", commands=[])
 
-    def undo(self):
+    def undo(self) -> NoReturn:
         """
         Undo the last change to the stack
         """
@@ -58,7 +59,7 @@ class UndoStack:
             else:
                 command.undo()
 
-    def redo(self):
+    def redo(self) -> NoReturn:
         """
         Redo the last `undo` command on the stack
         """
@@ -73,7 +74,7 @@ class UndoStack:
             else:
                 command.redo()
 
-    def beginMacro(self, text: str):
+    def beginMacro(self, text: str) -> NoReturn:
         """
         Start a bulk update i.e. multiple commands under one undo/redo command
         """
@@ -82,7 +83,7 @@ class UndoStack:
         self._macro_running = True
         self._macro = dict(text=text, commands=[])
 
-    def endMacro(self):
+    def endMacro(self) -> NoReturn:
         """
         End a bulk update i.e. multiple commands under one undo/redo command
         """
@@ -138,20 +139,20 @@ class UndoCommand(metaclass=abc.ABCMeta):
         self._text = None
 
     @abc.abstractmethod
-    def undo(self):
+    def undo(self) -> NoReturn:
         """
         Undo implementation which should be overwritten
         """
         pass
 
     @abc.abstractmethod
-    def redo(self):
+    def redo(self) -> NoReturn:
         """
         Redo implementation which should be overwritten
         """
         pass
 
-    def setText(self, text: str):
+    def setText(self, text: str) -> NoReturn:
         self._text = text
 
 
@@ -223,8 +224,7 @@ class _RemoveItemCommand(_EmptyCommand):
 
 
 class RmItem:
-    def __init__(self):
-        pass
+    pass
 
 
 class PathDict(UserDict):
@@ -248,10 +248,13 @@ class PathDict(UserDict):
 
     def _realDelItem(self, key: Union[str, list]) -> NoReturn:
         """Actually deletes a key-value pair from dictionary."""
-        if isinstance(key, list):
-            del self.getItemByPath(key[:-1])[key[-1]]
-        else:
-            del self[key]
+        try:
+            if isinstance(key, list):
+                del self.getItemByPath(key[:-1])[key[-1]]
+            else:
+                del self[key]
+        except TypeError as ex:
+            raise KeyError(str(ex))
 
     def _realSetItemByPath(self, keys: list, value: Any) -> NoReturn:
         """Actually sets the value in a nested object by the key sequence."""
@@ -290,10 +293,10 @@ class PathDict(UserDict):
                     return default
         return item
 
-    def rmItemByPath(self, keys: list):
+    def rmItemByPath(self, keys: list) -> NoReturn:
         self._realDelItem(keys)
 
-    def getItem(self, key: Union[str, list], default=None):
+    def getItem(self, key: Union[str, list], default=None) -> Any:
         """Returns a value in a nested object. Key can be either a sequence
         or a simple string."""
         if isinstance(key, list):
@@ -386,7 +389,7 @@ class UndoableDict(PathDict):
                 self.__stack.push(_SetItemCommand(self, key, val))
             else:
                 self.__stack.push(_AddItemCommand(self, key, val))
-            
+
     @property
     def macro_running(self) -> bool:
         return self.__stack._macro_running

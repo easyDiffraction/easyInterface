@@ -77,6 +77,9 @@ class CalculatedPattern(LoggedPathDict):
         super().__init__(x=x, y_calc=y_calc, y_diff_lower=y_diff_lower, y_diff_upper=y_diff_upper)
         self._log = logging.getLogger(__class__.__module__)
 
+    def __repr__(self):
+        return 'Pattern of {} points'.format(len(self['x']))
+
 
 class Calculation(LoggedPathDict):
     """

@@ -389,6 +389,9 @@ class Experiment(LoggedPathDict):
         phase = ExperimentPhases(ExperimentPhase.fromPars(name, scale))
         return cls(name, wavelength, offset, phase, background, resolution, measured_pattern)
 
+    def __repr__(self):
+        return 'Experiment: {}'.format(self['name'])
+
 
 class Experiments(ContainerObj):
     """

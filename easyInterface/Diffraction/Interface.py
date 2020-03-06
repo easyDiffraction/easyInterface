@@ -238,10 +238,7 @@ class CalculatorInterface:
         :raises KeyError: If the exp_name or phase_name are unknown
         """
         self.calculator.disassociatePhaseToExp(exp_name, phase_name)
-        try:
-            self.project_dict.rmItemByPath(['experiments', exp_name, 'phase', phase_name])
-        except TypeError:
-            raise KeyError
+        self.project_dict.rmItemByPath(['experiments', exp_name, 'phase', phase_name])
         self.__last_updated = datetime.now()
 
     # Experiment section
