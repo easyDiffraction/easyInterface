@@ -1,14 +1,17 @@
+..*
 
 .idea/
-
-*.pyc
-
-easyInterface.egg-info/
+.venv/
 
 .coverage
+
+*.pyc
+__pycache__
 
 src/
 
 docs/_build/
 
 docs/auto_examples/
+
+easyInterface.egg-info/

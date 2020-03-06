@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import pytest
 
 from copy import deepcopy
@@ -107,7 +108,7 @@ def test_setPhasesDictFromCryspyObj(cal):
     # cell
     assert phase_dict['Fe3O4']['cell']['length_a'].value == 8.36212
     assert phase_dict['Fe3O4']['cell']['length_b']['store']['hide'] is True
-    assert phase_dict['Fe3O4']['cell']['length_c']['store'].max == 10.034544
+    assert phase_dict['Fe3O4']['cell']['length_c'].max == 10.034544
     assert phase_dict['Fe3O4']['cell']['angle_beta']['store']['error'] == 0.0
     assert phase_dict['Fe3O4']['cell']['angle_gamma']['store']['constraint'] is None
     # space_group
@@ -138,7 +139,8 @@ def test_setPhasesDictFromCryspyObj(cal):
     # Isotropic ADP
     assert phase_dict['Fe3O4']['atoms']['Fe3A']['U_iso_or_equiv']['header'] == 'Biso'
     assert phase_dict['Fe3O4']['atoms']['Fe3A']['U_iso_or_equiv'].value == 0.0
-    assert phase_dict['Fe3O4']['atoms']['Fe3A']['U_iso_or_equiv']['store'].max == 0.0
+    assert phase_dict['Fe3O4']['atoms']['Fe3A']['U_iso_or_equiv'].min == -1.0
+    assert phase_dict['Fe3O4']['atoms']['Fe3A']['U_iso_or_equiv'].max == 1.0
     assert phase_dict['Fe3O4']['atoms']['O']['U_iso_or_equiv'].value == 0.0
     assert phase_dict['Fe3O4']['atoms']['O']['U_iso_or_equiv']['store']['constraint'] is None
 
@@ -146,7 +148,8 @@ def test_setPhasesDictFromCryspyObj(cal):
     assert phase_dict['Fe3O4']['atoms']['Fe3A']['ADP']['u_11']['header'] == 'U11'
     assert phase_dict['Fe3O4']['atoms']['Fe3A']['ADP']['u_11'].value is None
     assert phase_dict['Fe3O4']['atoms']['Fe3A']['ADP']['u_22'].value is None
-    assert phase_dict['Fe3O4']['atoms']['Fe3A']['ADP']['u_23']['store'].max is None
+    assert phase_dict['Fe3O4']['atoms']['Fe3A']['ADP']['u_23'].min == -np.Inf
+    assert phase_dict['Fe3O4']['atoms']['Fe3A']['ADP']['u_23'].max == np.Inf
     assert phase_dict['Fe3O4']['atoms']['Fe3B']['ADP']['u_23'].value is None
     assert phase_dict['Fe3O4']['atoms']['Fe3B']['ADP']['u_23']['store']['constraint'] is None
 
@@ -154,7 +157,8 @@ def test_setPhasesDictFromCryspyObj(cal):
     assert phase_dict['Fe3O4']['atoms']['Fe3A']['MSP']['type'].value == 'Cani'
     assert phase_dict['Fe3O4']['atoms']['Fe3A']['MSP']['chi_11'].value == -3.468
     assert phase_dict['Fe3O4']['atoms']['Fe3A']['MSP']['chi_33'].value == -3.468
-    assert phase_dict['Fe3O4']['atoms']['Fe3A']['MSP']['chi_23']['store'].max == 0.0
+    assert phase_dict['Fe3O4']['atoms']['Fe3A']['MSP']['chi_23'].min == -1.0
+    assert phase_dict['Fe3O4']['atoms']['Fe3A']['MSP']['chi_23'].max == 1.0
     assert phase_dict['Fe3O4']['atoms']['Fe3B']['MSP']['chi_23'].value == 0.0
     assert phase_dict['Fe3O4']['atoms']['Fe3B']['MSP']['chi_23']['store']['refine'] is False
 
@@ -438,4 +442,3 @@ def test_addExperimentDefinition(cal):
     assert exp_added['offset'].value == exp_ref['offset'].value
     assert exp_added['phase']['Fe3O4']['name'] == exp_ref['phase']['Fe3O4']['name']
     assert exp_added['phase']['Fe3O4']['scale'].value == exp_ref['phase']['Fe3O4']['scale'].value
-

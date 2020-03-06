@@ -1,17 +1,21 @@
+import numpy as np
 import pytest
+
 from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import Base, Data, Unit
 
 
 def data_checker(data):
     assert isinstance(data, Data)
     keys = data.keys()
-    assert len(keys) == 6
-    expected_keys = ['value', 'unit', 'error', 'constraint', 'hide', 'refine']
+    assert len(keys) == 8
+    expected_keys = ['value', 'unit', 'error', 'constraint', 'hide', 'refine', 'min', 'max']
     for this_key in expected_keys:
         assert this_key in keys
     assert isinstance(data['unit'], Unit)
     assert isinstance(data['hide'], bool)
     assert isinstance(data['refine'], bool)
+    assert isinstance(data['min'], float)
+    assert isinstance(data['max'], float)
 
 
 def base_checker(base):
@@ -50,12 +54,12 @@ def test_DataClass():
 
 def test_DataClass_min():
     d = Data(1, 's')
-    assert d.min == 0.8
+    assert d.min == -np.Inf
 
 
 def test_DataClass_max():
     d = Data(1, 's')
-    assert d.max == 1.2
+    assert d.max == np.Inf
 
 
 def test_BaseClass():
@@ -79,6 +83,17 @@ def test_Base_set_value():
     assert b.value == 2
     assert b['store']['value'] == 2
 
+def test_Base_set_min():
+    b = Base(1, 's')
+    b.min = -10
+    assert b.min == -10
+    assert b['store']['min'] == -10
+
+def test_Base_set_max():
+    b = Base(1, 's')
+    b.max = 10
+    assert b.max == 10
+    assert b['store']['max'] == 10
 
 def test_Base_get_refine():
     b = Base(1, 's')
