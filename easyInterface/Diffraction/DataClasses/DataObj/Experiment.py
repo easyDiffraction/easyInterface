@@ -281,6 +281,7 @@ class ExperimentPhase(LoggedPathDict):
         self.setItemByPath(['scale', 'header'], SCALE_DETAILS['scale']['header'])
         self.setItemByPath(['scale', 'tooltip'], SCALE_DETAILS['scale']['tooltip'])
         self.setItemByPath(['scale', 'url'], SCALE_DETAILS['scale']['url'])
+        self._log.debug('Created phase: {}'.format(self))
 
     @classmethod
     def default(cls, name: str) -> 'ExperimentPhase':
@@ -301,6 +302,9 @@ class ExperimentPhase(LoggedPathDict):
         """
         scale = Base(scale, SCALE_DETAILS['scale']['default'][1])
         return cls(name, scale)
+
+    def __repr__(self):
+        return 'Phase Scale {} @ {}'.format(self['name'], self['scale'].value)
 
 
 class ExperimentPhases(ContainerObj):
@@ -384,6 +388,9 @@ class Experiment(LoggedPathDict):
         offset = Base(offset, EXPERIMENT_DETAILS['offset']['default'][1])
         phase = ExperimentPhases(ExperimentPhase.fromPars(name, scale))
         return cls(name, wavelength, offset, phase, background, resolution, measured_pattern)
+
+    def __repr__(self):
+        return 'Experiment: {}'.format(self['name'])
 
 
 class Experiments(ContainerObj):

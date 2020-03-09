@@ -55,3 +55,22 @@ def test_counted():
     assert fun.calls == 1
     f = fun()
     assert fun.calls == 2
+
+
+def test_createReleaseNotes():
+    def writeRL(*args):
+        createReleaseNotes('easyInterface/Release.json', *args)
+        if len(args) == 0:
+            file = 'CHANGELOG.txt'
+        else:
+            file = args[0]
+        assert os.path.isfile(file)
+        with open(file, 'r') as file_reader:
+            file_contents = file_reader.read()
+        assert '# easyInterface' in file_contents
+        assert '* ' in file_contents
+        os.remove(file)
+
+    save_file = 'test.txt'
+    writeRL()
+    writeRL(save_file)

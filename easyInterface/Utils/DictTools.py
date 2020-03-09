@@ -13,7 +13,8 @@ class UndoStack:
     """
     Implement a version of QUndoStack without the QT
     """
-    def __init__(self, max_history=None) -> None:
+
+    def __init__(self, max_history: Union[int, type(None)] = None):
         self._history = deque(maxlen=max_history)
         self._future = deque(maxlen=max_history)
         self._macro_running = False
@@ -21,10 +22,10 @@ class UndoStack:
         self._max_history = max_history
 
     @property
-    def history(self):
+    def history(self) -> deque:
         return self._history
 
-    def push(self, command) -> None:
+    def push(self, command) -> NoReturn:
         """
         Add a command to the history stack
         """
@@ -35,7 +36,7 @@ class UndoStack:
         command.redo()
         self._future = deque(maxlen=self._max_history)
 
-    def clear(self):
+    def clear(self) -> NoReturn:
         """
         Remove any commands on the stack and reset the state
         """
@@ -44,21 +45,21 @@ class UndoStack:
         self._macro_running = False
         self._macro = dict(text="", commands=[])
 
-    def undo(self):
+    def undo(self) -> NoReturn:
         """
         Undo the last change to the stack
         """
         if self.canUndo():
             command = self._history[0]
             self._future.appendleft(command)
-            self._history.remove(command)
+            self._history.popleft()
             if isinstance(command, dict):
                 for item in command['commands'][::-1]:
                     item.undo()
             else:
                 command.undo()
 
-    def redo(self):
+    def redo(self) -> NoReturn:
         """
         Redo the last `undo` command on the stack
         """
@@ -66,14 +67,14 @@ class UndoStack:
             command = self._future[0]
             if not self._macro_running:
                 self._history.appendleft(command)
-            self._future.remove(command)
+            self._future.popleft()
             if isinstance(command, dict):
                 for item in command['commands']:
                     item.redo()
             else:
                 command.redo()
 
-    def beginMacro(self, text: str):
+    def beginMacro(self, text: str) -> NoReturn:
         """
         Start a bulk update i.e. multiple commands under one undo/redo command
         """
@@ -82,7 +83,7 @@ class UndoStack:
         self._macro_running = True
         self._macro = dict(text=text, commands=[])
 
-    def endMacro(self):
+    def endMacro(self) -> NoReturn:
         """
         End a bulk update i.e. multiple commands under one undo/redo command
         """
@@ -138,20 +139,20 @@ class UndoCommand(metaclass=abc.ABCMeta):
         self._text = None
 
     @abc.abstractmethod
-    def undo(self):
+    def undo(self) -> NoReturn:
         """
         Undo implementation which should be overwritten
         """
         pass
 
     @abc.abstractmethod
-    def redo(self):
+    def redo(self) -> NoReturn:
         """
         Redo implementation which should be overwritten
         """
         pass
 
-    def setText(self, text: str):
+    def setText(self, text: str) -> NoReturn:
         self._text = text
 
 
@@ -222,6 +223,10 @@ class _RemoveItemCommand(_EmptyCommand):
         self._dictionary._realDelItem(self._key)
 
 
+class RmItem:
+    pass
+
+
 class PathDict(UserDict):
     """
     The PathDict class extends a python dictionary with methods to access its nested
@@ -243,10 +248,13 @@ class PathDict(UserDict):
 
     def _realDelItem(self, key: Union[str, list]) -> NoReturn:
         """Actually deletes a key-value pair from dictionary."""
-        if isinstance(key, list):
-            del self.getItemByPath(key[:-1])[key[-1]]
-        else:
-            del self[key]
+        try:
+            if isinstance(key, list):
+                del self.getItemByPath(key[:-1])[key[-1]]
+            else:
+                del self[key]
+        except TypeError as ex:
+            raise KeyError(str(ex))
 
     def _realSetItemByPath(self, keys: list, value: Any) -> NoReturn:
         """Actually sets the value in a nested object by the key sequence."""
@@ -285,10 +293,10 @@ class PathDict(UserDict):
                     return default
         return item
 
-    def rmItemByPath(self, keys: list):
+    def rmItemByPath(self, keys: list) -> NoReturn:
         self._realDelItem(keys)
 
-    def getItem(self, key: Union[str, list], default=None):
+    def getItem(self, key: Union[str, list], default=None) -> Any:
         """Returns a value in a nested object. Key can be either a sequence
         or a simple string."""
         if isinstance(key, list):
@@ -319,7 +327,9 @@ class PathDict(UserDict):
         key_list = []
         value_list = []
 
-        for item in dictdiffer.diff(self, another_dict, ignore=ignore):
+        items = list(dictdiffer.diff(self, another_dict, ignore=ignore, tolerance=1E-8))
+
+        for item in items:
             type = item[0]
             path = item[1]
             changes = item[2]
@@ -346,7 +356,8 @@ class PathDict(UserDict):
                 if path[0] == '':
                     del path[0]
             elif type == 'remove':
-                continue
+                path = [item[2][0][0]]
+                new_value = RmItem()
 
             key_list.append(path)
             value_list.append(new_value)
@@ -371,11 +382,14 @@ class UndoableDict(PathDict):
         Calls the undoable command to override PathDict assignment to self[key]
         implementation and pushes this command on the stack.
         """
-        if key in self:
-            self.__stack.push(_SetItemCommand(self, key, val))
+        if isinstance(val, RmItem):
+            self.__stack.push(_RemoveItemCommand(self, key))
         else:
-            self.__stack.push(_AddItemCommand(self, key, val))
-            
+            if key in self:
+                self.__stack.push(_SetItemCommand(self, key, val))
+            else:
+                self.__stack.push(_AddItemCommand(self, key, val))
+
     @property
     def macro_running(self) -> bool:
         return self.__stack._macro_running
@@ -385,7 +399,10 @@ class UndoableDict(PathDict):
         Calls the undoable command to set a value in a nested object
         by key sequence and pushes this command on the stack.
         """
-        self.__stack.push(_SetItemCommand(self, keys, value))
+        if isinstance(value, RmItem):
+            self.__stack.push(_RemoveItemCommand(self, keys))
+        else:
+            self.__stack.push(_SetItemCommand(self, keys, value))
 
     def rmItemByPath(self, keys: list) -> NoReturn:
         self.__stack.push(_RemoveItemCommand(self, keys))
