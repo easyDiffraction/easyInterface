@@ -21,7 +21,6 @@ jobs:
     - name: Build and Test
       run: |
         python setup.py sdist bdist_wheel
-        twine upload dist/*
         twine check dist/*
     - name: Publish
       env:
