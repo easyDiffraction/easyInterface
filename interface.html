@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>easyInterface Interface &mdash; easyInterface 0.0.6 documentation</title>
+  <title>easyInterface Interface &mdash; easyInterface 0.0.7 documentation</title>
   
 
   
@@ -175,6 +175,9 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>experiment</strong> (<a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.Experiment" title="easyInterface.Diffraction.DataClasses.DataObj.Experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Experiment</span></code></a>) – Experiment object to be added to the system.</p>
 </dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -187,6 +190,9 @@ associated with it.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>exp_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path to a experiment file (<cite>.cif</cite>)</p>
 </dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -197,6 +203,9 @@ associated with it.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>phase</strong> (<a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase" title="easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase"><code class="xref py py-class docutils literal notranslate"><span class="pre">Phase</span></code></a>) – New phase to be added to the phase list.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -216,6 +225,11 @@ associated with it.</p>
 <span class="n">interface</span><span class="o">.</span><span class="n">addPhaseDefinition</span><span class="p">(</span><span class="n">phase_path</span><span class="p">)</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -233,6 +247,9 @@ also be made.</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><strong>KeyError</strong> – If the exp_name or phase_name are unknown</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -299,15 +316,23 @@ is returned.</p>
 <code class="sig-name descname">clearUndoStack</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.clearUndoStack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.clearUndoStack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resets the Undo/Redo stack of the project dictionary.</p>
 <p>ALL PREVIOUS UNDO/REDO EDITS WILL BE LOST</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="easyInterface.Diffraction.Interface.CalculatorInterface.experimentsCount">
 <code class="sig-name descname">experimentsCount</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.experimentsCount"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.experimentsCount" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns number of experiments in the project dictionary.</p>
+<dd><p>Get the number of experiments in the project dictionary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>number of experiments in the project dictionary.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -381,14 +406,14 @@ experiments section of the project dictionary has been modified.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>keys</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Path to the object in the project dictionary</p>
 </dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Object from the project dictionary.</p>
+</dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><strong>KeyError</strong> – The supplied keys do not return an object in the project dictionary</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Object from the project dictionary.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -452,10 +477,13 @@ phases are returned. If the phase name does not exist KeyError is thrown.</p>
 <dl class="method">
 <dt id="easyInterface.Diffraction.Interface.CalculatorInterface.phasesCount">
 <code class="sig-name descname">phasesCount</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.phasesCount"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.phasesCount" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns number of phases in the project dictionary.</p>
+<dd><p>Get the number of phases in the project dictionary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>number of phases in the project dictionary.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -463,10 +491,13 @@ phases are returned. If the phase name does not exist KeyError is thrown.</p>
 <dl class="method">
 <dt id="easyInterface.Diffraction.Interface.CalculatorInterface.phasesIds">
 <code class="sig-name descname">phasesIds</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.phasesIds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.phasesIds" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns labels of the phases in the project dictionary.</p>
+<dd><p>Get the labels of the phases in the project dictionary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>labels of the phases in the project dictionary.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -475,6 +506,11 @@ phases are returned. If the phase name does not exist KeyError is thrown.</p>
 <dt id="easyInterface.Diffraction.Interface.CalculatorInterface.redo">
 <code class="sig-name descname">redo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.redo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.redo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform an redo operation on the project dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -501,6 +537,9 @@ the “refinement_message” will be returned in the results dictionary with an 
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>experiment_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the experiment to be removed.</p>
 </dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -511,6 +550,9 @@ the “refinement_message” will be returned in the results dictionary with an 
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>phase_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – name of the phase to be removed.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -529,6 +571,9 @@ the “refinement_message” will be returned in the results dictionary with an 
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><strong>KeyError</strong> – If the exp_name or phase_name are unknown</p>
 </dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -541,6 +586,9 @@ contains all information needed to recreate the project dictionary.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>save_dir</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Directory to where the project cif files should be saved.</p>
 </dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -550,7 +598,7 @@ contains all information needed to recreate the project dictionary.</p>
 <dd><p>Resets the project phases and experiments fields of the project dictionary from the calculator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -567,7 +615,7 @@ contains all information needed to recreate the project dictionary.</p>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -575,7 +623,19 @@ contains all information needed to recreate the project dictionary.</p>
 <dl class="method">
 <dt id="easyInterface.Diffraction.Interface.CalculatorInterface.setExperiment">
 <code class="sig-name descname">setExperiment</code><span class="sig-paren">(</span><em class="sig-param">experiment</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.setExperiment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.setExperiment" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set phases (sample model tab in GUI)</p>
+<dd><p>Set an experiment to the project dictionary. If an experiment by the same name exists, the necessary changes will
+be propagated. If if does not exist, then it will be added to the project dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>experiment</strong> (<a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.Experiment" title="easyInterface.Diffraction.DataClasses.DataObj.Experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Experiment</span></code></a>) – Experiment container with experimental information</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – If the input isn’t an <cite>Experiment</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -587,13 +647,78 @@ associated with it.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>exp_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path to a experiment file (<cite>.cif</cite>)</p>
 </dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.setExperimentDefinitionFromString">
+<code class="sig-name descname">setExperimentDefinitionFromString</code><span class="sig-paren">(</span><em class="sig-param">exp_cif_string</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.setExperimentDefinitionFromString"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.setExperimentDefinitionFromString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set an experiment/s to be simulated from a string. Note that this will not have any crystallographic phases
+associated with it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>exp_cif_string</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – String containing the contents of an experiment file (<cite>.cif</cite>)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.setExperimentRefine">
+<code class="sig-name descname">setExperimentRefine</code><span class="sig-paren">(</span><em class="sig-param">experiment</em>, <em class="sig-param">key</em>, <em class="sig-param">value=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.setExperimentRefine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.setExperimentRefine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shortcut for setting the refinement key for items in the experiment list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>experiment</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of experiment to be modified</p></li>
+<li><p><strong>key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Location of element to be modified in the named experiment.</p></li>
+<li><p><strong>value</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Should the parameter specified by above be refined</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>KeyError</strong> – If experiment is unknown</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.setExperimentValue">
+<code class="sig-name descname">setExperimentValue</code><span class="sig-paren">(</span><em class="sig-param">experiment</em>, <em class="sig-param">key</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.setExperimentValue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.setExperimentValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shortcut for setting the value key for items in the experiment list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>experiment</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of experiment to be modified</p></li>
+<li><p><strong>key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Location of element to be modified in the named experiment.</p></li>
+<li><p><strong>value</strong> – New value of the parameter specified by above</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>KeyError</strong> – If experiment is unknown</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="easyInterface.Diffraction.Interface.CalculatorInterface.setExperiments">
 <code class="sig-name descname">setExperiments</code><span class="sig-paren">(</span><em class="sig-param">experiments</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.setExperiments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.setExperiments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set experiments (Experimental data tab in GUI)</p>
+<dd><p>Overwrite all experiments in the project dictionary with supplied experiments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>experiments</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.Experiment" title="easyInterface.Diffraction.DataClasses.DataObj.Experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Experiment</span></code></a>, <a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.Experiments" title="easyInterface.Diffraction.DataClasses.DataObj.Experiment.Experiments"><code class="xref py py-class docutils literal notranslate"><span class="pre">Experiments</span></code></a>]) – Experiments container with experimental information</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – If the input isn’t an <cite>Experiments</cite> or <a href="#id1"><span class="problematic" id="id2">`</span></a>Experiment.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -602,10 +727,13 @@ associated with it.</p>
 <dd><p>Modify a phase in the calculator. The phase will be added if it does not currently exist.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phase</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase" title="easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase"><code class="xref py py-class docutils literal notranslate"><span class="pre">Phase</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – easyInterface phase object to be added.</p>
+<dd class="field-odd"><p><strong>phase</strong> (<a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase" title="easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase"><code class="xref py py-class docutils literal notranslate"><span class="pre">Phase</span></code></a>) – easyInterface phase object to be added.</p>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>TypeError</strong> – If the phase object is not a easyInterface phase object or dictionary object.</p>
+<dd class="field-even"><p><strong>TypeError</strong> – If the phase object is not a easyInterface phase object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -625,19 +753,69 @@ associated with it.</p>
 <span class="n">interface</span><span class="o">.</span><span class="n">setPhaseDefinition</span><span class="p">(</span><span class="n">phase_path</span><span class="p">)</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.setPhaseRefine">
+<code class="sig-name descname">setPhaseRefine</code><span class="sig-paren">(</span><em class="sig-param">phase</em>, <em class="sig-param">key</em>, <em class="sig-param">value=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.setPhaseRefine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.setPhaseRefine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shortcut for setting the refinement key for items in the phase list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>phase</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of phase to be modified</p></li>
+<li><p><strong>key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Location of element to be modified in the named phase.</p></li>
+<li><p><strong>value</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Should the parameter specified by above be refined</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>KeyError</strong> – If phase is unknown</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Interface.CalculatorInterface.setPhaseValue">
+<code class="sig-name descname">setPhaseValue</code><span class="sig-paren">(</span><em class="sig-param">phase</em>, <em class="sig-param">key</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.setPhaseValue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.setPhaseValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shortcut for setting the value key for items in the phase list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>phase</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of phase to be modified</p></li>
+<li><p><strong>key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Location of element to be modified in the named phase.</p></li>
+<li><p><strong>value</strong> – New value of the parameter specified by above</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>KeyError</strong> – If phase is unknown</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="easyInterface.Diffraction.Interface.CalculatorInterface.setPhases">
-<code class="sig-name descname">setPhases</code><span class="sig-paren">(</span><em class="sig-param">phases=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.setPhases"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.setPhases" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">setPhases</code><span class="sig-paren">(</span><em class="sig-param">phases</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.setPhases"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.setPhases" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the phases in the calculator to an easyInterface phases object. If a phase in the supplied phases exists
 then the phase will be modified, if not, it will be added.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>phases</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase" title="easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase"><code class="xref py py-class docutils literal notranslate"><span class="pre">Phase</span></code></a>, <a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phases" title="easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phases"><code class="xref py py-class docutils literal notranslate"><span class="pre">Phases</span></code></a>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]) – phases to be added to the calculator.</p>
+<dd class="field-odd"><p><strong>phases</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase" title="easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase"><code class="xref py py-class docutils literal notranslate"><span class="pre">Phase</span></code></a>, <a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phases" title="easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phases"><code class="xref py py-class docutils literal notranslate"><span class="pre">Phases</span></code></a>]) – phases to be added to the calculator.</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><strong>TypeError</strong> – If the phase object is not a easyInterface phase/phases object or dictionary object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -647,12 +825,22 @@ then the phase will be modified, if not, it will be added.</p>
 <code class="sig-name descname">setProjectFromCalculator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.setProjectFromCalculator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.setProjectFromCalculator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the project dictionary from the calculator given on initialisation. Calling this function will regenerate
 the project dictionary and changes may be lost.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="easyInterface.Diffraction.Interface.CalculatorInterface.undo">
 <code class="sig-name descname">undo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.undo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.undo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform an undo operation on the project dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -661,18 +849,33 @@ the project dictionary and changes may be lost.</p>
 <dd><p>Calculate all experiments and populate the calculations field in the project dictionary. Note that this will
 only occur if a member of the phases or experiments section of the project dictionary has been modified since
 the last call to <cite>updateCalculations</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="easyInterface.Diffraction.Interface.CalculatorInterface.updateExperiments">
 <code class="sig-name descname">updateExperiments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.updateExperiments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.updateExperiments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Synchronise the experiments portion of the project dictionary from the calculator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="easyInterface.Diffraction.Interface.CalculatorInterface.updatePhases">
 <code class="sig-name descname">updatePhases</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Interface.html#CalculatorInterface.updatePhases"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Interface.CalculatorInterface.updatePhases" title="Permalink to this definition">¶</a></dt>
 <dd><p>Synchronise the phases in project dictionary by queering the calculator object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -683,6 +886,9 @@ instrumental parameters and which phases are in the experiment/s</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>save_dir</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Directory to where the experiment cif file should be saved.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -696,6 +902,9 @@ information.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>save_dir</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Directory to where the main cif file should be saved.</p>
 </dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -707,6 +916,9 @@ compatible with other crystallographic software.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>save_dir</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Directory to where the phases cif file should be saved.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -726,7 +938,7 @@ compatible with other crystallographic software.</p>
 <dd><p>Create a default and empty project dictionary</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">LoggedUndoableDict</span></code></p>
+<dd class="field-odd"><p><a class="reference internal" href="#easyInterface.Diffraction.Interface.ProjectDict" title="easyInterface.Diffraction.Interface.ProjectDict"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProjectDict</span></code></a></p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Default project dictionary with undo/redo functionality</p>
@@ -747,7 +959,7 @@ compatible with other crystallographic software.</p>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">LoggedUndoableDict</span></code></p>
+<dd class="field-even"><p><a class="reference internal" href="#easyInterface.Diffraction.Interface.ProjectDict" title="easyInterface.Diffraction.Interface.ProjectDict"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProjectDict</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Project dictionary with undo/redo</p>

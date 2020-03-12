@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>easyInterface Cryspy Calculator &mdash; easyInterface 0.0.6 documentation</title>
+  <title>easyInterface Cryspy Calculator &mdash; easyInterface 0.0.7 documentation</title>
   
 
   
@@ -167,6 +167,50 @@
 <dt id="easyInterface.Diffraction.Calculators.CryspyCalculator">
 <em class="property">class </em><code class="sig-prename descclassname">easyInterface.Diffraction.Calculators.</code><code class="sig-name descname">CryspyCalculator</code><span class="sig-paren">(</span><em class="sig-param">main_rcif_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Calculators/CryspyCalculator.html#CryspyCalculator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Calculators.CryspyCalculator" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="method">
+<dt id="easyInterface.Diffraction.Calculators.CryspyCalculator.addExpDefinitionFromString">
+<code class="sig-name descname">addExpDefinitionFromString</code><span class="sig-paren">(</span><em class="sig-param">exp_rcif_content</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Calculators/CryspyCalculator.html#CryspyCalculator.addExpDefinitionFromString"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Calculators.CryspyCalculator.addExpDefinitionFromString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set an experiment/s to be simulated from a string. Note that this will not have any crystallographic phases
+associated with it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>exp_rcif_content</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – String containing the contents of an experiment file (<cite>.cif</cite>)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Calculators.CryspyCalculator.addExpsDefinition">
+<code class="sig-name descname">addExpsDefinition</code><span class="sig-paren">(</span><em class="sig-param">exp_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Calculators/CryspyCalculator.html#CryspyCalculator.addExpsDefinition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Calculators.CryspyCalculator.addExpsDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an experiment to be simulated from a cif file. Note that this will not have any crystallographic phases
+associated with it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>exp_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path to a experiment file (<cite>.cif</cite>)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Calculators.CryspyCalculator.addPhaseDefinition">
+<code class="sig-name descname">addPhaseDefinition</code><span class="sig-paren">(</span><em class="sig-param">phases_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Calculators/CryspyCalculator.html#CryspyCalculator.addPhaseDefinition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Calculators.CryspyCalculator.addPhaseDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add new phases from a cif file to the list of existing crystal phases in the calculator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>phases_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path to a phase definition file (<cite>.cif</cite>)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="easyInterface.Diffraction.Calculators.CryspyCalculator.asCifDict">
 <code class="sig-name descname">asCifDict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Calculators/CryspyCalculator.html#CryspyCalculator.asCifDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Calculators.CryspyCalculator.asCifDict" title="Permalink to this definition">¶</a></dt>
 <dd><p>…</p>
@@ -178,9 +222,31 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="easyInterface.Diffraction.Calculators.CryspyCalculator.getCalculations">
+<code class="sig-name descname">getCalculations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Calculators/CryspyCalculator.html#CryspyCalculator.getCalculations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Calculators.CryspyCalculator.getCalculations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all calculations from the calculator object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Calculation.Calculations" title="easyInterface.Diffraction.DataClasses.DataObj.Calculation.Calculations"><code class="xref py py-class docutils literal notranslate"><span class="pre">Calculations</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Calculators.CryspyCalculator.getExperiments">
+<code class="sig-name descname">getExperiments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Calculators/CryspyCalculator.html#CryspyCalculator.getExperiments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Calculators.CryspyCalculator.getExperiments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all experiments from the calculator object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.DataObj.Experiment.Experiments" title="easyInterface.Diffraction.DataClasses.DataObj.Experiment.Experiments"><code class="xref py py-class docutils literal notranslate"><span class="pre">Experiments</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="easyInterface.Diffraction.Calculators.CryspyCalculator.getPhases">
 <code class="sig-name descname">getPhases</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Calculators/CryspyCalculator.html#CryspyCalculator.getPhases"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Calculators.CryspyCalculator.getPhases" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set phases (sample model tab in GUI)</p>
+<dd><p>Returns all phases from the calculator object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phases" title="easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phases"><code class="xref py py-class docutils literal notranslate"><span class="pre">Phases</span></code></a></p>
@@ -189,27 +255,191 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="easyInterface.Diffraction.Calculators.CryspyCalculator.readPhaseDefinition">
+<code class="sig-name descname">readPhaseDefinition</code><span class="sig-paren">(</span><em class="sig-param">phases_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Calculators/CryspyCalculator.html#CryspyCalculator.readPhaseDefinition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Calculators.CryspyCalculator.readPhaseDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the relevant phases file and update the corresponding model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="containerClasses.html#easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase" title="easyInterface.Diffraction.DataClasses.PhaseObj.Phase.Phase"><code class="xref py py-class docutils literal notranslate"><span class="pre">Phase</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Phase</span></code>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="easyInterface.Diffraction.Calculators.CryspyCalculator.refine">
 <code class="sig-name descname">refine</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Calculators/CryspyCalculator.html#CryspyCalculator.refine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Calculators.CryspyCalculator.refine" title="Permalink to this definition">¶</a></dt>
 <dd><p>refinement …</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Calculators.CryspyCalculator.removeExpsDefinition">
+<code class="sig-name descname">removeExpsDefinition</code><span class="sig-paren">(</span><em class="sig-param">experiment_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Calculators/CryspyCalculator.html#CryspyCalculator.removeExpsDefinition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Calculators.CryspyCalculator.removeExpsDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a experiment from both the project dictionary and the calculator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>experiment_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the experiment to be removed.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Calculators.CryspyCalculator.removePhaseDefinition">
+<code class="sig-name descname">removePhaseDefinition</code><span class="sig-paren">(</span><em class="sig-param">phase_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Calculators/CryspyCalculator.html#CryspyCalculator.removePhaseDefinition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Calculators.CryspyCalculator.removePhaseDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a phase of a given name from the calculator object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>phase_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – name of the phase to be removed.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Calculators.CryspyCalculator.saveCifs">
+<code class="sig-name descname">saveCifs</code><span class="sig-paren">(</span><em class="sig-param">save_dir</em>, <em class="sig-param">filename='main.cif'</em>, <em class="sig-param">exp_name='experiments.cif'</em>, <em class="sig-param">phase_name='phases.cif'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Calculators/CryspyCalculator.html#CryspyCalculator.saveCifs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Calculators.CryspyCalculator.saveCifs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write project cif files (<cite>main.cif</cite>, <cite>experiments.cif</cite> and <cite>phases.cif</cite>) to a user supplied directory. This
+contains all information needed to recreate the calculator object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>phase_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – What to call the phases file.</p></li>
+<li><p><strong>exp_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – What to call the experiments file.</p></li>
+<li><p><strong>filename</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – What to call the main file.</p></li>
+<li><p><strong>save_dir</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Directory to where the main cif file should be saved.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="easyInterface.Diffraction.Calculators.CryspyCalculator.setExperiments">
 <code class="sig-name descname">setExperiments</code><span class="sig-paren">(</span><em class="sig-param">experiments</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Calculators/CryspyCalculator.html#CryspyCalculator.setExperiments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Calculators.CryspyCalculator.setExperiments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set experiments (Experimental data tab in GUI)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Calculators.CryspyCalculator.setExpsDefinition">
+<code class="sig-name descname">setExpsDefinition</code><span class="sig-paren">(</span><em class="sig-param">exp_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Calculators/CryspyCalculator.html#CryspyCalculator.setExpsDefinition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Calculators.CryspyCalculator.setExpsDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set an experiment/s to be simulated from a cif file. Note that this will not have any crystallographic phases
+associated with it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>exp_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path to a experiment file (<cite>.cif</cite>)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="easyInterface.Diffraction.Calculators.CryspyCalculator.setObjFromProjectDicts">
 <code class="sig-name descname">setObjFromProjectDicts</code><span class="sig-paren">(</span><em class="sig-param">phases</em>, <em class="sig-param">experiments</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Calculators/CryspyCalculator.html#CryspyCalculator.setObjFromProjectDicts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Calculators.CryspyCalculator.setObjFromProjectDicts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set all the cryspy parameters from project dictionary</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Calculators.CryspyCalculator.setPhaseDefinition">
+<code class="sig-name descname">setPhaseDefinition</code><span class="sig-paren">(</span><em class="sig-param">phases_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Calculators/CryspyCalculator.html#CryspyCalculator.setPhaseDefinition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Calculators.CryspyCalculator.setPhaseDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a phases cif file and replace existing crystal phases</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>phases_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path to new phase definition file  (<cite>.cif</cite>)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="easyInterface.Diffraction.Calculators.CryspyCalculator.setPhases">
 <code class="sig-name descname">setPhases</code><span class="sig-paren">(</span><em class="sig-param">phases</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Calculators/CryspyCalculator.html#CryspyCalculator.setPhases"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Calculators.CryspyCalculator.setPhases" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set phases (sample model tab in GUI)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Calculators.CryspyCalculator.writeExpCif">
+<code class="sig-name descname">writeExpCif</code><span class="sig-paren">(</span><em class="sig-param">save_dir</em>, <em class="sig-param">exp_name='experiments.cif'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Calculators/CryspyCalculator.html#CryspyCalculator.writeExpCif"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Calculators.CryspyCalculator.writeExpCif" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the <cite>experiments.cif</cite> where all experiments in the calculator are saved to file. This includes the
+instrumental parameters and which phases are in the experiment/s</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>exp_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – What to call the experiments file.</p></li>
+<li><p><strong>save_dir</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Directory to where the experiment cif file should be saved.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Calculators.CryspyCalculator.writeMainCif">
+<code class="sig-name descname">writeMainCif</code><span class="sig-paren">(</span><em class="sig-param">save_dir</em>, <em class="sig-param">filename='main.cif'</em>, <em class="sig-param">exp_filename='experiments.cif'</em>, <em class="sig-param">phase_filename='phases.cif'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Calculators/CryspyCalculator.html#CryspyCalculator.writeMainCif"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Calculators.CryspyCalculator.writeMainCif" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the <cite>main.cif</cite> where links to the experiments and phases are stored and other generalised project
+information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>phase_filename</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – What to call the phases file.</p></li>
+<li><p><strong>exp_filename</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – What to call the experiments file.</p></li>
+<li><p><strong>filename</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – What to call the main file.</p></li>
+<li><p><strong>save_dir</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Directory to where the main cif file should be saved.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyInterface.Diffraction.Calculators.CryspyCalculator.writePhaseCif">
+<code class="sig-name descname">writePhaseCif</code><span class="sig-paren">(</span><em class="sig-param">save_dir</em>, <em class="sig-param">phase_name='phases.cif'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyInterface/Diffraction/Calculators/CryspyCalculator.html#CryspyCalculator.writePhaseCif"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyInterface.Diffraction.Calculators.CryspyCalculator.writePhaseCif" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the <cite>phases.cif</cite> where all phases in the calculator are saved to file. This cif file should be
+compatible with other crystallographic software.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>phase_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – What to call the phases file.</p></li>
+<li><p><strong>save_dir</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Directory to where the phases cif file should be saved.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">NoReturn</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
