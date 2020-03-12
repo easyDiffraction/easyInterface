@@ -1,4 +1,6 @@
 import os
+import tempfile
+
 import pytest
 
 from easyInterface import logger, logging
@@ -38,7 +40,7 @@ def file_io_fixture():
 
 def test_creationEmptyFile():
     calc = CryspyCalculator('baah')
-    assert calc._phase_name == []
+    assert calc._phase_names == []
 
 
 def test_calculator_info():
@@ -60,26 +62,34 @@ def test__create_cryspy_obj(cal):
 def test__parse_segment(cal):
     assert True
 
+def test_addExpDefinitionFromString(cal):
+    file = os.path.join(test_data, 'experiments.cif')
+
+    with open(file, 'r') as file_reader:
+        exp_str = file_reader.read()
+    cal.addExpDefinitionFromString(exp_str)
+    assert len(cal._cryspy_obj.experiments) == 2
+
 
 def test_set_exps_definition(cal):
     file = os.path.join(test_data, 'experiments.cif')
     cal.setExpsDefinition(file)
     assert len(cal._cryspy_obj.experiments) == 1
     assert cal._experiments_path == file
-    assert cal._experiment_name == ['pd']
+    assert cal._experiment_names == ['pd']
 
 
 def test_add_exps_definition(cal):
     file = os.path.join(test_data, 'experiments2.cif')
     cal.addExpsDefinition(file)
     assert len(cal._cryspy_obj.experiments) == 2
-    assert cal._experiment_name == ['pd', 'pd2']
+    assert cal._experiment_names == ['pd', 'pd2']
 
 
 def test_remove_exps_definition(cal):
     cal.removeExpsDefinition('pd')
     assert cal._cryspy_obj.experiments is None
-    assert cal._experiment_name == []
+    assert cal._experiment_names == []
 
 
 def test_set_phase_definition(cal):
@@ -89,22 +99,22 @@ def test_set_phase_definition(cal):
     NEW_PHASE_FILE = os.path.join(test_data, 'phases_2.cif')
     file_path = NEW_PHASE_FILE
     cal.setPhaseDefinition(file_path)
-    assert 'Fe2Co1O4' in cal._phase_name
+    assert 'Fe2Co1O4' in cal._phase_names
     assert len(cal._cryspy_obj.crystals) == 1
 
 
 def test_add_phase_definition(cal):
     file = os.path.join(test_data, 'phases_2.cif')
     cal.addPhaseDefinition(file)
-    assert len(cal._phase_name) == 2
+    assert len(cal._phase_names) == 2
     assert len(cal._cryspy_obj.crystals) == 2
-    assert cal._phase_name == ['Fe3O4', 'Fe2Co1O4']
+    assert cal._phase_names == ['Fe3O4', 'Fe2Co1O4']
 
 
 def test_remove_phase_definition(cal):
     cal.removePhaseDefinition('Fe3O4')
     assert cal._cryspy_obj.crystals is None
-    assert cal._phase_name == []
+    assert cal._phase_names == []
 
 
 def test_write_main_cif(cal, file_io_fixture):
@@ -289,3 +299,47 @@ def test_add_phase(cal):
     phases = Phases([phases['Fe3O4'], phase])
     cal.setPhases(phases)
     assert len(phases) == 2
+
+
+def test_cif_writers(cal):
+
+    def file_tester(path: str, option=None):
+
+        if option is None:
+            option = ['main', 'phases', 'experiments']
+
+        if 'main' in option:
+            assert os.path.exists(os.path.join(path, 'main.cif'))
+            with open(os.path.join(path, 'main.cif'), 'r') as new_reader:
+                new_data = new_reader.read()
+                assert new_data.find('_name Fe3O4') != -1
+                assert new_data.find('_phases phases.cif') != -1
+                assert new_data.find('_experiments experiments.cif') != -1
+        elif'phases' in option:
+            assert os.path.exists(os.path.join(path, 'phases.cif'))
+            with open(os.path.join(path, 'phases.cif'), 'r') as new_reader:
+                new_data = new_reader.read()
+                assert new_data.find('data_Fe3O4') != -1
+                assert new_data.find('_cell_length_b 8.56212') != -1
+                assert new_data.find('Fe3B Cani 3.041 3.041 3.041 0.0 0.0 0.0') != -1
+                assert new_data.find('Fe3A 2.0 1.0 ') != -1
+                assert new_data.find('Fe3A Fe3+ 0.125 0.125 0.125 1.0 Uiso 0.0') != -1
+        elif 'experiments' in option:
+            assert os.path.exists(os.path.join(path, 'experiments.cif'))
+            with open(os.path.join(path, 'experiments.cif'), 'r') as new_reader:
+                new_data = new_reader.read()
+                assert new_data.find('data_pd') != -1
+                assert new_data.find('_setup_offset_2theta -0.385404') != -1
+                assert new_data.find('5.0 166.47 106.51 426.73 109.08') != -1
+
+    with tempfile.TemporaryDirectory() as td:
+        cal.writeMainCif(td)
+        file_tester(td, option=['main'])
+
+    with tempfile.TemporaryDirectory() as td:
+        cal.writePhaseCif(td)
+        file_tester(td, option=['phases'])
+
+    with tempfile.TemporaryDirectory() as td:
+        cal.writeExpCif(td)
+        file_tester(td, option=['experiments'])

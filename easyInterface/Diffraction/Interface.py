@@ -1,10 +1,10 @@
 __author__ = 'simonward'
-__version__ = "2020_02_01"
+__version__ = "2020_03_09"
 
 import os
 from datetime import datetime
 from copy import deepcopy
-from typing import List, Callable, Any, Union, Optional
+from typing import List, Callable, Any, Union, Optional, NoReturn
 
 from easyInterface.Diffraction.DataClasses.DataObj.Calculation import Calculation, Calculations
 from easyInterface.Diffraction.DataClasses.DataObj.Experiment import Experiments, Experiment, ExperimentPhase
@@ -42,7 +42,7 @@ class ProjectDict(LoggedUndoableDict):
         self._log.debug('Created a project dictionary')
 
     @classmethod
-    def default(cls) -> 'LoggedUndoableDict':
+    def default(cls) -> 'ProjectDict':
         """
         Create a default and empty project dictionary
 
@@ -60,7 +60,7 @@ class ProjectDict(LoggedUndoableDict):
     @classmethod
     def fromPars(cls, experiments: Union[Experiments, Experiment, List[Experiment]],
                  phases: Union[Phases, Phase, List[Phase]],
-                 calculations: Optional[Union[Calculations, Calculation, List[Calculation]]] = {}) -> 'LoggedUndoableDict':
+                 calculations: Optional[Union[Calculations, Calculation, List[Calculation]]] = {}) -> 'ProjectDict':
         """
         Create a main project dictionary from phases and experiments.
 
@@ -89,7 +89,7 @@ class CalculatorInterface:
     Interface to calculators in the `easyInterface.Diffraction.Calculator` class.
     """
 
-    def __init__(self, calculator: 'easyInterface.Diffraction.Calculator'):
+    def __init__(self, calculator: 'easyInterface.Diffraction.Calculator') -> None:
         """
         Initialise an interface with a `calculator` of the `easyInterface.Diffraction.Calculator` class.
 
@@ -124,7 +124,7 @@ class CalculatorInterface:
         """
         return self.calculator.final_chi_square
 
-    def setProjectFromCalculator(self):
+    def setProjectFromCalculator(self) -> NoReturn:
         """
         Sets the project dictionary from the calculator given on initialisation. Calling this function will regenerate
         the project dictionary and changes may be lost.
@@ -154,7 +154,7 @@ class CalculatorInterface:
     ###
 
     # Phase section
-    def setPhaseDefinition(self, phase_path: str):
+    def setPhaseDefinition(self, phase_path: str) -> NoReturn:
         """
         Parse a phases cif file and replace existing crystal phases
 
@@ -171,7 +171,7 @@ class CalculatorInterface:
         self.updatePhases()
         self.updateExperiments()
 
-    def addPhaseDefinition(self, phase_path: str):
+    def addPhaseDefinition(self, phase_path: str) -> NoReturn:
         """
         Add new phases from a cif file to the list of existing crystal phases in the calculator.
 
@@ -186,7 +186,7 @@ class CalculatorInterface:
         self.calculator.addPhaseDefinition(phase_path)
         self.updatePhases()
 
-    def addPhase(self, phase: Phase):
+    def addPhase(self, phase: Phase) -> NoReturn:
         """
         Add a new phase from an easyInterface phase object to the list of existing crystal phases in the calculator.
 
@@ -199,7 +199,7 @@ class CalculatorInterface:
             self.calculator.addPhase(phase)
         self.__last_updated = datetime.now()
 
-    def removePhase(self, phase_name: str):
+    def removePhase(self, phase_name: str) -> NoReturn:
         """
         Remove a phase of a given name from the dictionary and the calculator object.
 
@@ -209,7 +209,7 @@ class CalculatorInterface:
         self.project_dict.rmItemByPath(['phases', phase_name])
         self.__last_updated = datetime.now()
 
-    def addPhaseToExp(self, exp_name: str, phase_name: str, scale: float = 0.0):
+    def addPhaseToExp(self, exp_name: str, phase_name: str, scale: float = 0.0) -> NoReturn:
         """
         Link a phase in the project dictionary to an experiment in the project dictionary. Links in the calculator will
         also be made.
@@ -229,7 +229,7 @@ class CalculatorInterface:
         self.project_dict.setItemByPath(['experiments', exp_name, 'phase'], currentPhases)
         self.__last_updated = datetime.now()
 
-    def removePhaseFromExp(self, exp_name: str, phase_name: str):
+    def removePhaseFromExp(self, exp_name: str, phase_name: str) -> NoReturn:
         """
         Remove the link between an experiment and a crystallographic phase. Links in the calculator will also be removed.
 
@@ -237,12 +237,12 @@ class CalculatorInterface:
         :param phase_name: The name of the phase to be removed.
         :raises KeyError: If the exp_name or phase_name are unknown
         """
-        self.calculator.disassociatePhaseToExp(exp_name, phase_name)
+        self.calculator.disassociatePhaseFromExp(exp_name, phase_name)
         self.project_dict.rmItemByPath(['experiments', exp_name, 'phase', phase_name])
         self.__last_updated = datetime.now()
 
     # Experiment section
-    def setExperimentDefinition(self, exp_path: str):
+    def setExperimentDefinition(self, exp_path: str) -> NoReturn:
         """
         Set an experiment/s to be simulated from a cif file. Note that this will not have any crystallographic phases
         associated with it.
@@ -253,7 +253,18 @@ class CalculatorInterface:
         # This will re-create all local directories
         self.updateExperiments()
 
-    def addExperimentDefinition(self, exp_path: str):
+    def setExperimentDefinitionFromString(self, exp_cif_string: str) -> NoReturn:
+        """
+        Set an experiment/s to be simulated from a string. Note that this will not have any crystallographic phases
+        associated with it.
+
+        :param exp_cif_string: String containing the contents of an experiment file (`.cif`)
+        """
+        self.calculator.addExpDefinitionFromString(exp_cif_string)
+        # This will re-create all local directories
+        self.updateExperiments()
+
+    def addExperimentDefinition(self, exp_path: str) -> NoReturn:
         """
         Add an experiment to be simulated from a cif file. Note that this will not have any crystallographic phases
         associated with it.
@@ -263,7 +274,7 @@ class CalculatorInterface:
         self.calculator.addExpsDefinition(exp_path)
         self.updateExperiments()
 
-    def addExperiment(self, experiment: Experiment):
+    def addExperiment(self, experiment: Experiment) -> NoReturn:
         """
         Add an experiment to the list of experiments in both the project dict and the calculator.
 
@@ -276,7 +287,7 @@ class CalculatorInterface:
             self.calculator.setExperiments(self.project_dict['experiments'])
         self.__last_updated = datetime.now()
 
-    def removeExperiment(self, experiment_name: str):
+    def removeExperiment(self, experiment_name: str) -> NoReturn:
         """
         Remove a experiment from both the project dictionary and the calculator.
 
@@ -287,7 +298,7 @@ class CalculatorInterface:
         self.__last_updated = datetime.now()
 
     # Output section
-    def writeMainCif(self, save_dir: str):
+    def writeMainCif(self, save_dir: str) -> NoReturn:
         """
         Write the `main.cif` where links to the experiments and phases are stored and other generalised project
         information.
@@ -296,7 +307,7 @@ class CalculatorInterface:
         """
         self.calculator.writeMainCif(save_dir)
 
-    def writePhaseCif(self, save_dir: str):
+    def writePhaseCif(self, save_dir: str) -> NoReturn:
         """
         Write the `phases.cif` where all phases in the project dictionary are saved to file. This cif file should be
         compatible with other crystallographic software.
@@ -305,7 +316,7 @@ class CalculatorInterface:
         """
         self.calculator.writePhaseCif(save_dir)
 
-    def writeExpCif(self, save_dir: str):
+    def writeExpCif(self, save_dir: str) -> NoReturn:
         """
         Write the `experiments.cif` where all experiments in the project dictionary are saved to file. This includes the
         instrumental parameters and which phases are in the experiment/s
@@ -314,7 +325,7 @@ class CalculatorInterface:
         """
         self.calculator.writeExpCif(save_dir)
 
-    def saveCifs(self, save_dir: str):
+    def saveCifs(self, save_dir: str) -> NoReturn:
         """
         Write project cif files (`main.cif`, `experiments.cif` and `phases.cif`) to a user supplied directory. This
         contains all information needed to recreate the project dictionary.
@@ -329,7 +340,7 @@ class CalculatorInterface:
     # Syncing between Calculator/Dict
     ###
     @time_it
-    def updatePhases(self):
+    def updatePhases(self) -> NoReturn:
         """
         Synchronise the phases in project dictionary by queering the calculator object.
         """
@@ -374,7 +385,7 @@ class CalculatorInterface:
             raise KeyError
 
     @time_it
-    def updateExperiments(self):
+    def updateExperiments(self) -> NoReturn:
         """
         Synchronise the experiments portion of the project dictionary from the calculator.
         """
@@ -419,7 +430,7 @@ class CalculatorInterface:
             raise KeyError
 
     @time_it
-    def updateCalculations(self):
+    def updateCalculations(self) -> NoReturn:
         """
         Calculate all experiments and populate the calculations field in the project dictionary. Note that this will
         only occur if a member of the phases or experiments section of the project dictionary has been modified since
@@ -452,12 +463,12 @@ class CalculatorInterface:
         calculation = self.project_dict['calculations'][calculation_name]
         return calculation
 
-    def setPhase(self, phase: Union[Phase, dict]):
+    def setPhase(self, phase: Phase) -> NoReturn:
         """
         Modify a phase in the calculator. The phase will be added if it does not currently exist.
 
         :param phase: easyInterface phase object to be added.
-        :raises TypeError: If the phase object is not a easyInterface phase object or dictionary object.
+        :raises TypeError: If the phase object is not a easyInterface phase object.
         """
         if isinstance(phase, Phase):
             new_phase_name = phase['phasename']
@@ -471,7 +482,7 @@ class CalculatorInterface:
         else:
             raise TypeError
 
-    def setPhases(self, phases: Union[Phase, Phases, None] = None):
+    def setPhases(self, phases: Union[Phase, Phases]) -> NoReturn:
         """
         Set the phases in the calculator to an easyInterface phases object. If a phase in the supplied phases exists
         then the phase will be modified, if not, it will be added.
@@ -491,7 +502,16 @@ class CalculatorInterface:
         self._mappedBulkUpdate(self._mappedValueUpdater, k, v)
         self.__last_updated = datetime.now()
 
-    def setPhaseRefine(self, phase: str, key: List[str], value: bool = True):
+    def setPhaseRefine(self, phase: str, key: List[str], value: bool = True) -> NoReturn:
+        """
+        Shortcut for setting the refinement key for items in the phase list.
+
+        :param phase: Name of phase to be modified
+        :param key: Location of element to be modified in the named phase.
+        :param value: Should the parameter specified by above be refined
+
+        :raises KeyError: If phase is unknown
+        """
         if phase not in self.project_dict['phases'].keys():
             raise KeyError
         if key[-2:] == ['store', 'value']:
@@ -499,7 +519,16 @@ class CalculatorInterface:
         self.project_dict.setItemByPath(['phases', phase, *key, 'store', 'refine'], value)
         self._mappedRefineUpdater(['phases', phase, *key], value)
 
-    def setPhaseValue(self, phase: str, key: List[str], value):
+    def setPhaseValue(self, phase: str, key: List[str], value) -> NoReturn:
+        """
+        Shortcut for setting the value key for items in the phase list.
+
+        :param phase: Name of phase to be modified
+        :param key: Location of element to be modified in the named phase.
+        :param value: New value of the parameter specified by above
+
+        :raises KeyError: If phase is unknown
+        """
         if phase not in self.project_dict['phases'].keys():
             raise KeyError
         if key[-2:] == ['store', 'value']:
@@ -507,8 +536,14 @@ class CalculatorInterface:
         self.project_dict.setItemByPath(['phases', phase, *key, 'store', 'value'], value)
         self._mappedValueUpdater(['phases', phase, *key], value)
 
-    def setExperiment(self, experiment: Union[Experiment, dict]):
-        """Set phases (sample model tab in GUI)"""
+    def setExperiment(self, experiment: Experiment) -> NoReturn:
+        """
+        Set an experiment to the project dictionary. If an experiment by the same name exists, the necessary changes will
+        be propagated. If if does not exist, then it will be added to the project dictionary.
+
+        :param experiment: Experiment container with experimental information
+        :raises TypeError: If the input isn't an `Experiment`.
+        """
         if isinstance(experiment, Experiment):
             new_phase_name = experiment['name']
             if new_phase_name in self.project_dict['experiments'].keys():
@@ -521,8 +556,13 @@ class CalculatorInterface:
             raise TypeError
         self.__last_updated = datetime.now()
 
-    def setExperiments(self, experiments: Union[Experiment, Experiments, dict]):
-        """Set experiments (Experimental data tab in GUI)"""
+    def setExperiments(self, experiments: Union[Experiment, Experiments]):
+        """
+        Overwrite all experiments in the project dictionary with supplied experiments.
+
+        :param experiments: Experiments container with experimental information
+        :raises TypeError: If the input isn't an `Experiments` or `Experiment.
+        """
         if isinstance(experiments, Experiment):
             new_exp_name = experiments['name']
             self.project_dict.setItemByPath(['experiments', new_exp_name], experiments)
@@ -530,10 +570,21 @@ class CalculatorInterface:
             self.project_dict.bulkUpdate([['experiments', item] for item in list(experiments.keys())],
                                          [experiments[key] for key in experiments.keys()],
                                          "Setting new experiments")
+        else:
+            raise TypeError
         self.calculator.setExperiments(self.project_dict['experiments'])
         self.__last_updated = datetime.now()
 
-    def setExperimentRefine(self, experiment: str, key: List[str], value: bool = True):
+    def setExperimentRefine(self, experiment: str, key: List[str], value: bool = True) -> NoReturn:
+        """
+        Shortcut for setting the refinement key for items in the experiment list.
+
+        :param experiment: Name of experiment to be modified
+        :param key: Location of element to be modified in the named experiment.
+        :param value: Should the parameter specified by above be refined
+
+        :raises KeyError: If experiment is unknown
+        """
         if experiment not in self.project_dict['experiments'].keys():
             raise KeyError
         if key[-2:] == ['store', 'value']:
@@ -542,6 +593,15 @@ class CalculatorInterface:
         self._mappedRefineUpdater(['experiments', experiment, *key], value)
 
     def setExperimentValue(self, experiment: str, key: List[str], value):
+        """
+        Shortcut for setting the value key for items in the experiment list.
+
+        :param experiment: Name of experiment to be modified
+        :param key: Location of element to be modified in the named experiment.
+        :param value: New value of the parameter specified by above
+
+        :raises KeyError: If experiment is unknown
+        """
         if experiment not in self.project_dict['experiments'].keys():
             raise KeyError
         if key[-2:] == ['store', 'value']:
@@ -549,7 +609,7 @@ class CalculatorInterface:
         self.project_dict.setItemByPath(['experiments', experiment, *key, 'store', 'value'], value)
         self._mappedValueUpdater(['experiments', experiment, *key], value)
 
-    def setCalculatorFromProject(self) -> None:
+    def setCalculatorFromProject(self) -> NoReturn:
         """
         Resets the project phases and experiments fields of the project dictionary from the calculator.
         """
@@ -561,12 +621,13 @@ class CalculatorInterface:
         Returns an object in the project dictionary by the path to the object.
 
         :param keys: Path to the object in the project dictionary
-        :raises KeyError: The supplied keys do not return an object in the project dictionary
         :return: Object from the project dictionary.
+
+        :raises KeyError: The supplied keys do not return an object in the project dictionary
         """
         return self.project_dict.getItemByPath(keys)
 
-    def setDictByPath(self, keys: List[str], value: Any) -> None:
+    def setDictByPath(self, keys: List[str], value: Any) -> NoReturn:
         """
         Set an object in the project dictionary by a key path.
 
@@ -583,19 +644,25 @@ class CalculatorInterface:
 
     def phasesCount(self) -> int:
         """
-        Returns number of phases in the project dictionary.
+        Get the number of phases in the project dictionary.
+
+        :return: number of phases in the project dictionary.
         """
         return len(self.project_dict['phases'])
 
     def experimentsCount(self) -> int:
         """
-        Returns number of experiments in the project dictionary.
+        Get the number of experiments in the project dictionary.
+
+        :return: number of experiments in the project dictionary.
         """
         return len(self.project_dict['experiments'])
 
     def phasesIds(self) -> List[str]:
         """
-        Returns labels of the phases in the project dictionary.
+        Get the labels of the phases in the project dictionary.
+
+        :return: labels of the phases in the project dictionary.
         """
         return list(self.project_dict['phases'].keys())
 
@@ -694,7 +761,7 @@ class CalculatorInterface:
         """
         return self.project_dict.canRedo()
 
-    def clearUndoStack(self):
+    def clearUndoStack(self) -> NoReturn:
         """
         Resets the Undo/Redo stack of the project dictionary.
 
@@ -702,13 +769,13 @@ class CalculatorInterface:
         """
         self.project_dict.clearUndoStack()
 
-    def undo(self):
+    def undo(self) -> NoReturn:
         """
         Perform an undo operation on the project dictionary.
         """
         self.project_dict.undo()
 
-    def redo(self):
+    def redo(self) -> NoReturn:
         """
         Perform an redo operation on the project dictionary.
         """
@@ -718,7 +785,14 @@ class CalculatorInterface:
     # Hidden internal logic
     ###
 
-    def _mappedBulkUpdate(self, func: Callable, keys: list, values: list):
+    def _mappedBulkUpdate(self, func: Callable, keys: List[List], values: List[Any]) -> NoReturn:
+        """
+        Perform a bulk update on the project dictionary
+
+        :param func: An updater function which can take key (list) and value pairs and update the project dictionary
+        :param keys: List of update keys, each consisting of a list representing an update key
+        :param values: List of values to be set.
+        """
         self.project_dict.bulkUpdate(keys, values, 'Updating Dictionary')
         for k, v in zip(keys, values):
             if k[-2:] == ['store', 'value']:
@@ -727,13 +801,51 @@ class CalculatorInterface:
         self.__last_updated = datetime.now()
         self.updateCalculations()
 
-    def _mappedValueUpdater(self, key, value):
-        update_str = self.project_dict.getItemByPath(key)['mapping']
-        self.calculator._mappedValueUpdater(update_str, value)
+    def _mappedValueUpdater(self, key: list, value: Any) -> NoReturn:
+        """
+        Updater function for `_mappedBulkUpdate`. This function modifies values
+
+        :param key: Location of update
+        :param value: Update value
+        """
+
+        def code_error(keys):
+            if keys[0] == 'phases':
+                self.updatePhases()
+            else:
+                self.updateExperiments()
+            self.setCalculatorFromProject()
+            self.__last_updated = datetime.now()
+        try:
+            update_str = self.project_dict.getItemByPath(key)['mapping']
+            try:
+                self.calculator._mappedValueUpdater(update_str, value)
+            except TypeError:
+                code_error(key)
+        except (KeyError, TypeError):
+            code_error(key)
         self.__last_updated = datetime.now()
 
-    def _mappedRefineUpdater(self, key, value):
-        update_str = self.project_dict.getItemByPath(key)['mapping']
-        self.calculator._mappedRefineUpdater(update_str, value)
+    def _mappedRefineUpdater(self, key: list, value: bool) -> NoReturn:
+        """
+        Updater function for `_mappedBulkUpdate`. This function modifies refinement
 
+        :param key: Location of update
+        :param value: Update value
+        """
 
+        def code_error(keys):
+            if keys[0] == 'phases':
+                self.updatePhases()
+            else:
+                self.updateExperiments()
+            self.setCalculatorFromProject()
+            self.__last_updated = datetime.now()
+        try:
+            update_str = self.project_dict.getItemByPath(key)['mapping']
+            try:
+                self.calculator._mappedRefineUpdater(update_str, value)
+            except TypeError:
+                code_error(key)
+        except (KeyError, TypeError):
+            code_error(key)

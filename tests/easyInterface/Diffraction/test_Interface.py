@@ -1,4 +1,6 @@
 import os
+import tempfile
+
 import numpy as np
 import pytest
 
@@ -93,6 +95,36 @@ def test_setInfoDict(cal):
     assert 'Fe3O4' == cal.project_dict['info']['name']
 
 
+def test_setPhase(cal):
+    phase = cal.getPhase('Fe3O4')
+    cal.project_dict['phases']['Fe3O4']['cell']['length_a'].value = 2
+    cal.setPhase(phase)
+    assert cal.project_dict['phases']['Fe3O4']['cell']['length_a'].value == 8.36212
+
+
+def test_setPhaseRefine(cal):
+    assert cal.project_dict['phases']['Fe3O4']['cell']['length_a'].refine is True
+    cal.setPhaseRefine('Fe3O4', ['cell', 'length_a'], False)
+    assert cal.project_dict['phases']['Fe3O4']['cell']['length_a'].refine is False
+
+
+def test_setPhaseValue(cal):
+    assert cal.project_dict['phases']['Fe3O4']['cell']['length_a'].value == 8.36212
+    cal.setPhaseValue('Fe3O4', ['cell', 'length_a'], 5)
+    assert cal.project_dict['phases']['Fe3O4']['cell']['length_a'].value == 5
+
+# def test_setPhases(cal):
+#     phase2 = cal.getPhase('Fe3O4')
+#     phase2['phasename'] = 'Fe3O4_2'
+#     cal.addPhase(phase2)
+#     phases = cal.getPhase(None)
+#     phases['Fe3O4']['cell']['length_a'].value = 5
+#     cal.setPhases(phases)
+#     assert len(cal.project_dict['phases']) == 2
+#     assert cal.project_dict['phases']['Fe3O4']['cell']['length_a'].value == 5
+#     assert cal.project_dict['phases']['Fe3O4_2']['cell']['length_a'].value == 8.36212
+
+
 def test_setPhasesDictFromCryspyObj(cal):
     # difficult test for creation of the phases dict
     cal.project_dict['phases'].clear()  # enforce
@@ -108,7 +140,7 @@ def test_setPhasesDictFromCryspyObj(cal):
     # cell
     assert phase_dict['Fe3O4']['cell']['length_a'].value == 8.36212
     assert phase_dict['Fe3O4']['cell']['length_b']['store']['hide'] is True
-    assert phase_dict['Fe3O4']['cell']['length_c'].max == 10.034544
+    assert phase_dict['Fe3O4']['cell']['length_c']['store'].max == 10.034544
     assert phase_dict['Fe3O4']['cell']['angle_beta']['store']['error'] == 0.0
     assert phase_dict['Fe3O4']['cell']['angle_gamma']['store']['constraint'] is None
     # space_group
@@ -139,8 +171,7 @@ def test_setPhasesDictFromCryspyObj(cal):
     # Isotropic ADP
     assert phase_dict['Fe3O4']['atoms']['Fe3A']['U_iso_or_equiv']['header'] == 'Biso'
     assert phase_dict['Fe3O4']['atoms']['Fe3A']['U_iso_or_equiv'].value == 0.0
-    assert phase_dict['Fe3O4']['atoms']['Fe3A']['U_iso_or_equiv'].min == -1.0
-    assert phase_dict['Fe3O4']['atoms']['Fe3A']['U_iso_or_equiv'].max == 1.0
+    assert phase_dict['Fe3O4']['atoms']['Fe3A']['U_iso_or_equiv']['store'].max == 1
     assert phase_dict['Fe3O4']['atoms']['O']['U_iso_or_equiv'].value == 0.0
     assert phase_dict['Fe3O4']['atoms']['O']['U_iso_or_equiv']['store']['constraint'] is None
 
@@ -148,8 +179,9 @@ def test_setPhasesDictFromCryspyObj(cal):
     assert phase_dict['Fe3O4']['atoms']['Fe3A']['ADP']['u_11']['header'] == 'U11'
     assert phase_dict['Fe3O4']['atoms']['Fe3A']['ADP']['u_11'].value is None
     assert phase_dict['Fe3O4']['atoms']['Fe3A']['ADP']['u_22'].value is None
-    assert phase_dict['Fe3O4']['atoms']['Fe3A']['ADP']['u_23'].min == -np.Inf
-    assert phase_dict['Fe3O4']['atoms']['Fe3A']['ADP']['u_23'].max == np.Inf
+    # TODO find out why -np.Inf != -np.Inf
+    assert phase_dict['Fe3O4']['atoms']['Fe3A']['ADP']['u_23']['store'].max == np.Inf
+    assert phase_dict['Fe3O4']['atoms']['Fe3A']['ADP']['u_23']['store'].min == -np.Inf
     assert phase_dict['Fe3O4']['atoms']['Fe3B']['ADP']['u_23'].value is None
     assert phase_dict['Fe3O4']['atoms']['Fe3B']['ADP']['u_23']['store']['constraint'] is None
 
@@ -157,10 +189,93 @@ def test_setPhasesDictFromCryspyObj(cal):
     assert phase_dict['Fe3O4']['atoms']['Fe3A']['MSP']['type'].value == 'Cani'
     assert phase_dict['Fe3O4']['atoms']['Fe3A']['MSP']['chi_11'].value == -3.468
     assert phase_dict['Fe3O4']['atoms']['Fe3A']['MSP']['chi_33'].value == -3.468
-    assert phase_dict['Fe3O4']['atoms']['Fe3A']['MSP']['chi_23'].min == -1.0
-    assert phase_dict['Fe3O4']['atoms']['Fe3A']['MSP']['chi_23'].max == 1.0
+    assert phase_dict['Fe3O4']['atoms']['Fe3A']['MSP']['chi_23']['store'].max == 1
     assert phase_dict['Fe3O4']['atoms']['Fe3B']['MSP']['chi_23'].value == 0.0
     assert phase_dict['Fe3O4']['atoms']['Fe3B']['MSP']['chi_23']['store']['refine'] is False
+
+
+def test_setExperiment(cal):
+    experiment = cal.getExperiment('pd')
+    cal.project_dict['experiments']['pd']['wavelength'].value = 2
+    cal.setExperiment(experiment)
+    assert cal.project_dict['experiments']['pd']['wavelength'].value == 0.84
+
+
+def test_setExperiments(cal):
+    experiment = cal.getExperiment('pd')
+    experiments = Experiments(experiment)
+    experiemnt2 = deepcopy(experiment)
+    experiemnt2['name'] = 'pd2'
+    experiments['pd2'] = experiemnt2
+    cal.setExperiments(experiments)
+    assert len(cal.project_dict['experiments']) == 2
+    assert cal.project_dict['experiments']['pd']['wavelength'].value == 0.84
+    assert cal.project_dict['experiments']['pd2']['wavelength'].value == 0.84
+
+def test_setExperimentRefine(cal):
+    assert cal.project_dict['experiments']['pd']['wavelength'].refine is False
+    cal.setExperimentRefine('pd', ['wavelength'], True)
+    assert cal.project_dict['experiments']['pd']['wavelength'].refine is True
+
+def test_setExperimentValue(cal):
+    assert cal.project_dict['experiments']['pd']['wavelength'].value == 0.84
+    cal.setExperimentValue('pd', ['wavelength'], 5)
+    assert cal.project_dict['experiments']['pd']['wavelength'].value == 5
+
+def test_setExperimentDefinitionFromString():
+    calc = CryspyCalculator()
+    interface = CalculatorInterface(calc)
+    interface.setPhaseDefinition(phase_path)
+    with open(exp_path, 'r') as file_reader:
+        exp_content = file_reader.read()
+    interface.setExperimentDefinitionFromString(exp_content)
+
+    experiment_dict = interface.project_dict['experiments']
+
+    assert len(experiment_dict) == 1
+    assert len(experiment_dict['pd']) == 7
+    # wavelength
+    assert len(experiment_dict['pd']['wavelength']) == 5
+    assert experiment_dict['pd']['wavelength'].value == 0.84
+    assert experiment_dict['pd']['wavelength']['url'] == ''
+
+    # offset
+    assert len(experiment_dict['pd']['offset']) == 5
+    assert experiment_dict['pd']['offset'].value == -0.385404
+    assert experiment_dict['pd']['offset']['store']['error'] == 0.0
+    assert experiment_dict['pd']['offset']['store']['refine'] is False
+
+    # phase
+    assert len(experiment_dict['pd']['phase']) == 1
+    assert len(experiment_dict['pd']['phase']['Fe3O4']['scale']) == 5
+    assert experiment_dict['pd']['phase']['Fe3O4']['scale'].value == 0.02381
+    assert experiment_dict['pd']['phase']['Fe3O4']['scale']['store']['refine'] is False
+    assert experiment_dict['pd']['phase']['Fe3O4']['scale']['store']['error'] == 0.0
+
+    # background
+    assert len(experiment_dict['pd']['background']) == 3
+    assert experiment_dict['pd']['background']['4.5']['ttheta'] == 4.5
+    assert len(experiment_dict['pd']['background']['4.5']['intensity']) == 5
+    assert experiment_dict['pd']['background']['4.5']['intensity'].value == 256.0
+    assert experiment_dict['pd']['background']['80.0']['ttheta'] == 80.0
+    assert len(experiment_dict['pd']['background']['80.0']['intensity']) == 5
+    assert experiment_dict['pd']['background']['80.0']['intensity'].value == 65.0
+
+    # resolution
+    assert len(experiment_dict['pd']['resolution']) == 5
+    assert len(experiment_dict['pd']['resolution']['u']) == 5
+    assert experiment_dict['pd']['resolution']['u'].value == 16.9776
+    assert experiment_dict['pd']['resolution']['u']['store']['refine'] is False
+    assert len(experiment_dict['pd']['resolution']['y']) == 5
+    assert experiment_dict['pd']['resolution']['v'].value == -2.8357
+    assert experiment_dict['pd']['resolution']['v']['store']['error'] == 0.0
+    assert experiment_dict['pd']['resolution']['v']['store']['hide'] is False
+
+    # measured_pattern
+    assert len(experiment_dict['pd']['measured_pattern']) == 7
+    assert 5.0 in experiment_dict['pd']['measured_pattern']['x']
+    assert len(experiment_dict['pd']['measured_pattern'].y_obs_lower) == 381
+    assert experiment_dict['pd']['measured_pattern'].y_obs_lower[380] == pytest.approx(762.959046)
 
 
 def test_setExperimentsDictFromCryspyObj(cal):
@@ -503,3 +618,47 @@ def test_getExperiment_None(cal):
     assert 'Testing' in exps.keys()
     assert exps['Testing']['name'] == 'Testing'
     assert exps['pd']['name'] == 'pd'
+
+
+def test_cif_writers(cal):
+
+    def file_tester(path: str, option=None):
+
+        if option is None:
+            option = ['main', 'phases', 'experiments']
+
+        if 'main' in option:
+            assert os.path.exists(os.path.join(path, 'main.cif'))
+            with open(os.path.join(path, 'main.cif'), 'r') as new_reader:
+                new_data = new_reader.read()
+                assert new_data.find('_name Fe3O4') != -1
+                assert new_data.find('_phases phases.cif') != -1
+                assert new_data.find('_experiments experiments.cif') != -1
+        elif'phases' in option:
+            assert os.path.exists(os.path.join(path, 'phases.cif'))
+            with open(os.path.join(path, 'phases.cif'), 'r') as new_reader:
+                new_data = new_reader.read()
+                assert new_data.find('data_Fe3O4') != -1
+                assert new_data.find('_cell_length_b 8.36212') != -1
+                assert new_data.find('Fe3B Fe3+ 0.5 0.5 0.5 1.0 Uiso d 0.0 16 ') != -1
+                assert new_data.find('Fe3A 2.0 1.0 ') != -1
+                assert new_data.find('Fe3A Cani -3.468 -3.468 -3.468 0.0 0.0 0.0') != -1
+        elif 'experiments' in option:
+            assert os.path.exists(os.path.join(path, 'experiments.cif'))
+            with open(os.path.join(path, 'experiments.cif'), 'r') as new_reader:
+                new_data = new_reader.read()
+                assert new_data.find('data_pd') != -1
+                assert new_data.find('_setup_offset_2theta -0.385404') != -1
+                assert new_data.find('5.0 166.47 106.51 426.73 109.08') != -1
+
+    with tempfile.TemporaryDirectory() as td:
+        cal.writeMainCif(td)
+        file_tester(td, option=['main'])
+
+    with tempfile.TemporaryDirectory() as td:
+        cal.writePhaseCif(td)
+        file_tester(td, option=['phases'])
+
+    with tempfile.TemporaryDirectory() as td:
+        cal.writeExpCif(td)
+        file_tester(td, option=['experiments'])
