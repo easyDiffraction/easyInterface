@@ -1,14 +1,14 @@
 {
     "name": "easyInterface",
-    "version": "0.0.6",
-    "date": "21 Feb 2020",
+    "version": "0.0.7",
+    "date": "12 March 2020",
     "author": "Simon Ward",
     "url": "https://github.com/easyDiffraction/easyInterface",
-    "comments": "This release of easyInterface fixes bugs, introduces documentation, tests and bug fixes. Pretty great really!",
+    "comments": "This release of easyInterface fixes bugs and prepares for easyDiffraction MVP",
     "changes": [
-        "Docstring are updated",
-        "Website is live http://easyDiffraction.org/easyInterface",
-        "Python 3.6 compatibility fixed",
-        "Speed improvements"
+        "Fix naming of multiple phases/experiments",
+        "More and exciting docstrings and typehints",
+        "More robust syncing to calculators",
+        "More tests!"
     ]
 }
