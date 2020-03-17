@@ -1,13 +1,14 @@
 # coding: utf-8
-# Copyright (c) Pymatgen Development Team.
-# Distributed under the terms of the MIT License.
+#   Licensed under the GNU General Public License v3.0
+#   Copyright (c) of the author (github.com/wardsimon)
+#   Created: 14/3/2020
+import numbers
 from collections import defaultdict
 from collections.abc import Sequence, Mapping
-import numpy as np
-from numbers import Number
-import numbers
 from functools import partial
+from numbers import Number
 
+import numpy as np
 import scipy.constants as const
 
 """
@@ -88,14 +89,21 @@ BASE_UNITS = {
     },
     "angle": {
         "deg": 1,
-        "rad": 180/const.pi,
+        "rad": 180 / const.pi,
     }
 }
+
+PRETTY_UNIT = {
+    'ang': '\u212B',
+    'deg': '\u00B0',
+}
+
+BASE_UNITS['length']['\u212B'] = BASE_UNITS['length']['ang']
+BASE_UNITS['angle']['\u00B0'] = BASE_UNITS['angle']['deg']
 
 # Accept kb, mb, gb ... as well.
 BASE_UNITS["memory"].update({k.lower(): v
                              for k, v in BASE_UNITS["memory"].items()})
-
 
 # This current list are supported derived units defined in terms of powers of
 # SI base units and constants.
@@ -263,9 +271,17 @@ class Unit(Mapping):
     def __repr__(self):
         sorted_keys = sorted(self._unit.keys(),
                              key=lambda k: (-self._unit[k], k))
-        return " ".join(["{}^{}".format(k, self._unit[k])
-                         if self._unit[k] != 1 else k
-                         for k in sorted_keys if self._unit[k] != 0])
+        str_list = []
+        for k in sorted_keys:
+            kk = k
+            if k in PRETTY_UNIT.keys():
+                kk = PRETTY_UNIT[k]
+            if self._unit[k] != 0:
+                if self._unit[k] != 1:
+                    str_list.append("{}^{}".format(kk, self._unit[k]))
+                else:
+                    str_list.append(kk)
+        return " ".join(str_list)
 
     def __str__(self):
         return self.__repr__()

@@ -59,7 +59,7 @@ def test_atom_default():
     assert atom['adp_type'].value == ATOM_DETAILS['adp_type']['default'][0]
     assert str(atom['adp_type']['store']['unit']) == ATOM_DETAILS['adp_type']['default'][1]
     assert atom['U_iso_or_equiv'].value == ATOM_DETAILS['U_iso_or_equiv']['default'][0]
-    assert str(atom['U_iso_or_equiv']['store']['unit']) == ATOM_DETAILS['U_iso_or_equiv']['default'][1]
+    assert str(atom['U_iso_or_equiv']['store']['unit']) == '\u212B^2'
 
 
 def test_atom_from_xyz():
@@ -83,7 +83,7 @@ def test_atom_from_xyz():
     assert atom['adp_type'].value == ATOM_DETAILS['adp_type']['default'][0]
     assert str(atom['adp_type']['store']['unit']) == ATOM_DETAILS['adp_type']['default'][1]
     assert atom['U_iso_or_equiv'].value == ATOM_DETAILS['U_iso_or_equiv']['default'][0]
-    assert str(atom['U_iso_or_equiv']['store']['unit']) == ATOM_DETAILS['U_iso_or_equiv']['default'][1]
+    assert str(atom['U_iso_or_equiv']['store']['unit']) == '\u212B^2'
 
 
 def test_atom_from_parsNoADP_MSP():
@@ -115,7 +115,7 @@ def test_atom_from_parsNoADP_MSP():
     assert atom['adp_type'].value == adp_type
     assert str(atom['adp_type']['store']['unit']) == ATOM_DETAILS['adp_type']['default'][1]
     assert atom['U_iso_or_equiv'].value == U_iso_or_equiv
-    assert str(atom['U_iso_or_equiv']['store']['unit']) == ATOM_DETAILS['U_iso_or_equiv']['default'][1]
+    assert str(atom['U_iso_or_equiv']['store']['unit']) == '\u212B^2'
 
 
 def test_atom_from_parsNoMSP():
@@ -147,7 +147,7 @@ def test_atom_from_parsNoMSP():
     assert atom['adp_type'].value == adp_type
     assert str(atom['adp_type']['store']['unit']) == ATOM_DETAILS['adp_type']['default'][1]
     assert atom['U_iso_or_equiv'].value == U_iso_or_equiv
-    assert str(atom['U_iso_or_equiv']['store']['unit']) == ATOM_DETAILS['U_iso_or_equiv']['default'][1]
+    assert str(atom['U_iso_or_equiv']['store']['unit']) == '\u212B^2'
 
 
 def test_atom_from_parsNoADP():
@@ -179,7 +179,7 @@ def test_atom_from_parsNoADP():
     assert atom['adp_type'].value == adp_type
     assert str(atom['adp_type']['store']['unit']) == ATOM_DETAILS['adp_type']['default'][1]
     assert atom['U_iso_or_equiv'].value == U_iso_or_equiv
-    assert str(atom['U_iso_or_equiv']['store']['unit']) == ATOM_DETAILS['U_iso_or_equiv']['default'][1]
+    assert str(atom['U_iso_or_equiv']['store']['unit']) == '\u212B^2'
 
 
 def test_atom_from_pars():
@@ -212,7 +212,7 @@ def test_atom_from_pars():
     assert atom['adp_type'].value == adp_type
     assert str(atom['adp_type']['store']['unit']) == ATOM_DETAILS['adp_type']['default'][1]
     assert atom['U_iso_or_equiv'].value == U_iso_or_equiv
-    assert str(atom['U_iso_or_equiv']['store']['unit']) == ATOM_DETAILS['U_iso_or_equiv']['default'][1]
+    assert str(atom['U_iso_or_equiv']['store']['unit']) == '\u212B^2'
 
 
 def test_atoms():
@@ -263,22 +263,22 @@ def genericTestADP(adp_constructor, *args):
 def test_ADP_default():
     adp = genericTestADP(ADP.default)
 
-    assert str(adp['u_11']['store']['unit']) == ATOM_DETAILS['ADP']['default'][1]
+    assert str(adp['u_11']['store']['unit']) == '\u212B^2'
     assert adp['u_11'].value == ATOM_DETAILS['ADP']['default'][0]
 
-    assert str(adp['u_22']['store']['unit']) == ATOM_DETAILS['ADP']['default'][1]
+    assert str(adp['u_22']['store']['unit']) == '\u212B^2'
     assert adp['u_22'].value == ATOM_DETAILS['ADP']['default'][0]
 
-    assert str(adp['u_33']['store']['unit']) == ATOM_DETAILS['ADP']['default'][1]
+    assert str(adp['u_33']['store']['unit']) == '\u212B^2'
     assert adp['u_33'].value == ATOM_DETAILS['ADP']['default'][0]
 
-    assert str(adp['u_12']['store']['unit']) == ATOM_DETAILS['ADP']['default'][1]
+    assert str(adp['u_12']['store']['unit']) == '\u212B^2'
     assert adp['u_12'].value == ATOM_DETAILS['ADP']['default'][0]
 
-    assert str(adp['u_13']['store']['unit']) == ATOM_DETAILS['ADP']['default'][1]
+    assert str(adp['u_13']['store']['unit']) == '\u212B^2'
     assert adp['u_13'].value == ATOM_DETAILS['ADP']['default'][0]
 
-    assert str(adp['u_23']['store']['unit']) == ATOM_DETAILS['ADP']['default'][1]
+    assert str(adp['u_23']['store']['unit']) == '\u212B^2'
     assert adp['u_23'].value == ATOM_DETAILS['ADP']['default'][0]
 
 
@@ -288,22 +288,22 @@ def test_ADP_from_pars():
 
     adp = genericTestADP(ADP.fromPars, u, u, u, u, u, u)
 
-    assert str(adp['u_11']['store']['unit']) == ATOM_DETAILS['ADP']['default'][1]
+    assert str(adp['u_11']['store']['unit']) == '\u212B^2'
     assert adp['u_11'].value == u
 
-    assert str(adp['u_22']['store']['unit']) == ATOM_DETAILS['ADP']['default'][1]
+    assert str(adp['u_22']['store']['unit']) == '\u212B^2'
     assert adp['u_22'].value == u
 
-    assert str(adp['u_33']['store']['unit']) == ATOM_DETAILS['ADP']['default'][1]
+    assert str(adp['u_33']['store']['unit']) == '\u212B^2'
     assert adp['u_33'].value == u
 
-    assert str(adp['u_12']['store']['unit']) == ATOM_DETAILS['ADP']['default'][1]
+    assert str(adp['u_12']['store']['unit']) == '\u212B^2'
     assert adp['u_12'].value == u
 
-    assert str(adp['u_13']['store']['unit']) == ATOM_DETAILS['ADP']['default'][1]
+    assert str(adp['u_13']['store']['unit']) == '\u212B^2'
     assert adp['u_13'].value == u
 
-    assert str(adp['u_23']['store']['unit']) == ATOM_DETAILS['ADP']['default'][1]
+    assert str(adp['u_23']['store']['unit']) == '\u212B^2'
     assert adp['u_23'].value == u
 
 

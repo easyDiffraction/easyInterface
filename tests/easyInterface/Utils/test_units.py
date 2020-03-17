@@ -1,10 +1,13 @@
 # coding: utf-8
-# Copyright (c) Pymatgen Development Team.
-# Distributed under the terms of the MIT License.
+#   Licensed under the GNU General Public License v3.0
+#   Copyright (c) of the author (github.com/wardsimon)
+#   Created: 14/3/2020
 
 
 import collections
+
 import pytest
+
 from easyInterface.Utils.units import (Energy, Time, Length, unitized, Mass, Memory,
                                        EnergyArray, TimeArray, LengthArray, Unit,
                                        FloatWithUnit, ArrayWithUnit, UnitError)
@@ -56,10 +59,10 @@ def test_length():
     x = Length(4.2, "ang")
     pytest.approx(x.to("cm"), 4.2e-08)
     assert x.to("pm") == 420
-    assert str(x / 2) == "2.1 ang"
+    assert str(x / 2) == "2.1 Å"
     y = x ** 3
     pytest.approx(y, 74.088)
-    assert str(y.unit) == "ang^3"
+    assert str(y.unit) == "Å^3"
 
 
 def test_memory():
@@ -184,7 +187,7 @@ def test_lengthFWU():
     x = LengthArray(4.2, "ang")
     pytest.approx(float(x.to("cm")), 4.2e-08)
     assert float(x.to("pm")) == 420
-    assert str(x / 2) == "2.1 ang"
+    assert str(x / 2) == "2.1 \u212B"
 
 
 def test_array_algebra():
@@ -241,4 +244,4 @@ def test_factors():
     l = LengthArray([1.0], "ang").to("bohr")
     assert str(l).endswith(" bohr")
     v = ArrayWithUnit([1, 2, 3], "bohr^3").to("ang^3")
-    assert str(v).endswith(' ang^3')
+    assert str(v).endswith(' \u212B^3')

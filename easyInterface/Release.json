@@ -1,14 +1,11 @@
 {
     "name": "easyInterface",
-    "version": "0.0.7",
-    "date": "12 March 2020",
+    "version": "0.0.8",
+    "date": "17 March 2020",
     "author": "Simon Ward",
     "url": "https://github.com/easyDiffraction/easyInterface",
-    "comments": "This release of easyInterface fixes bugs and prepares for easyDiffraction MVP",
+    "comments": "A small fix for printing variables",
     "changes": [
-        "Fix naming of multiple phases/experiments",
-        "More and exciting docstrings and typehints",
-        "More robust syncing to calculators",
-        "More tests!"
+        "Introducing pretty units, some unicode characters are now supported"
     ]
 }

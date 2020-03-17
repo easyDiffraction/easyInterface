@@ -36,22 +36,22 @@ def genericTestCell(cell_constructor, *args):
 def test_cell_default():
     cell = genericTestCell(Cell.default)
 
-    assert str(cell['length_a']['store']['unit']) == CELL_DETAILS['length']['default'][1]
+    assert str(cell['length_a']['store']['unit']) == '\u212B'
     assert cell['length_a'].value == CELL_DETAILS['length']['default'][0]
 
-    assert str(cell['length_b']['store']['unit']) == CELL_DETAILS['length']['default'][1]
+    assert str(cell['length_b']['store']['unit']) == '\u212B'
     assert cell['length_b'].value == CELL_DETAILS['length']['default'][0]
 
-    assert str(cell['length_c']['store']['unit']) == CELL_DETAILS['length']['default'][1]
+    assert str(cell['length_c']['store']['unit']) == '\u212B'
     assert cell['length_c'].value == CELL_DETAILS['length']['default'][0]
 
-    assert str(cell['angle_alpha']['store']['unit']) == CELL_DETAILS['angle']['default'][1]
+    assert str(cell['angle_alpha']['store']['unit']) == '\u00B0'
     assert cell['angle_alpha'].value == CELL_DETAILS['angle']['default'][0]
 
-    assert str(cell['angle_beta']['store']['unit']) == CELL_DETAILS['angle']['default'][1]
+    assert str(cell['angle_beta']['store']['unit']) == '\u00B0'
     assert cell['angle_beta'].value == CELL_DETAILS['angle']['default'][0]
 
-    assert str(cell['angle_gamma']['store']['unit']) == CELL_DETAILS['angle']['default'][1]
+    assert str(cell['angle_gamma']['store']['unit']) == '\u00B0'
     assert cell['angle_gamma'].value == CELL_DETAILS['angle']['default'][0]
 
 
@@ -62,20 +62,20 @@ def test_cell_from_pars():
 
     cell = genericTestCell(Cell.fromPars, length, length, length, angle, angle, angle)
 
-    assert str(cell['length_a']['store']['unit']) == CELL_DETAILS['length']['default'][1]
+    assert str(cell['length_a']['store']['unit']) == '\u212B'
     assert cell['length_a'].value == length
 
-    assert str(cell['length_b']['store']['unit']) == CELL_DETAILS['length']['default'][1]
+    assert str(cell['length_b']['store']['unit']) == '\u212B'
     assert cell['length_b'].value == length
 
-    assert str(cell['length_c']['store']['unit']) == CELL_DETAILS['length']['default'][1]
+    assert str(cell['length_c']['store']['unit']) == '\u212B'
     assert cell['length_c'].value == length
 
-    assert str(cell['angle_alpha']['store']['unit']) == CELL_DETAILS['angle']['default'][1]
+    assert str(cell['angle_alpha']['store']['unit']) == '\u00B0'
     assert cell['angle_alpha'].value == angle
 
-    assert str(cell['angle_beta']['store']['unit']) == CELL_DETAILS['angle']['default'][1]
+    assert str(cell['angle_beta']['store']['unit']) == '\u00B0'
     assert cell['angle_beta'].value == angle
 
-    assert str(cell['angle_gamma']['store']['unit']) == CELL_DETAILS['angle']['default'][1]
+    assert str(cell['angle_gamma']['store']['unit']) == '\u00B0'
     assert cell['angle_gamma'].value == angle

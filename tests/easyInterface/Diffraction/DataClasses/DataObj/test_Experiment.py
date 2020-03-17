@@ -237,9 +237,9 @@ def test_exp_default():
     exp = genericTestExperiment(Experiment.default, name)
 
     assert exp['name'] == name
-    assert str(exp['wavelength']['store']['unit']) == EXPERIMENT_DETAILS['wavelength']['default'][1]
+    assert str(exp['wavelength']['store']['unit']) == '\u212B'
     assert exp['wavelength'].value == EXPERIMENT_DETAILS['wavelength']['default'][0]
-    assert str(exp['offset']['store']['unit']) == EXPERIMENT_DETAILS['offset']['default'][1]
+    assert str(exp['offset']['store']['unit']) == '\u00B0'
     assert exp['offset'].value == EXPERIMENT_DETAILS['offset']['default'][0]
 
 
@@ -256,9 +256,9 @@ def test_exp_from_pars():
                                 measured_pattern)
 
     assert exp['name'] == name
-    assert str(exp['wavelength']['store']['unit']) == EXPERIMENT_DETAILS['wavelength']['default'][1]
+    assert str(exp['wavelength']['store']['unit']) == '\u212B'
     assert exp['wavelength'].value == wavelength
-    assert str(exp['offset']['store']['unit']) == EXPERIMENT_DETAILS['offset']['default'][1]
+    assert str(exp['offset']['store']['unit']) == '\u00B0'
     assert exp['offset'].value == offset
 
     assert exp['phase'][name]['scale'].value == scale
