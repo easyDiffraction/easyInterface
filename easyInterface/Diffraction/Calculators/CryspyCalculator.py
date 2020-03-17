@@ -674,12 +674,12 @@ class CryspyCalculator:
                                                   ['crystal_system', 'space_group_name_HM_alt',
                                                    'space_group_IT_number', 'origin_choice'],
                                                   [calculator_phase.space_group.crystal_system,
-                                                   calculator_phase.space_group.name_hm_ref,
+                                                   calculator_phase.space_group.name_hm_alt,
                                                    calculator_phase.space_group.it_number,
                                                    calculator_phase.space_group.it_coordinate_system_code])
 
         space_group['crystal_system']['mapping'] = mapping_phase + '.space_group.crystal_system'
-        space_group['space_group_name_HM_alt']['mapping'] = mapping_phase + '.space_group.name_hm_ref'
+        space_group['space_group_name_HM_alt']['mapping'] = mapping_phase + '.space_group.name_hm_alt'
         space_group['space_group_IT_number']['mapping'] = mapping_phase + '.space_group.it_number'
         space_group['origin_choice']['mapping'] = mapping_phase + '.space_group.it_coordinate_system_code'
         return space_group
