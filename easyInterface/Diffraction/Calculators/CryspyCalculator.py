@@ -1104,7 +1104,7 @@ class CryspyCalculator:
         phases = PhaseL(
             list(
                 map(
-                    lambda key: cryspyPhase(label=key, scale=experiment['phase'][key]['scale'].value),
+                    lambda key: cryspyPhase(label=key, scale=experiment['phase'][key]['scale'].value, igsize=0),
                     experiment['phase'].keys()
                 )
             )

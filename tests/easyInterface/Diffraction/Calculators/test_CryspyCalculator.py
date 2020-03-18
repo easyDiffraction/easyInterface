@@ -157,7 +157,48 @@ def test_save_cifs(cal, file_io_fixture):
 
 
 def test__create_proj_item_from_obj(cal):
-    assert True
+    calc = CryspyCalculator()
+    from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import Phases, Phase, SpaceGroup, Cell, Atom
+    name = 'test'
+    sg = SpaceGroup.fromPars('cubic', 'F 41/d -3 2/m', 227, '2')
+    cell = Cell.fromPars(3, 3, 3, 90, 90, 90)
+    phase = Phase.fromPars(name, sg, cell)
+    site_label = 'Fe1'
+    type_symbol = 'Fe'
+    pos = 0.1
+    atom = Atom.fromXYZ(site_label, type_symbol, pos, pos, pos)
+    phase['atoms'][site_label] = atom
+    calc.setPhases(Phases(phase))
+
+    from easyInterface.Diffraction.DataClasses.DataObj.Experiment import Experiment, Background, Backgrounds, Resolution, MeasuredPattern
+    exp_name = 'boo'
+    wavelength = 1.5
+    offset = 0.01
+    scale = 207.1
+    background = Backgrounds({})
+
+    background['4.5'] = Background.fromPars(4.5, 256.0)
+    background['40.0'] = Background.fromPars(40.0, 158.0)
+    background['80.0'] = Background.fromPars(80.0, 65.0)
+
+    u = 16.9776
+    v = -2.8357
+    w = 0.5763
+    x = 0.0
+    y = 0.0
+    resolution = Resolution.fromPars(u, v, w, x, y)
+    npts = 100
+    measured_pattern = MeasuredPattern(list(range(0, npts)), list(range(0, npts)), [0.2] * npts)
+
+    exp = Experiment.fromPars(exp_name, wavelength, offset, scale, background, resolution, measured_pattern)
+
+    calc.addExperiment(exp)
+
+    print(calc._cryspy_obj)
+
+    calc.refine()
+
+
 
 
 def test_get_phases(cal):
