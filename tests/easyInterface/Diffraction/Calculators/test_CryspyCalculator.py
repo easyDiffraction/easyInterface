@@ -165,7 +165,7 @@ def test_get_phases(cal):
     assert len(phases) == len(cal._cryspy_obj.crystals)
     # Spacegroup
     assert phases.getItemByPath(['Fe3O4', 'spacegroup', 'origin_choice']).value == '2'
-    assert phases.getItemByPath(['Fe3O4', 'spacegroup', 'space_group_name_HM_alt']).value == 'F d -3 m'
+    assert phases.getItemByPath(['Fe3O4', 'spacegroup', 'space_group_name_HM_alt']).value == 'F 41/d -3 2/m'
     # Cell
     assert phases.getItemByPath(['Fe3O4', 'cell', 'length_a']).value == 8.36212
     assert phases.getItemByPath(['Fe3O4', 'cell', 'length_a']).value == phases.getItemByPath(
