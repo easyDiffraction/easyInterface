@@ -882,10 +882,10 @@ class CryspyCalculator:
                 y_obs = np.array(calculator_experiment.meas.intensity)
                 sy_obs = np.array(calculator_experiment.meas.intensity_sigma)
                 ###y_calc = np.array(calculated_pattern.intensity_total)
-                y_calc_up = np.array(calculated_pattern.intensity_up_total)
+                y_calc_up = np.array(calculated_pattern.intensity_up_total)/2
                 ###y_calc_down = np.array(calculated_pattern.intensity_down_total)
-                y_calc = y_calc_up  ###+ y_calc_down
-            elif calculator_experiment.meas.intensity_up[0] is not None:
+                y_calc_down = y_calc_up  ###+ y_calc_down
+            if calculator_experiment.meas.intensity_up[0] is not None:
                 y_obs_up = np.array(calculator_experiment.meas.intensity_up)
                 sy_obs_up = np.array(calculator_experiment.meas.intensity_up_sigma)
                 y_obs_down = np.array(calculator_experiment.meas.intensity_down)
@@ -894,14 +894,14 @@ class CryspyCalculator:
                 sy_obs = np.sqrt(np.square(sy_obs_up) + np.square(sy_obs_down))
                 y_calc_up = np.array(calculated_pattern.intensity_up_total)
                 y_calc_down = np.array(calculated_pattern.intensity_down_total)
-                y_calc = y_calc_up + y_calc_down
+            y_calc = y_calc_up + y_calc_down
             y_obs_upper = y_obs + sy_obs
             y_obs_lower = y_obs - sy_obs
             y_diff_upper = y_obs + sy_obs - y_calc
             y_diff_lower = y_obs - sy_obs - y_calc
 
             limits = Limits(y_obs_lower, y_obs_upper, y_diff_upper, y_diff_lower, x_calc, y_calc)
-            calculated_pattern = CalculatedPattern(x_calc, y_calc, y_diff_lower, y_diff_upper)
+            calculated_pattern = CalculatedPattern(x_calc, y_diff_lower, y_diff_upper, y_calc_up, y_calc_down)
 
             calculations.append(Calculation(calculator_experiment_name,
                                             bragg_peaks, calculated_pattern, limits))
