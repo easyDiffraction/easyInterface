@@ -9,7 +9,7 @@ import cryspy
 import pycifstar
 from asteval import Interpreter
 from cryspy.cif_like.cl_crystal import Crystal
-from cryspy.cif_like.cl_pd import Pd, PdBackground, PdBackgroundL, PdInstrResolution, PdMeas, PdMeasL, PhaseL, Setup
+from cryspy.cif_like.cl_pd import Pd, PdBackground, PdBackgroundL, PdInstrResolution, PdMeas, PdMeasL, PhaseL, Setup, Chi2, DiffrnRadiation
 from cryspy.cif_like.cl_pd import Phase as cryspyPhase
 from cryspy.corecif.cl_atom_site import AtomSite, AtomSiteL
 from cryspy.corecif.cl_atom_site_aniso import AtomSiteAniso, AtomSiteAnisoL
@@ -727,6 +727,19 @@ class CryspyCalculator:
             wavelength = calculator_setup.wavelength
             offset = calculator_setup.offset_ttheta
 
+            is_polarised = hasattr(calculator_setup, 'field')
+            field = None
+            if is_polarised:
+                field = calculator_setup.field
+                chi2 = {'sum': True, 'diff': False, 'up': False, 'down': False}
+                rad = {'polarization':0, 'efficiency': 1}
+                for obj in calculator_experiment.optional_objs:
+                    if isinstance(obj, Chi2):
+                        for key in chi2.keys():
+                            chi2[key] = getattr(obj, key)
+                    elif isinstance(obj, DiffrnRadiation):
+                        for key in rad.keys():
+                            rad[key] = getattr(obj, key)
             # Scale
             scale = calculator_experiment.phase.scale
 
@@ -760,6 +773,8 @@ class CryspyCalculator:
             x_obs = np.array(calculator_experiment.meas.ttheta).tolist()
             y_obs_up = None
             sy_obs_up = None
+            y_obs_diff = None
+            sy_obs_diff = None
             y_obs_down = None
             sy_obs_down = None
             y_obs = None
@@ -773,17 +788,19 @@ class CryspyCalculator:
                 y_obs_down = np.array(calculator_experiment.meas.intensity_down)
                 sy_obs_down = np.array(calculator_experiment.meas.intensity_down_sigma).tolist()
                 y_obs = (y_obs_up + y_obs_down).tolist()
+                y_obs_diff = (y_obs_up - y_obs_down).tolist()
+                sy_obs_diff = np.sqrt(np.square(sy_obs_up) + np.square(sy_obs_down)).tolist()
                 y_obs_up = y_obs_up.tolist()
                 y_obs_down = y_obs_down.tolist()
                 sy_obs = np.sqrt(np.square(sy_obs_up) + np.square(sy_obs_down)).tolist()
 
-            data = MeasuredPattern(x_obs, y_obs, sy_obs, y_obs_up, sy_obs_up, y_obs_down, sy_obs_down)
+            data = MeasuredPattern(x_obs, y_obs, sy_obs, y_obs_diff, sy_obs_diff, y_obs_up, sy_obs_up, y_obs_down, sy_obs_down)
 
             experiment = self._createProjItemFromObj(Experiment.fromPars,
                                                      ['name', 'wavelength', 'offset', 'phase',
-                                                      'background', 'resolution', 'measured_pattern'],
+                                                      'background', 'resolution', 'measured_pattern', 'field'],
                                                      [calculator_experiment_name, wavelength, offset, scale[0],
-                                                      backgrounds, resolution, data])
+                                                      backgrounds, resolution, data, field])
 
             # Fix up phase scale, but it is a terrible way of doing things.....
             phase_label = calculator_experiment.phase.label[0]
@@ -802,6 +819,7 @@ class CryspyCalculator:
                     experiment['phase'][item.label]['name'] = item.label
             experiment['wavelength']['mapping'] = mapping_exp + '.setup.wavelength'
             experiment['offset']['mapping'] = mapping_exp + '.setup.offset_ttheta'
+            experiment['field']['mapping'] = mapping_exp + '.setup.field'
 
             experiments.append(experiment)
 
@@ -1111,7 +1129,11 @@ class CryspyCalculator:
         )
 
         # Setup the instrument...
-        instrument = Setup(wavelength=experiment['wavelength'].value, offset_ttheta=experiment['offset'].value)
+        if experiment['measured_pattern'].isPolarised:
+            instrument = Setup(wavelength=experiment['wavelength'].value, offset_ttheta=experiment['offset'].value,
+                               field=experiment['field'].value)
+        else:
+            instrument = Setup(wavelength=experiment['wavelength'].value, offset_ttheta=experiment['offset'].value)
 
         return Pd(data_name=experiment['name'], background=backgrounds, resolution=resolution, meas=pattern,
                   phase=phases, setup=instrument)

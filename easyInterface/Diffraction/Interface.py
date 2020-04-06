@@ -209,7 +209,7 @@ class CalculatorInterface:
         self.project_dict.rmItemByPath(['phases', phase_name])
         self.__last_updated = datetime.now()
 
-    def addPhaseToExp(self, exp_name: str, phase_name: str, scale: float = 0.0) -> NoReturn:
+    def addPhaseToExp(self, exp_name: str, phase_name: str, scale: float = 0.0, field: float = 0.0) -> NoReturn:
         """
         Link a phase in the project dictionary to an experiment in the project dictionary. Links in the calculator will
         also be made.
@@ -221,7 +221,7 @@ class CalculatorInterface:
         """
         self.calculator.associatePhaseToExp(exp_name, phase_name, scale)
         currentPhases = self.project_dict.getItemByPath(['experiments', 'phase'])
-        newPhase = ExperimentPhase.fromPars(phase_name, scale)
+        newPhase = ExperimentPhase.fromPars(phase_name, scale, field)
         if currentPhases is None:
             currentPhases = {phase_name: newPhase}
         else:
