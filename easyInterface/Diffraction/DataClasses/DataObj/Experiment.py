@@ -335,6 +335,51 @@ class ExperimentPhases(ContainerObj):
     def __repr__(self) -> str:
         return '{} Experimental phases'.format(len(self))
 
+class chi2(LoggedPathDict):
+    _default = {'_sum': False, '_diff': False, '_up': False, '_down': False}
+
+    def __init__(self):
+        super().__init__(**self._default)
+
+    def __reset(self):
+        for key in self._default:
+            self[key] = self._default[key]
+
+    @property
+    def sum(self):
+        return self['_sum']
+
+    @sum.setter
+    def sum(self, value):
+        self.__reset()
+        self['_sum'] = value
+
+    @property
+    def diff(self):
+        return self['_diff']
+
+    @diff.setter
+    def diff(self, value):
+        self.__reset()
+        self['_diff'] = value
+
+    @property
+    def up(self):
+        return self['_up']
+
+    @up.setter
+    def up(self, value):
+        self.__reset()
+        self['_up'] = value
+
+    @property
+    def down(self):
+        return self['_down']
+
+    @down.setter
+    def down(self, value):
+        self.__reset()
+        self['_down'] = value
 
 class Experiment(LoggedPathDict):
     """
@@ -353,8 +398,12 @@ class Experiment(LoggedPathDict):
         :param resolution: Description of the resolution
         :param measured_pattern: What was actually measured
         """
+
+        chi_2 = chi2()
+        chi_2.sum = True
+
         super().__init__(name=name, wavelength=wavelength, offset=offset, field=field, phase=phase, background=background,
-                         resolution=resolution, measured_pattern=measured_pattern)
+                         resolution=resolution, measured_pattern=measured_pattern, chi2=chi_2)
         self._log = logging.getLogger(__class__.__module__)
 
         self.setItemByPath(['wavelength', 'header'], EXPERIMENT_DETAILS['wavelength']['header'])

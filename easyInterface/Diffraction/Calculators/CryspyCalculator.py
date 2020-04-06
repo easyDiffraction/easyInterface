@@ -802,6 +802,13 @@ class CryspyCalculator:
                                                      [calculator_experiment_name, wavelength, offset, scale[0],
                                                       backgrounds, resolution, data, field])
 
+            if data.isPolarised:
+                options = ['sum', 'diff', 'up', 'down']
+                for option in options:
+                    if getattr(calculator_experiment.chi2, option):
+                        setattr(experiment['chi2'], option, True)
+                        break
+
             # Fix up phase scale, but it is a terrible way of doing things.....
             phase_label = calculator_experiment.phase.label[0]
             experiment['phase'][phase_label] = experiment['phase'][calculator_experiment_name]
@@ -1128,6 +1135,8 @@ class CryspyCalculator:
             )
         )
 
+        chi2 = Chi2(sum=experiment['chi2'].sum, diff=experiment['chi2'].diff, up=experiment['chi2'].up, down=experiment['chi2'].down)
+
         # Setup the instrument...
         if experiment['measured_pattern'].isPolarised:
             instrument = Setup(wavelength=experiment['wavelength'].value, offset_ttheta=experiment['offset'].value,
@@ -1136,7 +1145,7 @@ class CryspyCalculator:
             instrument = Setup(wavelength=experiment['wavelength'].value, offset_ttheta=experiment['offset'].value)
 
         return Pd(data_name=experiment['name'], background=backgrounds, resolution=resolution, meas=pattern,
-                  phase=phases, setup=instrument)
+                  phase=phases, setup=instrument, chi2=chi2)
 
     def associatePhaseToExp(self, exp_name: str, phase_name: str, scale: float, igsize: float = 0.0) -> NoReturn:
         cryspyPhaseObj = cryspyPhase(label=phase_name, scale=scale, igsize=igsize)
