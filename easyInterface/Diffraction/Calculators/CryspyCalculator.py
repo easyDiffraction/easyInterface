@@ -808,8 +808,15 @@ class CryspyCalculator:
                 for option in options:
                     if getattr(calculator_experiment.chi2, option):
                         setattr(experiment['chi2'], option, True)
+                experiment['polarization']['polarization'].value = calculator_experiment.diffrn_radiation.polarization
+                experiment['polarization']['polarization'].refine = True
+                experiment['polarization']['polarization']['mapping'] = mapping_exp + '.diffrn_radiation.polarization'
+                experiment['polarization']['efficiency'].value = calculator_experiment.diffrn_radiation.efficiency
+                experiment['polarization']['efficiency'].refine = True
+                experiment['polarization']['efficiency']['mapping'] = mapping_exp + '.diffrn_radiation.efficiency'
 
-            # Fix up phase scale, but it is a terrible way of doing things.....
+
+                # Fix up phase scale, but it is a terrible way of doing things.....
             phase_label = calculator_experiment.phase.label[0]
             experiment['phase'][phase_label] = experiment['phase'][calculator_experiment_name]
             experiment['phase'][phase_label]['scale'].refine = scale[0].refinement

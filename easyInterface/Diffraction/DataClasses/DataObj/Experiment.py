@@ -54,6 +54,20 @@ INTENSITY_DETAILS = {
     }
 }
 
+POLAR_DETAILS = {
+    'polarization': {
+        'header': '',
+        'tooltip': '',
+        'url': '',
+        'default': (1, '')
+    },
+    'efficiency': {
+        'header': '',
+        'tooltip': '',
+        'url': '',
+        'default': (1, '')
+    }
+}
 
 class Resolution(LoggedPathDict):
     """
@@ -366,6 +380,31 @@ class chi2(LoggedPathDict):
             self.object.diff = value
         self['_diff'] = value
 
+class Polarization(LoggedPathDict):
+    def __init__(self, polarization: Base, efficiency: Base):
+        super().__init__(polarization=polarization, efficiency=efficiency)
+
+        self.setItemByPath(['polarization', 'header'], POLAR_DETAILS['polarization']['header'])
+        self.setItemByPath(['polarization', 'tooltip'], POLAR_DETAILS['polarization']['tooltip'])
+        self.setItemByPath(['polarization', 'url'], POLAR_DETAILS['polarization']['url'])
+
+        self.setItemByPath(['efficiency', 'header'], POLAR_DETAILS['efficiency']['header'])
+        self.setItemByPath(['efficiency', 'tooltip'], POLAR_DETAILS['efficiency']['tooltip'])
+        self.setItemByPath(['efficiency', 'url'], POLAR_DETAILS['efficiency']['url'])
+
+    @classmethod
+    def default(cls):
+        polarization = Base(*POLAR_DETAILS['polarization']['default'])
+        efficiency = Base(*POLAR_DETAILS['efficiency']['default'])
+        return cls(polarization, efficiency)
+
+    @classmethod
+    def fromPars(cls, polarization, efficiency):
+        polarization = Base(polarization, POLAR_DETAILS['polarization']['default'][1])
+        efficiency = Base(efficiency, POLAR_DETAILS['efficiency']['default'][1])
+        return cls(polarization, efficiency)
+
+
 class Experiment(LoggedPathDict):
     """
     Experimental details data container
@@ -388,7 +427,7 @@ class Experiment(LoggedPathDict):
         chi_2.sum = True
 
         super().__init__(name=name, wavelength=wavelength, offset=offset, field=field, phase=phase, background=background,
-                         resolution=resolution, measured_pattern=measured_pattern, chi2=chi_2)
+                         resolution=resolution, measured_pattern=measured_pattern, chi2=chi_2, polarization=Polarization.default())
         self._log = logging.getLogger(__class__.__module__)
 
         self.setItemByPath(['wavelength', 'header'], EXPERIMENT_DETAILS['wavelength']['header'])
