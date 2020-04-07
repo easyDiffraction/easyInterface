@@ -810,9 +810,11 @@ class CryspyCalculator:
                         setattr(experiment['chi2'], option, True)
                 experiment['polarization']['polarization'].value = calculator_experiment.diffrn_radiation.polarization.value
                 experiment['polarization']['polarization'].refine = True
+                experiment['polarization']['polarization']['store']['hide'] = False
                 experiment['polarization']['polarization']['mapping'] = mapping_exp + '.diffrn_radiation.polarization'
                 experiment['polarization']['efficiency'].value = calculator_experiment.diffrn_radiation.efficiency.value
                 experiment['polarization']['efficiency'].refine = True
+                experiment['polarization']['efficiency']['store']['hide'] = False
                 experiment['polarization']['efficiency']['mapping'] = mapping_exp + '.diffrn_radiation.efficiency'
 
 
