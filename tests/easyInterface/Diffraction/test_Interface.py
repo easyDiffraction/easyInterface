@@ -233,7 +233,7 @@ def test_setExperimentDefinitionFromString():
     experiment_dict = interface.project_dict['experiments']
 
     assert len(experiment_dict) == 1
-    assert len(experiment_dict['pd']) == 7
+    assert len(experiment_dict['pd']) == 9
     # wavelength
     assert len(experiment_dict['pd']['wavelength']) == 5
     assert experiment_dict['pd']['wavelength'].value == 0.84
@@ -272,7 +272,7 @@ def test_setExperimentDefinitionFromString():
     assert experiment_dict['pd']['resolution']['v']['store']['hide'] is False
 
     # measured_pattern
-    assert len(experiment_dict['pd']['measured_pattern']) == 7
+    assert len(experiment_dict['pd']['measured_pattern']) == 9
     assert 5.0 in experiment_dict['pd']['measured_pattern']['x']
     assert len(experiment_dict['pd']['measured_pattern'].y_obs_lower) == 381
     assert experiment_dict['pd']['measured_pattern'].y_obs_lower[380] == pytest.approx(762.959046)
@@ -288,7 +288,7 @@ def test_setExperimentsDictFromCryspyObj(cal):
     experiment_dict = cal.project_dict['experiments']
 
     assert len(experiment_dict) == 1
-    assert len(experiment_dict['pd']) == 7
+    assert len(experiment_dict['pd']) == 9
     # wavelength
     assert len(experiment_dict['pd']['wavelength']) == 5
     assert experiment_dict['pd']['wavelength'].value == 0.84
@@ -327,7 +327,7 @@ def test_setExperimentsDictFromCryspyObj(cal):
     assert experiment_dict['pd']['resolution']['v']['store']['hide'] is False
 
     # measured_pattern
-    assert len(experiment_dict['pd']['measured_pattern']) == 7
+    assert len(experiment_dict['pd']['measured_pattern']) == 9
     assert 5.0 in experiment_dict['pd']['measured_pattern']['x']
     assert len(experiment_dict['pd']['measured_pattern'].y_obs_lower) == 381
     assert experiment_dict['pd']['measured_pattern'].y_obs_lower[380] == pytest.approx(762.959046)
@@ -350,7 +350,7 @@ def test_setCalculationsDictFromCryspyObj(cal):
     assert sum(calculation_dict['pd']['bragg_peaks']['Fe3O4']['h']) == 681
     assert sum(calculation_dict['pd']['bragg_peaks']['Fe3O4']['ttheta']) == pytest.approx(5027.87268)
     # calculated_pattern
-    assert len(calculation_dict['pd']['calculated_pattern']) == 4
+    assert len(calculation_dict['pd']['calculated_pattern']) == 7
     assert len(calculation_dict['pd']['calculated_pattern']['x']) == 381
     assert sum(calculation_dict['pd']['calculated_pattern']['x']) == 16002.0
     assert sum(calculation_dict['pd']['calculated_pattern']['y_diff_upper']) == pytest.approx(37056.915414296)

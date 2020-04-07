@@ -221,7 +221,7 @@ class CalculatorInterface:
         """
         self.calculator.associatePhaseToExp(exp_name, phase_name, scale)
         currentPhases = self.project_dict.getItemByPath(['experiments', 'phase'])
-        newPhase = ExperimentPhase.fromPars(phase_name, scale, field)
+        newPhase = ExperimentPhase.fromPars(phase_name, scale)
         if currentPhases is None:
             currentPhases = {phase_name: newPhase}
         else:

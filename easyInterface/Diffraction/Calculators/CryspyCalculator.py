@@ -803,11 +803,11 @@ class CryspyCalculator:
                                                       backgrounds, resolution, data, field])
 
             if data.isPolarised:
-                options = ['sum', 'diff', 'up', 'down']
+                options = ['sum', 'diff']
+                experiment['chi2'].set_object(calculator_experiment.chi2)
                 for option in options:
                     if getattr(calculator_experiment.chi2, option):
                         setattr(experiment['chi2'], option, True)
-                        break
 
             # Fix up phase scale, but it is a terrible way of doing things.....
             phase_label = calculator_experiment.phase.label[0]
@@ -1135,7 +1135,7 @@ class CryspyCalculator:
             )
         )
 
-        chi2 = Chi2(sum=experiment['chi2'].sum, diff=experiment['chi2'].diff, up=experiment['chi2'].up, down=experiment['chi2'].down)
+        chi2 = Chi2(sum=experiment['chi2'].sum, diff=experiment['chi2'].diff, up=False, down=False)
 
         # Setup the instrument...
         if experiment['measured_pattern'].isPolarised:

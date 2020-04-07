@@ -203,7 +203,7 @@ def test_get_calculations(cal):
     assert 'pd' in calculations.keys()
     assert calculations['pd']['name'] == 'pd'
     assert sum(calculations['pd']['calculated_pattern']['x']) == 16002.0
-    assert pytest.approx(calculations['pd']['calculated_pattern']['y_calc'], 370866.19168)
+    assert pytest.approx(calculations['pd']['calculated_pattern']['y_calc_sum'], 370866.19168)
     assert calculations['pd']['limits']['main']['x_min'] == 4.0
     assert calculations['pd']['limits']['main']['x_max'] == 80.0
     assert pytest.approx(calculations['pd']['limits']['main']['y_min'], 102.0307)

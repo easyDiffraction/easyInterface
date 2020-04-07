@@ -335,15 +335,16 @@ class ExperimentPhases(ContainerObj):
     def __repr__(self) -> str:
         return '{} Experimental phases'.format(len(self))
 
+
 class chi2(LoggedPathDict):
-    _default = {'_sum': False, '_diff': False, '_up': False, '_down': False}
+    _default = {'_sum': False, '_diff': False}
 
     def __init__(self):
         super().__init__(**self._default)
+        self.object = None
 
-    def __reset(self):
-        for key in self._default:
-            self[key] = self._default[key]
+    def set_object(self, obj):
+        self.object = obj
 
     @property
     def sum(self):
@@ -351,7 +352,8 @@ class chi2(LoggedPathDict):
 
     @sum.setter
     def sum(self, value):
-        self.__reset()
+        if self.object is not None:
+            self.object.sum = value
         self['_sum'] = value
 
     @property
@@ -360,26 +362,9 @@ class chi2(LoggedPathDict):
 
     @diff.setter
     def diff(self, value):
-        self.__reset()
+        if self.object is not None:
+            self.object.diff = value
         self['_diff'] = value
-
-    @property
-    def up(self):
-        return self['_up']
-
-    @up.setter
-    def up(self, value):
-        self.__reset()
-        self['_up'] = value
-
-    @property
-    def down(self):
-        return self['_down']
-
-    @down.setter
-    def down(self, value):
-        self.__reset()
-        self['_down'] = value
 
 class Experiment(LoggedPathDict):
     """
