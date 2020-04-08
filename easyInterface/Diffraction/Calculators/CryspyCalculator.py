@@ -815,6 +815,17 @@ class CryspyCalculator:
                 experiment['polarization']['efficiency']['store']['hide'] = False
                 experiment['polarization']['efficiency']['mapping'] = mapping_exp + '.diffrn_radiation.efficiency'
 
+                # updateMinMax method is called only when polarization object is created in
+                # Experiment.py (Line 430): polarization=Polarization.default(). The default values
+                # of polarization.polarization and polarization.efficiency = 1.0 at that moment, so
+                # min and max are defined as 0.8 and 1.2, respectively.
+                # Now, we need to reset min and max and call updateMinMax() again!
+                experiment['polarization']['polarization'].min = -np.Inf
+                experiment['polarization']['polarization'].max = np.Inf
+                experiment['polarization']['polarization'].updateMinMax()
+                experiment['polarization']['efficiency'].min = -np.Inf
+                experiment['polarization']['efficiency'].max = np.Inf
+                experiment['polarization']['efficiency'].updateMinMax()
 
                 # Fix up phase scale, but it is a terrible way of doing things.....
             phase_label = calculator_experiment.phase.label[0]
