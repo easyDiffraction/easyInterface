@@ -899,10 +899,8 @@ class CryspyCalculator:
             if calculator_experiment.meas.intensity[0] is not None:
                 y_obs = np.array(calculator_experiment.meas.intensity)
                 sy_obs = np.array(calculator_experiment.meas.intensity_sigma)
-                ###y_calc = np.array(calculated_pattern.intensity_total)
-                y_calc_up = np.array(calculated_pattern.intensity_up_total)/2
-                ###y_calc_down = np.array(calculated_pattern.intensity_down_total)
-                y_calc_down = y_calc_up  ###+ y_calc_down
+                y_calc_up = np.array(calculated_pattern.intensity_up_total)
+                y_calc_down = np.array(calculated_pattern.intensity_down_total)
             if calculator_experiment.meas.intensity_up[0] is not None:
                 y_obs_up = np.array(calculator_experiment.meas.intensity_up)
                 sy_obs_up = np.array(calculator_experiment.meas.intensity_up_sigma)
