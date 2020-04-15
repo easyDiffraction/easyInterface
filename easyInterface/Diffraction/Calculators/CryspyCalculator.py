@@ -911,7 +911,7 @@ class CryspyCalculator:
                 sy_obs = np.sqrt(np.square(sy_obs_up) + np.square(sy_obs_down))
                 y_calc_up = np.array(calculated_pattern.intensity_up_total)
                 y_calc_down = np.array(calculated_pattern.intensity_down_total)
-                y_calc_bkg = np.array(calculated_pattern.intensity_bkg_calc)
+                y_calc_bkg = np.multiply(np.array(calculated_pattern.intensity_bkg_calc), 2)
             y_calc = y_calc_up + y_calc_down
             y_obs_upper = y_obs + sy_obs
             y_obs_lower = y_obs - sy_obs
