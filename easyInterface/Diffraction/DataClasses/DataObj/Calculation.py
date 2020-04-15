@@ -74,9 +74,11 @@ class CalculatedPattern(LoggedPathDict):
     Storage container for a calculated pattern
     """
     def __init__(self, x: list, y_diff_lower: list, y_diff_upper: list,
-                 y_calc_up: list = [], y_calc_down: list = []):
-        super().__init__(x=x, y_calc_sum=np.array(y_calc_up) + np.array(y_calc_down), y_calc_diff=np.array(y_calc_up) - np.array(y_calc_down), y_calc_up=y_calc_up, y_calc_down=y_calc_down,
-                         y_diff_lower=y_diff_lower, y_diff_upper=y_diff_upper)
+                 y_calc_up: list = [], y_calc_down: list = [], y_calc_bkg: list = []):
+        super().__init__(x=x, y_calc_sum=np.array(y_calc_up) + np.array(y_calc_down), y_calc_diff=np.array(y_calc_up) - np.array(y_calc_down),
+                         y_calc_up=y_calc_up, y_calc_down=y_calc_down,
+                         y_diff_lower=y_diff_lower, y_diff_upper=y_diff_upper,
+                         y_calc_bkg=y_calc_bkg)
         self._log = logging.getLogger(__class__.__module__)
 
     def __repr__(self):
@@ -103,7 +105,7 @@ class Calculation(LoggedPathDict):
                  y_calc_lower: list, y_calc_upper: list,
                  tth: list, y_calc: list, y_diff_lower: list, y_diff_upper: list):
         bragg_peaks = BraggPeaks(bragg_crystals)
-        calculated_pattern = CalculatedPattern(tth, y_calc, y_diff_lower, y_diff_upper)
+        calculated_pattern = CalculatedPattern(tth, y_calc, y_diff_lower, y_diff_upper, y_calc_bkg)
         limits = Limits(y_calc_lower, y_calc_upper, y_diff_upper, y_diff_lower, x_calc=tth, y_calc=y_calc)
         return cls(name, bragg_peaks, calculated_pattern, limits)
 
