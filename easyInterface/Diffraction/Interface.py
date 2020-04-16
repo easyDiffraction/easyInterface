@@ -694,7 +694,7 @@ class CalculatorInterface:
         """
         return self.project_dict["info"]["name"]
 
-    def asCifDict(self) -> str:
+    def asCifDict(self) -> dict:
         """
         Converts the project dictionary into a `cif` structure.
 

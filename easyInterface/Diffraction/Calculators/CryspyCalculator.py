@@ -9,7 +9,8 @@ import cryspy
 import pycifstar
 from asteval import Interpreter
 from cryspy.cif_like.cl_crystal import Crystal
-from cryspy.cif_like.cl_pd import Pd, PdBackground, PdBackgroundL, PdInstrResolution, PdMeas, PdMeasL, PhaseL, Setup, Chi2, DiffrnRadiation
+from cryspy.cif_like.cl_pd import Pd, PdBackground, PdBackgroundL, PdInstrResolution, PdMeas, PdMeasL, PhaseL, Setup, \
+    Chi2, DiffrnRadiation
 from cryspy.cif_like.cl_pd import Phase as cryspyPhase
 from cryspy.corecif.cl_atom_site import AtomSite, AtomSiteL
 from cryspy.corecif.cl_atom_site_aniso import AtomSiteAniso, AtomSiteAnisoL
@@ -31,7 +32,7 @@ from easyInterface.Utils.Helpers import time_it
 # Version info
 cryspy_version = 'Undefined'
 try:
-    from cryspy import __version__ as cryspy_version
+    from cryspy import __version__ as cryspy_version, Fitable, AtomSiteScat, AtomSiteScatL
 except ImportError:
     logging.logger.info('Can not find cryspy version. Using default text')
 CALCULATOR_INFO = {
@@ -732,7 +733,7 @@ class CryspyCalculator:
             if is_polarised:
                 field = calculator_setup.field
                 chi2 = {'sum': True, 'diff': False, 'up': False, 'down': False}
-                rad = {'polarization':0, 'efficiency': 1}
+                rad = {'polarization': 0, 'efficiency': 1}
                 for obj in calculator_experiment.optional_objs:
                     if isinstance(obj, Chi2):
                         for key in chi2.keys():
@@ -794,7 +795,8 @@ class CryspyCalculator:
                 y_obs_down = y_obs_down.tolist()
                 sy_obs = np.sqrt(np.square(sy_obs_up) + np.square(sy_obs_down)).tolist()
 
-            data = MeasuredPattern(x_obs, y_obs, sy_obs, y_obs_diff, sy_obs_diff, y_obs_up, sy_obs_up, y_obs_down, sy_obs_down)
+            data = MeasuredPattern(x_obs, y_obs, sy_obs, y_obs_diff, sy_obs_diff, y_obs_up, sy_obs_up, y_obs_down,
+                                   sy_obs_down)
 
             experiment = self._createProjItemFromObj(Experiment.fromPars,
                                                      ['name', 'wavelength', 'offset', 'phase',
@@ -808,7 +810,8 @@ class CryspyCalculator:
                 for option in options:
                     if getattr(calculator_experiment.chi2, option):
                         setattr(experiment['chi2'], option, True)
-                experiment['polarization']['polarization'].value = calculator_experiment.diffrn_radiation.polarization.value
+                experiment['polarization'][
+                    'polarization'].value = calculator_experiment.diffrn_radiation.polarization.value
                 experiment['polarization']['polarization']['store']['hide'] = False
                 experiment['polarization']['polarization']['mapping'] = mapping_exp + '.diffrn_radiation.polarization'
                 experiment['polarization']['efficiency'].value = calculator_experiment.diffrn_radiation.efficiency.value
@@ -919,7 +922,8 @@ class CryspyCalculator:
             y_diff_lower = y_obs - sy_obs - y_calc
 
             limits = Limits(y_obs_lower, y_obs_upper, y_diff_upper, y_diff_lower, x_calc, y_calc)
-            calculated_pattern = CalculatedPattern(x_calc, y_diff_lower, y_diff_upper, y_calc_up, y_calc_down, y_calc_bkg)
+            calculated_pattern = CalculatedPattern(x_calc, y_diff_lower, y_diff_upper, y_calc_up, y_calc_down,
+                                                   y_calc_bkg)
 
             calculations.append(Calculation(calculator_experiment_name,
                                             bragg_peaks, calculated_pattern, limits))
@@ -1052,76 +1056,129 @@ class CryspyCalculator:
 
     @staticmethod
     def _createPhaseObj(phase: Phase) -> Crystal:
-        this_cell = cryspyCell(length_a=phase['cell']['length_a'].value,
-                               length_b=phase['cell']['length_b'].value,
-                               length_c=phase['cell']['length_c'].value,
-                               angle_alpha=phase['cell']['angle_alpha'].value,
-                               angle_beta=phase['cell']['angle_beta'].value,
-                               angle_gamma=phase['cell']['angle_gamma'].value)
 
-        this_space_group = cpSpaceGroup(name_hm_alt=phase['spacegroup']['space_group_name_HM_alt'].value,
-                                        it_number=phase['spacegroup']['space_group_IT_number'].value,
-                                        it_coordinate_system_code=phase['spacegroup']['origin_choice'].value,
-                                        crystal_system=phase['spacegroup']['crystal_system'].value)
+        def convRefine(cp_in, easy_in, cp_keys, e_keys):
+            for cp_param, e_param in zip(cp_keys, e_keys):
+                if isinstance(easy_in[e_param], Base):
+                    cp_obj = getattr(cp_in, cp_param)
+                    if isinstance(cp_obj, Fitable):
+                        setattr(cp_obj, 'refinement', easy_in[e_param].refine)
+
+        d = dict()
+        d['data_name'] = phase['phasename']
+        cell = dict()
+        cell['length_a'] = phase['cell']['length_a'].value
+        cell['length_b'] = phase['cell']['length_b'].value
+        cell['length_c'] = phase['cell']['length_c'].value
+        cell['angle_alpha'] = phase['cell']['angle_alpha'].value
+        cell['angle_beta'] = phase['cell']['angle_beta'].value
+        cell['angle_gamma'] = phase['cell']['angle_gamma'].value
+        d['cell'] = cryspyCell(**cell)
+        convRefine(d['cell'], phase['cell'],
+                   ['length_a', 'length_b', 'length_c', 'angle_alpha', 'angle_beta', 'angle_gamma'],
+                   ['length_a', 'length_b', 'length_c', 'angle_alpha', 'angle_beta', 'angle_gamma'])
+
+        spg = dict()
+        spg['name_hm_alt'] = phase['spacegroup']['space_group_name_HM_alt'].value
+        spg['it_number'] = phase['spacegroup']['space_group_IT_number'].value
+        spg['it_coordinate_system_code'] = phase['spacegroup']['origin_choice'].value
+        spg['crystal_system'] = phase['spacegroup']['crystal_system'].value
+        d['space_group'] = cpSpaceGroup(**spg)
+        convRefine(d['space_group'], phase['spacegroup'],
+                   ['crystal_system', 'name_hm_alt', 'it_number', 'it_coordinate_system_code'],
+                   ['crystal_system', 'space_group_name_HM_alt', 'space_group_IT_number', 'origin_choice'])
 
         this_atoms = []
         this_adp = []
         this_msp = []
-        for atomLabel in phase['atoms'].keys():
-            atom = phase['atoms'][atomLabel]
-            this_atoms.append(
-                AtomSite(label=atomLabel, type_symbol=atom['type_symbol'],
-                         fract_x=atom['fract_x'].value, fract_y=atom['fract_y'].value,
-                         fract_z=atom['fract_z'].value,
-                         occupancy=atom['occupancy'].value, adp_type=atom['adp_type'].value,
-                         u_iso_or_equiv=atom['U_iso_or_equiv'].value)
-            )
+        for atom_label in phase['atoms'].keys():
+            atom = phase['atoms'][atom_label]
+            atom_site = dict()
+            atom_site['label'] = atom_label
+            atom_site['type_symbol'] = atom['type_symbol']
+            atom_site['fract_x'] = atom['fract_x'].value
+            atom_site['fract_y'] = atom['fract_y'].value
+            atom_site['fract_z'] = atom['fract_z'].value
+            atom_site['occupancy'] = atom['occupancy'].value
+            atom_site['adp_type'] = atom['adp_type'].value
+            atom_site['u_iso_or_equiv'] = atom['U_iso_or_equiv'].value
+            a_site = AtomSite(**atom_site)
+            convRefine(a_site, atom,
+                       ['type_symbol', 'fract_x', 'fract_y', 'fract_z', 'occupancy', 'adp_type', 'u_iso_or_equiv'],
+                       ['type_symbol', 'fract_x', 'fract_y', 'fract_z', 'occupancy', 'adp_type', 'U_iso_or_equiv'])
+            this_atoms.append(a_site)
             if atom['ADP']['u_11'].value is not None:
-                this_adp.append(
-                    AtomSiteAniso(label=atomLabel, u_11=atom['ADP']['u_11'].value,
-                                  u_22=atom['ADP']['u_22'].value, u_33=atom['ADP']['u_33'].value,
-                                  u_12=atom['ADP']['u_12'].value, u_13=atom['ADP']['u_13'].value,
-                                  u_23=atom['ADP']['u_23'].value)
-                )
+                adp = dict()
+                adp['label'] = atom_label
+                adp['u_11'] = atom['ADP']['u_11'].value
+                adp['u_22'] = atom['ADP']['u_22'].value
+                adp['u_33'] = atom['ADP']['u_33'].value
+                adp['u_12'] = atom['ADP']['u_12'].value
+                adp['u_13'] = atom['ADP']['u_13'].value
+                adp['u_23'] = atom['ADP']['u_23'].value
+                adp = AtomSiteAniso(**adp)
+                convRefine(adp, atom['ADP'],
+                           ['u_11', 'u_22', 'u_33', 'u_12', 'u_13', 'u_23'],
+                           ['u_11', 'u_22', 'u_33', 'u_12', 'u_13', 'u_23'])
+                this_adp.append(adp)
             if atom['MSP']['type'].value is not None:
-                this_msp.append(
-                    AtomSiteSusceptibility(label=atomLabel, chi_type=atom['MSP']['type'].value,
-                                           chi_11=atom['MSP']['chi_11'].value,
-                                           chi_22=atom['MSP']['chi_22'].value, chi_33=atom['MSP']['chi_33'].value,
-                                           chi_12=atom['MSP']['chi_12'].value, chi_13=atom['MSP']['chi_13'].value,
-                                           chi_23=atom['MSP']['chi_23'].value)
-                )
+                msp = dict()
+                msp['label'] = atom_label
+                msp['chi_type'] = atom['MSP']['type'].value
+                msp['chi_11'] = atom['MSP']['chi_11'].value
+                msp['chi_22'] = atom['MSP']['chi_22'].value
+                msp['chi_33'] = atom['MSP']['chi_33'].value
+                msp['chi_12'] = atom['MSP']['chi_12'].value
+                msp['chi_13'] = atom['MSP']['chi_13'].value
+                msp['chi_23'] = atom['MSP']['chi_23'].value
+                msp = AtomSiteSusceptibility(**msp)
+                convRefine(msp, atom['MSP'],
+                           ['chi_11', 'chi_22', 'chi_33', 'chi_12', 'chi_13', 'chi_23'],
+                           ['chi_11', 'chi_22', 'chi_33', 'chi_12', 'chi_13', 'chi_23'])
+                this_msp.append(msp)
 
-        this_atoms = AtomSiteL(this_atoms)
-        this_adp = AtomSiteAnisoL(this_adp)
-        this_msp = AtomSiteSusceptibilityL(this_msp)
+        d['atom_site'] = AtomSiteL(this_atoms)
+        if len(this_adp) > 0:
+            d['atom_site_aniso'] = AtomSiteAnisoL(this_adp)
+        if len(this_msp) > 0:
+            d['atom_site_susceptibility'] = AtomSiteSusceptibilityL(this_msp)
+            # This means that it's magnetic, so it must have a atom_site_scat
+            d['atom_site_scat'] = AtomSiteScatL([AtomSiteScat(label=msp.label) for msp in this_msp])
 
-        phase_obj = Crystal(data_name=phase['phasename'], cell=this_cell, space_group=this_space_group,
-                            atom_site=this_atoms,
-                            atom_site_aniso=this_adp, atom_site_susceptibility=this_msp)
+
+        phase_obj = Crystal(**d)
         phase_obj.apply_constraint()
         return phase_obj
 
     @staticmethod
     def _createExperimentObj(experiment: Experiment) -> Pd:
         # First create a background
-        backgrounds = PdBackgroundL(
-            list(
-                map(
-                    lambda key: PdBackground(ttheta=experiment['background'][key]['ttheta'],
-                                             intensity=experiment['background'][key]['intensity'].value),
-                    experiment['background'].keys()
-                )
-            )
+
+        exp = dict()
+        exp['data_name'] = experiment['name']
+        def bg_mapper(key):
+            bg = PdBackground(ttheta=experiment['background'][key]['ttheta'],
+                              intensity=experiment['background'][key]['intensity'].value)
+            bg.intensity.refinement = experiment['background'][key]['intensity'].refine
+            return bg
+
+        exp['background'] = PdBackgroundL(
+            list(map(lambda key: bg_mapper(key), experiment['background'].keys())
+                 )
         )
 
         # backgrounds = PdBackgroundL(backgrounds)
         # Resolution
-        resolution = PdInstrResolution(u=experiment['resolution']['u'].value,
+        exp['resolution'] = PdInstrResolution(u=experiment['resolution']['u'].value,
                                        v=experiment['resolution']['v'].value,
                                        w=experiment['resolution']['w'].value,
                                        x=experiment['resolution']['x'].value,
                                        y=experiment['resolution']['y'].value)
+        exp['resolution'].u.refinement = experiment['resolution']['u'].refine
+        exp['resolution'].v.refinement = experiment['resolution']['v'].refine
+        exp['resolution'].w.refinement = experiment['resolution']['w'].refine
+        exp['resolution'].x.refinement = experiment['resolution']['x'].refine
+        exp['resolution'].y.refinement = experiment['resolution']['y'].refine
 
         # Measured pattern
         pol = lambda data: PdMeas(ttheta=data[0], intensity=data[1], intensity_sigma=data[2],
@@ -1138,32 +1195,36 @@ class CryspyCalculator:
                                                 experiment['measured_pattern']['sy_obs_up'],
                                                 experiment['measured_pattern']['y_obs_down'],
                                                 experiment['measured_pattern']['sy_obs_down']))))
+            exp['chi2'] = Chi2(sum=experiment['chi2'].sum, diff=experiment['chi2'].diff, up=False, down=False)
+            exp['diffrn_radiation'] = DiffrnRadiation(polarization=experiment['polarization']['polarization'].value,
+                                                      efficiency=experiment['polarization']['efficiency'].value)
+            exp['diffrn_radiation'].polarization.refinement = experiment['polarization']['polarization'].refine
+            exp['diffrn_radiation'].efficiency.refinement = experiment['polarization']['efficiency'].refine
         else:
             pattern = PdMeasL(list(map(non_pol, zip(experiment['measured_pattern']['x'],
                                                     experiment['measured_pattern']['y_obs'],
                                                     experiment['measured_pattern']['sy_obs']))))
 
+        exp['meas'] = pattern
+        def phase_mapper(key):
+            phase = cryspyPhase(label=key, scale=experiment['phase'][key]['scale'].value, igsize=0)
+            phase.scale.refinement = experiment['phase'][key]['scale'].refine
+            return phase
+
         # Associate it to a phase
-        phases = PhaseL(
-            list(
-                map(
-                    lambda key: cryspyPhase(label=key, scale=experiment['phase'][key]['scale'].value, igsize=0),
-                    experiment['phase'].keys()
-                )
-            )
+        exp['phase'] = PhaseL(
+            list(map(lambda key: phase_mapper(key), experiment['phase'].keys()))
         )
-
-        chi2 = Chi2(sum=experiment['chi2'].sum, diff=experiment['chi2'].diff, up=False, down=False)
-
         # Setup the instrument...
         if experiment['measured_pattern'].isPolarised:
-            instrument = Setup(wavelength=experiment['wavelength'].value, offset_ttheta=experiment['offset'].value,
+            exp['setup'] = Setup(wavelength=experiment['wavelength'].value, offset_ttheta=experiment['offset'].value,
                                field=experiment['field'].value)
-        else:
-            instrument = Setup(wavelength=experiment['wavelength'].value, offset_ttheta=experiment['offset'].value)
 
-        return Pd(data_name=experiment['name'], background=backgrounds, resolution=resolution, meas=pattern,
-                  phase=phases, setup=instrument, chi2=chi2)
+        else:
+            exp['setup'] = Setup(wavelength=experiment['wavelength'].value, offset_ttheta=experiment['offset'].value)
+        exp['setup'].wavelength.refinement = experiment['wavelength'].refine
+        exp['setup'].offset_ttheta.refinement = experiment['offset'].refine
+        return Pd(**exp)
 
     def associatePhaseToExp(self, exp_name: str, phase_name: str, scale: float, igsize: float = 0.0) -> NoReturn:
         cryspyPhaseObj = cryspyPhase(label=phase_name, scale=scale, igsize=igsize)
