@@ -1145,17 +1145,16 @@ class CryspyCalculator:
             # This means that it's magnetic, so it must have a atom_site_scat
             d['atom_site_scat'] = AtomSiteScatL([AtomSiteScat(label=msp.label) for msp in this_msp])
 
-
         phase_obj = Crystal(**d)
         phase_obj.apply_constraint()
         return phase_obj
 
-    @staticmethod
-    def _createExperimentObj(experiment: Experiment) -> Pd:
+    def _createExperimentObj(self, experiment: Experiment) -> Pd:
         # First create a background
 
         exp = dict()
         exp['data_name'] = experiment['name']
+
         def bg_mapper(key):
             bg = PdBackground(ttheta=experiment['background'][key]['ttheta'],
                               intensity=experiment['background'][key]['intensity'].value)
@@ -1170,10 +1169,10 @@ class CryspyCalculator:
         # backgrounds = PdBackgroundL(backgrounds)
         # Resolution
         exp['resolution'] = PdInstrResolution(u=experiment['resolution']['u'].value,
-                                       v=experiment['resolution']['v'].value,
-                                       w=experiment['resolution']['w'].value,
-                                       x=experiment['resolution']['x'].value,
-                                       y=experiment['resolution']['y'].value)
+                                              v=experiment['resolution']['v'].value,
+                                              w=experiment['resolution']['w'].value,
+                                              x=experiment['resolution']['x'].value,
+                                              y=experiment['resolution']['y'].value)
         exp['resolution'].u.refinement = experiment['resolution']['u'].refine
         exp['resolution'].v.refinement = experiment['resolution']['v'].refine
         exp['resolution'].w.refinement = experiment['resolution']['w'].refine
@@ -1181,16 +1180,14 @@ class CryspyCalculator:
         exp['resolution'].y.refinement = experiment['resolution']['y'].refine
 
         # Measured pattern
-        pol = lambda data: PdMeas(ttheta=data[0], intensity=data[1], intensity_sigma=data[2],
-                                  intensity_up=data[3], intensity_up_sigma=data[4],
-                                  intensity_down=data[5], intensity_down_sigma=data[6])
+        pol = lambda data: PdMeas(ttheta=data[0],
+                                  intensity_up=data[1], intensity_up_sigma=data[2],
+                                  intensity_down=data[3], intensity_down_sigma=data[4])
 
         non_pol = lambda data: PdMeas(ttheta=data[0], intensity=data[1], intensity_sigma=data[2])
 
         if experiment['measured_pattern'].isPolarised:
             pattern = PdMeasL(list(map(pol, zip(experiment['measured_pattern']['x'],
-                                                experiment['measured_pattern']['y_obs'],
-                                                experiment['measured_pattern']['sy_obs'],
                                                 experiment['measured_pattern']['y_obs_up'],
                                                 experiment['measured_pattern']['sy_obs_up'],
                                                 experiment['measured_pattern']['y_obs_down'],
@@ -1206,19 +1203,18 @@ class CryspyCalculator:
                                                     experiment['measured_pattern']['sy_obs']))))
 
         exp['meas'] = pattern
+
         def phase_mapper(key):
             phase = cryspyPhase(label=key, scale=experiment['phase'][key]['scale'].value, igsize=0)
             phase.scale.refinement = experiment['phase'][key]['scale'].refine
             return phase
 
         # Associate it to a phase
-        exp['phase'] = PhaseL(
-            list(map(lambda key: phase_mapper(key), experiment['phase'].keys()))
-        )
+        exp['phase'] = PhaseL([phase_mapper(key) for key in experiment['phase'].keys()])
         # Setup the instrument...
         if experiment['measured_pattern'].isPolarised:
             exp['setup'] = Setup(wavelength=experiment['wavelength'].value, offset_ttheta=experiment['offset'].value,
-                               field=experiment['field'].value)
+                                 field=experiment['field'].value)
 
         else:
             exp['setup'] = Setup(wavelength=experiment['wavelength'].value, offset_ttheta=experiment['offset'].value)
