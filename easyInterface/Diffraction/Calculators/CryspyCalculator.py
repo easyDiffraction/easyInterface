@@ -91,7 +91,6 @@ class CryspyCalculator:
             self._phase_names = [phase.data_name for phase in rho_chi.crystals]
             self._experiment_names = [experiment.data_name for experiment in rho_chi.experiments]
         self._log.debug('<---- End')
-        print(rho_chi)
         return rho_chi
 
     def _parseSegment(self, segment: str = "") -> str:
