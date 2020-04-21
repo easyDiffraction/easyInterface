@@ -91,6 +91,7 @@ class CryspyCalculator:
             self._phase_names = [phase.data_name for phase in rho_chi.crystals]
             self._experiment_names = [experiment.data_name for experiment in rho_chi.experiments]
         self._log.debug('<---- End')
+        print(rho_chi)
         return rho_chi
 
     def _parseSegment(self, segment: str = "") -> str:
@@ -812,9 +813,14 @@ class CryspyCalculator:
                         setattr(experiment['chi2'], option, True)
                 experiment['polarization'][
                     'polarization'].value = calculator_experiment.diffrn_radiation.polarization.value
+                experiment['polarization']['polarization']['store']['error'] = calculator_experiment.diffrn_radiation.polarization.sigma
+
+                experiment['polarization']['polarization'].refine = calculator_experiment.diffrn_radiation.polarization.refinement
                 experiment['polarization']['polarization']['store']['hide'] = False
                 experiment['polarization']['polarization']['mapping'] = mapping_exp + '.diffrn_radiation.polarization'
                 experiment['polarization']['efficiency'].value = calculator_experiment.diffrn_radiation.efficiency.value
+                experiment['polarization']['efficiency'].refine = calculator_experiment.diffrn_radiation.efficiency.refinement
+                experiment['polarization']['efficiency']['store']['error'] = calculator_experiment.diffrn_radiation.efficiency.sigma
                 experiment['polarization']['efficiency']['store']['hide'] = False
                 experiment['polarization']['efficiency']['mapping'] = mapping_exp + '.diffrn_radiation.efficiency'
 
