@@ -844,12 +844,13 @@ class CryspyCalculator:
             experiment['phase'][phase_label]['name'] = phase_label
             experiment['phase'][phase_label]['scale']['mapping'] = mapping_exp + '.phase.scale[0]'
             del experiment['phase'][calculator_experiment_name]
-            if len(scale) > 1:
-                for idx, item in enumerate(calculator_experiment.phase.item[1:]):
-                    experiment['phase'][item.label] = ExperimentPhase.fromPars(item.label, item.scale)
+            if len(scale) > 0:
+                for idx, item in enumerate(calculator_experiment.phase.item[0:]):
+                    experiment['phase'][item.label] = ExperimentPhase.fromPars(item.label, scale[idx].value)
                     experiment['phase'][item.label]['scale']['mapping'] = mapping_exp + '.phase.scale[{}]'.format(idx)
                     experiment['phase'][item.label]['scale'].refine = scale[idx].refinement
                     experiment['phase'][item.label]['scale']['store']['hide'] = scale[idx].constraint_flag
+                    experiment['phase'][item.label]['scale']['store']['error'] = scale[idx].sigma
                     experiment['phase'][item.label]['name'] = item.label
             experiment['wavelength']['mapping'] = mapping_exp + '.setup.wavelength'
             experiment['offset']['mapping'] = mapping_exp + '.setup.offset_ttheta'
