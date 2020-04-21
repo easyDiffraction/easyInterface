@@ -972,6 +972,8 @@ class CryspyCalculator:
         """Set all the cryspy parameters from project dictionary"""
         self.setPhases(phases)
         self.setExperiments(experiments)
+        cif = self._cryspy_obj.to_cif()
+        self._cryspy_obj = RhoChi().from_cif(cif)
 
     def asCifDict(self) -> dict:
         """..."""
@@ -1079,14 +1081,14 @@ class CryspyCalculator:
                    ['length_a', 'length_b', 'length_c', 'angle_alpha', 'angle_beta', 'angle_gamma'])
 
         spg = dict()
-        spg['name_hm_alt'] = phase['spacegroup']['space_group_name_HM_alt'].value
+        # spg['name_hm_alt'] = phase['spacegroup']['space_group_name_HM_alt'].value
         spg['it_number'] = phase['spacegroup']['space_group_IT_number'].value
         spg['it_coordinate_system_code'] = phase['spacegroup']['origin_choice'].value
-        spg['crystal_system'] = phase['spacegroup']['crystal_system'].value
+        # spg['crystal_system'] = phase['spacegroup']['crystal_system'].value
         d['space_group'] = cpSpaceGroup(**spg)
         convRefine(d['space_group'], phase['spacegroup'],
-                   ['crystal_system', 'name_hm_alt', 'it_number', 'it_coordinate_system_code'],
-                   ['crystal_system', 'space_group_name_HM_alt', 'space_group_IT_number', 'origin_choice'])
+                   ['it_coordinate_system_code', 'it_number'],
+                   ['origin_choice', 'space_group_IT_number'])
 
         this_atoms = []
         this_adp = []
