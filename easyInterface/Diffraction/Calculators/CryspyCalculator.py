@@ -69,6 +69,8 @@ class CryspyCalculator:
 
         self._log.debug('----> Start')
         self._log.info('Creating cryspy object')
+        if not self._main_rcif_path:
+            return RhoChi()
         try:
             phase_segment = self._parseSegment(PHASE_SEGMENT)
         except TypeError:
