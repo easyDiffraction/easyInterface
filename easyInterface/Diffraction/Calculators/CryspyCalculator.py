@@ -428,7 +428,8 @@ class CryspyCalculator:
         if self._cryspy_obj.experiments is not None:
             exp_str = ''
             for experiment in self._cryspy_obj.experiments:
-                exp_str += experiment.to_cif() + '\n'
+                exp_str += "data_" + experiment.data_name + "\n\n" + \
+                              experiment.params_to_cif() + "\n" + experiment.data_to_cif() + '\n'
             exp_block.take_from_string(exp_str)
         else:
             self._log.info('No experiments to save. creating empty file: %s', save_to)
