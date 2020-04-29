@@ -286,6 +286,27 @@ class CryspyCalculator:
                 # self._cryspy_obj.experiments[0].phase.items[0] = (new_phase_name)
         self._log.debug('<---- End')
 
+    def addPhaseDefinitionFromString(self, phase_rcif_content: str) -> NoReturn:
+        """
+        Set an experiment/s to be simulated from a string. Note that this will not have any crystallographic phases
+        associated with it.
+
+        :param phase_rcif_content: String containing the contents of a phase file (`.cif`)
+        """
+        self._log.debug('----> Start')
+        phase = Crystal().from_cif(phase_rcif_content)
+        self._log.warning(f"self._cryspy_obj.crystals: {self._cryspy_obj.crystals}")
+        if phase is None:
+            self._log.error('Phase cif data is malformed')
+        if self._cryspy_obj.crystals is None:
+            self._cryspy_obj.crystals = [phase]
+            #self._log.warning(f"self._cryspy_obj.crystals: {self._cryspy_obj.crystals}")
+        else:
+            self._cryspy_obj.crystals = [*self._cryspy_obj.crystals, phase]
+            self._log.warning(f"self._cryspy_obj.crystals: {self._cryspy_obj.crystals}")
+        self._phase_names = [phase.data_name for phase in self._cryspy_obj.crystals]
+        self._log.debug('<---- End')
+
     def addPhaseDefinition(self, phases_path: str) -> NoReturn:
         """
         Add new phases from a cif file to the list of existing crystal phases in the calculator.

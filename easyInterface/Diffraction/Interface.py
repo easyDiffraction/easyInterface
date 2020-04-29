@@ -171,6 +171,16 @@ class CalculatorInterface:
         self.updatePhases()
         self.updateExperiments()
 
+    def addPhaseDefinitionFromString(self, phase_cif_string: str) -> NoReturn:
+        """
+        Set a phase/s to be simulated from a string.
+
+        :param phase_cif_string: String containing the contents of a phase file (`.cif`)
+        """
+        self.calculator.addPhaseDefinitionFromString(phase_cif_string)
+        # This will re-create all local directories
+        self.updatePhases()
+
     def addPhaseDefinition(self, phase_path: str) -> NoReturn:
         """
         Add new phases from a cif file to the list of existing crystal phases in the calculator.
@@ -253,7 +263,7 @@ class CalculatorInterface:
         # This will re-create all local directories
         self.updateExperiments()
 
-    def setExperimentDefinitionFromString(self, exp_cif_string: str) -> NoReturn:
+    def addExperimentDefinitionFromString(self, exp_cif_string: str) -> NoReturn:
         """
         Set an experiment/s to be simulated from a string. Note that this will not have any crystallographic phases
         associated with it.
