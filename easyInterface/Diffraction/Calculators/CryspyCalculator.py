@@ -660,7 +660,7 @@ class CryspyCalculator:
                                                 calculator_phase.atom_site.fract_z,
                                                 calculator_phase.atom_site.scat_length_neutron):
             x_array, y_array, z_array, _ = calculator_phase.space_group.calc_xyz_mult(x.value, y.value, z.value)
-            scat_length_neutron_array = np.full_like(x_array, scat_length_neutron)
+            scat_length_neutron_array = np.full_like(x_array, scat_length_neutron, dtype=complex)
             atom_site_list[0] += x_array.tolist()
             atom_site_list[1] += y_array.tolist()
             atom_site_list[2] += z_array.tolist()
@@ -683,10 +683,13 @@ class CryspyCalculator:
                 atom_site_list[2].append(1.0)
                 atom_site_list[3].append(scat_length_neutron)
 
+        # convert complex numbers into strings without brackets to be recognizable in GUI
+        scat_length_neutron_str_array = [str(item)[1:-1] for item in atom_site_list[3]]
+
         phase.setItemByPath(['sites', 'fract_x'], atom_site_list[0])
         phase.setItemByPath(['sites', 'fract_y'], atom_site_list[1])
         phase.setItemByPath(['sites', 'fract_z'], atom_site_list[2])
-        phase.setItemByPath(['sites', 'scat_length_neutron'], atom_site_list[3])
+        phase.setItemByPath(['sites', 'scat_length_neutron'], scat_length_neutron_str_array)
 
     def _getPhasesSpaceGroup(self, phase_name: str) -> SpaceGroup:
         mapping_base = 'self._cryspy_obj.crystals'

@@ -169,7 +169,7 @@ class Atom(LoggedPathDict):
         return obj
 
     @classmethod
-    def fromPars(cls, atom_site_label: str, type_symbol: str, scat_length_neutron: float,
+    def fromPars(cls, atom_site_label: str, type_symbol: str, scat_length_neutron: complex,
                  fract_x: float, fract_y: float, fract_z: float, occupancy: float, adp_type: str,
                  U_iso_or_equiv: float, ADp: list = None, MSp: list = None) -> 'Atom':
         """
