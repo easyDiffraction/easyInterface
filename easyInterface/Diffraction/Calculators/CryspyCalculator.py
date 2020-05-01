@@ -699,15 +699,15 @@ class CryspyCalculator:
         mapping_phase = mapping_base + '[{}]'.format(i)
         # Space group
         space_group = self._createProjItemFromObj(SpaceGroup.fromPars,
-                                                  ['crystal_system', 'space_group_name_HM_alt',
+                                                  ['crystal_system', 'space_group_name_HM_ref',
                                                    'space_group_IT_number', 'origin_choice'],
                                                   [calculator_phase.space_group.crystal_system,
-                                                   calculator_phase.space_group.name_hm_alt,
+                                                   calculator_phase.space_group.name_hm_ref,
                                                    calculator_phase.space_group.it_number,
                                                    calculator_phase.space_group.it_coordinate_system_code])
 
         space_group['crystal_system']['mapping'] = mapping_phase + '.space_group.crystal_system'
-        space_group['space_group_name_HM_alt']['mapping'] = mapping_phase + '.space_group.name_hm_alt'
+        space_group['space_group_name_HM_ref']['mapping'] = mapping_phase + '.space_group.name_hm_ref'
         space_group['space_group_IT_number']['mapping'] = mapping_phase + '.space_group.it_number'
         space_group['origin_choice']['mapping'] = mapping_phase + '.space_group.it_coordinate_system_code'
         return space_group
@@ -1114,7 +1114,7 @@ class CryspyCalculator:
                    ['length_a', 'length_b', 'length_c', 'angle_alpha', 'angle_beta', 'angle_gamma'])
 
         spg = dict()
-        # spg['name_hm_alt'] = phase['spacegroup']['space_group_name_HM_alt'].value
+        # spg['name_hm_ref'] = phase['spacegroup']['space_group_name_HM_ref'].value
         spg['it_number'] = phase['spacegroup']['space_group_IT_number'].value
         spg['it_coordinate_system_code'] = phase['spacegroup']['origin_choice'].value
         # spg['crystal_system'] = phase['spacegroup']['crystal_system'].value
