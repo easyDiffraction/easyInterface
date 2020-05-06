@@ -439,9 +439,23 @@ class CalculatorInterface:
         else:
             raise KeyError
 
-    def getExperimentFromCif(self, cif_string) -> Experiment:
+    def getExperimentFromCif(self, cif_string: str) -> Experiment:
+        """
+        Create an experiment object from a cif string
+        :param cif_string: cif formatted string to be interpreted
+        :returns: Experiment object
+        """
         new_experiemnt = self.calculator.getExperimentFromCif(cif_string)
         return new_experiemnt
+
+    def getPhaseFromCif(self, cif_string: str) -> Phase:
+        """
+        Create an phase object from a cif string
+        :param cif_string: cif formatted string to be interpreted
+        :returns: Phase object
+        """
+        new_phase = self.calculator.getPhaseFromCif(cif_string)
+        return new_phase
 
     @time_it
     def updateCalculations(self) -> NoReturn:

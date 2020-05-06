@@ -531,8 +531,8 @@ class CryspyCalculator:
         # This is ~180ms per atom in phase. Limited by cryspy
         calculator_phase_name = calculator_phase.data_name
         # This group is < 1ms
-        space_group = self._getPhasesSpaceGroup(calculator_phase_name)
-        unit_cell = self._getPhaseCell(calculator_phase_name)
+        space_group = self._makePhasesSpaceGroup(calculator_phase)
+        unit_cell = self._makePhaseCell(calculator_phase)
         phase = Phase.fromPars(calculator_phase_name, space_group, unit_cell)
         # Atom sites ~ 6ms
         atoms = list(map(lambda x: self._makeAtom(calculator_phase, x), calculator_phase.atom_site.label))
@@ -690,9 +690,16 @@ class CryspyCalculator:
         phase.setItemByPath(['sites', 'scat_length_neutron'], scat_length_neutron_str_array)
 
     def _getPhasesSpaceGroup(self, phase_name: str) -> SpaceGroup:
-        mapping_base = 'self._cryspy_obj.crystals'
         i = self._phase_names.index(phase_name)
         calculator_phase = self._cryspy_obj.crystals[i]
+        space_group = self._makePhasesSpaceGroup(calculator_phase, i)
+        return space_group
+
+    def _makePhasesSpaceGroup(self, calculator_phase: Crystal, index=None) -> SpaceGroup:
+        mapping_base = 'self._cryspy_obj.crystals'
+        i = 0
+        if index is not None:
+            i = self._phase_names.index(calculator_phase.data_name)
         # logging.info(calculator_phase_name)
         mapping_phase = mapping_base + '[{}]'.format(i)
         # Space group
@@ -710,10 +717,11 @@ class CryspyCalculator:
         space_group['origin_choice']['mapping'] = mapping_phase + '.space_group.it_coordinate_system_code'
         return space_group
 
-    def _getPhaseCell(self, phase_name: str) -> Cell:
+    def _makePhaseCell(self, calculator_phase: Crystal, index=None) -> Cell:
         mapping_base = 'self._cryspy_obj.crystals'
-        i = self._phase_names.index(phase_name)
-        calculator_phase = self._cryspy_obj.crystals[i]
+        i = 0
+        if index is not None:
+            i = self._phase_names.index(calculator_phase.data_name)
         # logging.info(calculator_phase_name)
         mapping_phase = mapping_base + '[{}]'.format(i)
         unit_cell = self._createProjItemFromObj(Cell.fromPars, ['length_a', 'length_b', 'length_c',
@@ -731,10 +739,21 @@ class CryspyCalculator:
         unit_cell['angle_gamma']['mapping'] = mapping_phase + '.cell.angle_gamma'
         return unit_cell
 
+    def _getPhaseCell(self, phase_name: str) -> Cell:
+        i = self._phase_names.index(phase_name)
+        calculator_phase = self._cryspy_obj.crystals[i]
+        unit_cell = self._makePhaseCell(calculator_phase, i)
+        return unit_cell
+
     def getExperimentFromCif(self, cif_string) -> Experiment:
         cryspy_experiment = Pd.from_cif(cif_string)
         new_exp = self._makeExperiment(cryspy_experiment)
         return new_exp
+
+    def getPhaseFromCif(self, cif_string) -> Phase:
+        cryspy_phase = Crystal.from_cif(cif_string)
+        new_phase = self._makePhase(cryspy_phase)
+        return new_phase
 
     @time_it
     def getExperiments(self) -> Experiments:
