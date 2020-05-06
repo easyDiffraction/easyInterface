@@ -479,7 +479,9 @@ class UndoableDict(PathDict):
         :param item_list: the value to be updated
         :return: None
         """
-        self.startBulkUpdate(text)
+        if text != 'Bulk update':
+            self.startBulkUpdate(text)
         for key, value in zip(key_list, item_list):
             self.setItemByPath(key, value)
-        self.endBulkUpdate()
+        if text != 'Bulk update':
+            self.endBulkUpdate()
