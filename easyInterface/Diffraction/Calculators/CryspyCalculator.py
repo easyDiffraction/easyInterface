@@ -21,8 +21,6 @@ from cryspy.magneticcif.cl_atom_site_susceptibility import AtomSiteSusceptibilit
 # Imports needed to create a cryspyObj
 from cryspy.scripts.cl_rhochi import RhoChi
 from cryspy.symcif.cl_space_group import SpaceGroup as cpSpaceGroup
-
-from easyInterface import logger as logging
 from easyInterface.Diffraction.DataClasses.DataObj.Calculation import *
 from easyInterface.Diffraction.DataClasses.DataObj.Experiment import *
 from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import *
@@ -733,6 +731,11 @@ class CryspyCalculator:
         unit_cell['angle_gamma']['mapping'] = mapping_phase + '.cell.angle_gamma'
         return unit_cell
 
+    def getExperimentFromCif(self, cif_string) -> Experiment:
+        cryspy_experiment = Pd.from_cif(cif_string)
+        new_exp = self._makeExperiment(cryspy_experiment)
+        return new_exp
+
     @time_it
     def getExperiments(self) -> Experiments:
         """
@@ -740,148 +743,11 @@ class CryspyCalculator:
         """
         experiments = []
 
-        mapping_base = 'self._cryspy_obj.experiments'
-
         if self._cryspy_obj.experiments is None:
             return Experiments({})
 
         for i, calculator_experiment in enumerate(self._cryspy_obj.experiments):
-            calculator_experiment_name = calculator_experiment.data_name
-
-            mapping_exp = mapping_base + '[{}]'.format(i)
-
-            # Experimental setup
-            calculator_setup = calculator_experiment.setup
-            wavelength = calculator_setup.wavelength
-            offset = calculator_setup.offset_ttheta
-
-            is_polarised = hasattr(calculator_setup, 'field')
-            field = None
-            if is_polarised:
-                field = calculator_setup.field
-                chi2 = {'sum': True, 'diff': False, 'up': False, 'down': False}
-                rad = {'polarization': 0, 'efficiency': 1}
-                for obj in calculator_experiment.optional_objs:
-                    if isinstance(obj, Chi2):
-                        for key in chi2.keys():
-                            chi2[key] = getattr(obj, key)
-                    elif isinstance(obj, DiffrnRadiation):
-                        for key in rad.keys():
-                            rad[key] = getattr(obj, key)
-            # Scale
-            scale = calculator_experiment.phase.scale
-
-            # Background
-            calculator_background = calculator_experiment.background
-            backgrounds = []
-            for ii, (ttheta, intensity) in enumerate(
-                    zip(calculator_background.ttheta, calculator_background.intensity)):
-                background = self._createProjItemFromObj(Background.fromPars, ['ttheta', 'intensity'],
-                                                         [ttheta, intensity])
-                background['intensity']['mapping'] = mapping_exp + '.background.intensity[{}]'.format(ii)
-                backgrounds.append(background)
-            backgrounds = Backgrounds(backgrounds)
-
-            # Instrument resolution
-            calculator_resolution = calculator_experiment.resolution
-            resolution = self._createProjItemFromObj(Resolution.fromPars,
-                                                     ['u', 'v', 'w', 'x', 'y'],
-                                                     [calculator_resolution.u,
-                                                      calculator_resolution.v,
-                                                      calculator_resolution.w,
-                                                      calculator_resolution.x,
-                                                      calculator_resolution.y])
-            resolution['u']['mapping'] = mapping_exp + '.resolution.u'
-            resolution['v']['mapping'] = mapping_exp + '.resolution.v'
-            resolution['w']['mapping'] = mapping_exp + '.resolution.w'
-            resolution['x']['mapping'] = mapping_exp + '.resolution.x'
-            resolution['y']['mapping'] = mapping_exp + '.resolution.y'
-
-            # Measured data points
-            x_obs = np.array(calculator_experiment.meas.ttheta).tolist()
-            y_obs_up = None
-            sy_obs_up = None
-            y_obs_diff = None
-            sy_obs_diff = None
-            y_obs_down = None
-            sy_obs_down = None
-            y_obs = None
-            sy_obs = None
-            if calculator_experiment.meas.intensity[0] is not None:
-                y_obs = np.array(calculator_experiment.meas.intensity).tolist()
-                sy_obs = np.array(calculator_experiment.meas.intensity_sigma).tolist()
-            elif calculator_experiment.meas.intensity_up[0] is not None:
-                y_obs_up = np.array(calculator_experiment.meas.intensity_up)
-                sy_obs_up = np.array(calculator_experiment.meas.intensity_up_sigma).tolist()
-                y_obs_down = np.array(calculator_experiment.meas.intensity_down)
-                sy_obs_down = np.array(calculator_experiment.meas.intensity_down_sigma).tolist()
-                y_obs = (y_obs_up + y_obs_down).tolist()
-                y_obs_diff = (y_obs_up - y_obs_down).tolist()
-                sy_obs_diff = np.sqrt(np.square(sy_obs_up) + np.square(sy_obs_down)).tolist()
-                y_obs_up = y_obs_up.tolist()
-                y_obs_down = y_obs_down.tolist()
-                sy_obs = np.sqrt(np.square(sy_obs_up) + np.square(sy_obs_down)).tolist()
-
-            data = MeasuredPattern(x_obs, y_obs, sy_obs, y_obs_diff, sy_obs_diff, y_obs_up, sy_obs_up, y_obs_down,
-                                   sy_obs_down)
-
-            experiment = self._createProjItemFromObj(Experiment.fromPars,
-                                                     ['name', 'wavelength', 'offset', 'phase',
-                                                      'background', 'resolution', 'measured_pattern', 'field'],
-                                                     [calculator_experiment_name, wavelength, offset, scale[0],
-                                                      backgrounds, resolution, data, field])
-
-            if data.isPolarised:
-                options = ['sum', 'diff']
-                experiment['chi2'].set_object(calculator_experiment.chi2)
-                for option in options:
-                    if getattr(calculator_experiment.chi2, option):
-                        setattr(experiment['chi2'], option, True)
-                experiment['polarization'][
-                    'polarization'].value = calculator_experiment.diffrn_radiation.polarization.value
-                experiment['polarization']['polarization']['store']['error'] = calculator_experiment.diffrn_radiation.polarization.sigma
-
-                experiment['polarization']['polarization'].refine = calculator_experiment.diffrn_radiation.polarization.refinement
-                experiment['polarization']['polarization']['store']['hide'] = False
-                experiment['polarization']['polarization']['mapping'] = mapping_exp + '.diffrn_radiation.polarization'
-                experiment['polarization']['efficiency'].value = calculator_experiment.diffrn_radiation.efficiency.value
-                experiment['polarization']['efficiency'].refine = calculator_experiment.diffrn_radiation.efficiency.refinement
-                experiment['polarization']['efficiency']['store']['error'] = calculator_experiment.diffrn_radiation.efficiency.sigma
-                experiment['polarization']['efficiency']['store']['hide'] = False
-                experiment['polarization']['efficiency']['mapping'] = mapping_exp + '.diffrn_radiation.efficiency'
-
-                # updateMinMax method is called only when polarization object is created in
-                # Experiment.py (Line 430): polarization=Polarization.default(). The default values
-                # of polarization.polarization and polarization.efficiency = 1.0 at that moment, so
-                # min and max are defined as 0.8 and 1.2, respectively.
-                # Now, we need to reset min and max and call updateMinMax() again!
-                experiment['polarization']['polarization'].min = -np.Inf
-                experiment['polarization']['polarization'].max = np.Inf
-                experiment['polarization']['polarization'].updateMinMax()
-                experiment['polarization']['efficiency'].min = -np.Inf
-                experiment['polarization']['efficiency'].max = np.Inf
-                experiment['polarization']['efficiency'].updateMinMax()
-
-                # Fix up phase scale, but it is a terrible way of doing things.....
-            phase_label = calculator_experiment.phase.label[0]
-            experiment['phase'][phase_label] = experiment['phase'][calculator_experiment_name]
-            experiment['phase'][phase_label]['scale'].refine = scale[0].refinement
-            experiment['phase'][phase_label]['scale']['store']['hide'] = scale[0].constraint_flag
-            experiment['phase'][phase_label]['name'] = phase_label
-            experiment['phase'][phase_label]['scale']['mapping'] = mapping_exp + '.phase.scale[0]'
-            del experiment['phase'][calculator_experiment_name]
-            if len(scale) > 0:
-                for idx, item in enumerate(calculator_experiment.phase.item[0:]):
-                    experiment['phase'][item.label] = ExperimentPhase.fromPars(item.label, scale[idx].value)
-                    experiment['phase'][item.label]['scale']['mapping'] = mapping_exp + '.phase.scale[{}]'.format(idx)
-                    experiment['phase'][item.label]['scale'].refine = scale[idx].refinement
-                    experiment['phase'][item.label]['scale']['store']['hide'] = scale[idx].constraint_flag
-                    experiment['phase'][item.label]['scale']['store']['error'] = scale[idx].sigma
-                    experiment['phase'][item.label]['name'] = item.label
-            experiment['wavelength']['mapping'] = mapping_exp + '.setup.wavelength'
-            experiment['offset']['mapping'] = mapping_exp + '.setup.offset_ttheta'
-            experiment['field']['mapping'] = mapping_exp + '.setup.field'
-
+            experiment = self._makeExperiment(calculator_experiment, i)
             experiments.append(experiment)
 
         # logging.info(experiments)
@@ -1278,3 +1144,147 @@ class CryspyCalculator:
         # THIS IS A HACK AS CRYSPY IS SGSHRGFHGHRTGYHT
         exp_phases = [item[0] for item in phases.items]
         return exp_phases
+
+    def _makeExperiment(self, calculator_experiment, i=0) -> Experiment:
+
+        mapping_base = 'self._cryspy_obj.experiments'
+        calculator_experiment_name = calculator_experiment.data_name
+        mapping_exp = mapping_base + '[{}]'.format(i)
+
+        # Experimental setup
+        calculator_setup = calculator_experiment.setup
+        wavelength = calculator_setup.wavelength
+        offset = calculator_setup.offset_ttheta
+
+        is_polarised = hasattr(calculator_setup, 'field')
+        field = None
+        if is_polarised:
+            field = calculator_setup.field
+            chi2 = {'sum': True, 'diff': False, 'up': False, 'down': False}
+            rad = {'polarization': 0, 'efficiency': 1}
+            for obj in calculator_experiment.optional_objs:
+                if isinstance(obj, Chi2):
+                    for key in chi2.keys():
+                        chi2[key] = getattr(obj, key)
+                elif isinstance(obj, DiffrnRadiation):
+                    for key in rad.keys():
+                        rad[key] = getattr(obj, key)
+        # Scale
+        scale = calculator_experiment.phase.scale
+
+        # Background
+        calculator_background = calculator_experiment.background
+        backgrounds = []
+        for ii, (ttheta, intensity) in enumerate(
+                zip(calculator_background.ttheta, calculator_background.intensity)):
+            background = self._createProjItemFromObj(Background.fromPars, ['ttheta', 'intensity'],
+                                                     [ttheta, intensity])
+            background['intensity']['mapping'] = mapping_exp + '.background.intensity[{}]'.format(ii)
+            backgrounds.append(background)
+        backgrounds = Backgrounds(backgrounds)
+
+        # Instrument resolution
+        calculator_resolution = calculator_experiment.resolution
+        resolution = self._createProjItemFromObj(Resolution.fromPars,
+                                                 ['u', 'v', 'w', 'x', 'y'],
+                                                 [calculator_resolution.u,
+                                                  calculator_resolution.v,
+                                                  calculator_resolution.w,
+                                                  calculator_resolution.x,
+                                                  calculator_resolution.y])
+        resolution['u']['mapping'] = mapping_exp + '.resolution.u'
+        resolution['v']['mapping'] = mapping_exp + '.resolution.v'
+        resolution['w']['mapping'] = mapping_exp + '.resolution.w'
+        resolution['x']['mapping'] = mapping_exp + '.resolution.x'
+        resolution['y']['mapping'] = mapping_exp + '.resolution.y'
+
+        # Measured data points
+        x_obs = np.array(calculator_experiment.meas.ttheta).tolist()
+        y_obs_up = None
+        sy_obs_up = None
+        y_obs_diff = None
+        sy_obs_diff = None
+        y_obs_down = None
+        sy_obs_down = None
+        y_obs = None
+        sy_obs = None
+        if calculator_experiment.meas.intensity[0] is not None:
+            y_obs = np.array(calculator_experiment.meas.intensity).tolist()
+            sy_obs = np.array(calculator_experiment.meas.intensity_sigma).tolist()
+        elif calculator_experiment.meas.intensity_up[0] is not None:
+            y_obs_up = np.array(calculator_experiment.meas.intensity_up)
+            sy_obs_up = np.array(calculator_experiment.meas.intensity_up_sigma).tolist()
+            y_obs_down = np.array(calculator_experiment.meas.intensity_down)
+            sy_obs_down = np.array(calculator_experiment.meas.intensity_down_sigma).tolist()
+            y_obs = (y_obs_up + y_obs_down).tolist()
+            y_obs_diff = (y_obs_up - y_obs_down).tolist()
+            sy_obs_diff = np.sqrt(np.square(sy_obs_up) + np.square(sy_obs_down)).tolist()
+            y_obs_up = y_obs_up.tolist()
+            y_obs_down = y_obs_down.tolist()
+            sy_obs = np.sqrt(np.square(sy_obs_up) + np.square(sy_obs_down)).tolist()
+
+        data = MeasuredPattern(x_obs, y_obs, sy_obs, y_obs_diff, sy_obs_diff, y_obs_up, sy_obs_up, y_obs_down,
+                               sy_obs_down)
+
+        experiment = self._createProjItemFromObj(Experiment.fromPars,
+                                                 ['name', 'wavelength', 'offset', 'phase',
+                                                  'background', 'resolution', 'measured_pattern', 'field'],
+                                                 [calculator_experiment_name, wavelength, offset, scale[0],
+                                                  backgrounds, resolution, data, field])
+
+        if data.isPolarised:
+            options = ['sum', 'diff']
+            experiment['chi2'].set_object(calculator_experiment.chi2)
+            for option in options:
+                if getattr(calculator_experiment.chi2, option):
+                    setattr(experiment['chi2'], option, True)
+            experiment['polarization'][
+                'polarization'].value = calculator_experiment.diffrn_radiation.polarization.value
+            experiment['polarization']['polarization']['store'][
+                'error'] = calculator_experiment.diffrn_radiation.polarization.sigma
+
+            experiment['polarization'][
+                'polarization'].refine = calculator_experiment.diffrn_radiation.polarization.refinement
+            experiment['polarization']['polarization']['store']['hide'] = False
+            experiment['polarization']['polarization']['mapping'] = mapping_exp + '.diffrn_radiation.polarization'
+            experiment['polarization']['efficiency'].value = calculator_experiment.diffrn_radiation.efficiency.value
+            experiment['polarization'][
+                'efficiency'].refine = calculator_experiment.diffrn_radiation.efficiency.refinement
+            experiment['polarization']['efficiency']['store'][
+                'error'] = calculator_experiment.diffrn_radiation.efficiency.sigma
+            experiment['polarization']['efficiency']['store']['hide'] = False
+            experiment['polarization']['efficiency']['mapping'] = mapping_exp + '.diffrn_radiation.efficiency'
+
+            # updateMinMax method is called only when polarization object is created in
+            # Experiment.py (Line 430): polarization=Polarization.default(). The default values
+            # of polarization.polarization and polarization.efficiency = 1.0 at that moment, so
+            # min and max are defined as 0.8 and 1.2, respectively.
+            # Now, we need to reset min and max and call updateMinMax() again!
+            experiment['polarization']['polarization'].min = -np.Inf
+            experiment['polarization']['polarization'].max = np.Inf
+            experiment['polarization']['polarization'].updateMinMax()
+            experiment['polarization']['efficiency'].min = -np.Inf
+            experiment['polarization']['efficiency'].max = np.Inf
+            experiment['polarization']['efficiency'].updateMinMax()
+
+            # Fix up phase scale, but it is a terrible way of doing things.....
+        phase_label = calculator_experiment.phase.label[0]
+        experiment['phase'][phase_label] = experiment['phase'][calculator_experiment_name]
+        experiment['phase'][phase_label]['scale'].refine = scale[0].refinement
+        experiment['phase'][phase_label]['scale']['store']['hide'] = scale[0].constraint_flag
+        experiment['phase'][phase_label]['name'] = phase_label
+        experiment['phase'][phase_label]['scale']['mapping'] = mapping_exp + '.phase.scale[0]'
+        del experiment['phase'][calculator_experiment_name]
+        if len(scale) > 0:
+            for idx, item in enumerate(calculator_experiment.phase.item[0:]):
+                experiment['phase'][item.label] = ExperimentPhase.fromPars(item.label, scale[idx].value)
+                experiment['phase'][item.label]['scale']['mapping'] = mapping_exp + '.phase.scale[{}]'.format(idx)
+                experiment['phase'][item.label]['scale'].refine = scale[idx].refinement
+                experiment['phase'][item.label]['scale']['store']['hide'] = scale[idx].constraint_flag
+                experiment['phase'][item.label]['scale']['store']['error'] = scale[idx].sigma
+                experiment['phase'][item.label]['name'] = item.label
+        experiment['wavelength']['mapping'] = mapping_exp + '.setup.wavelength'
+        experiment['offset']['mapping'] = mapping_exp + '.setup.offset_ttheta'
+        experiment['field']['mapping'] = mapping_exp + '.setup.field'
+
+        return experiment

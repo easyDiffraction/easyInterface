@@ -439,6 +439,10 @@ class CalculatorInterface:
         else:
             raise KeyError
 
+    def getExperimentFromCif(self, cif_string) -> Experiment:
+        new_experiemnt = self.calculator.getExperimentFromCif(cif_string)
+        return new_experiemnt
+
     @time_it
     def updateCalculations(self) -> NoReturn:
         """
