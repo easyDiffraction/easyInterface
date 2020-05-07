@@ -2,7 +2,7 @@
 #  Copyright (c) of the author (github.com/wardsimon)
 #  Created: 12/3/2020
 
-import os
+import os, re
 from typing import Tuple, Optional
 
 import cryspy
@@ -370,6 +370,18 @@ class CryspyCalculator:
                 self.disassociatePhaseFromExp(experiment.data_name, phase_name)
         self._log.debug('<---- End')
 
+    def blockToCif(self, block: 'pycifstar.global_.Global') -> str:
+        """
+        Returns a cleaned up data block as text string.
+
+        :param block: cif data block.
+        :return: cleaned up data block as text string.
+        """
+        text = str(block)
+        text = re.sub("global_\s+", "", text)
+        text = re.sub("\n{3}", "\n\n", text)
+        return text
+
     def writeMainCif(self, save_dir: str, filename: str = 'main.cif', exp_filename: str = 'experiments.cif',
                      phase_filename: str = 'phases.cif') -> NoReturn:
         """
@@ -394,7 +406,8 @@ class CryspyCalculator:
         if self._cryspy_obj.experiments is not None:
             main_block["_experiments"].value = exp_filename
         try:
-            main_block.to_file(save_to)
+            with open(save_to, "w") as f:
+                f.write(self.blockToCif(main_block))
         except PermissionError:
             self._log.warning('No permission to write to %s', save_to)
         except AttributeError:
@@ -425,7 +438,8 @@ class CryspyCalculator:
         else:
             self._log.info('No experiments to save. creating empty file: %s', save_to)
         try:
-            phases_block.to_file(save_to)
+            with open(save_to, "w") as f:
+                f.write(self.blockToCif(phases_block))
         except PermissionError:
             self._log.warning('No permission to write to %s', save_to)
         self._log.debug('<---- End')
@@ -453,7 +467,8 @@ class CryspyCalculator:
         else:
             self._log.info('No experiments to save. creating empty file: %s', save_to)
         try:
-            exp_block.to_file(save_to)
+            with open(save_to, "w") as f:
+                f.write(self.blockToCif(exp_block))
         except PermissionError:
             self._log.warning('No permission to write to %s', save_to)
         self._log.debug('<---- End')
