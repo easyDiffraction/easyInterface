@@ -901,9 +901,10 @@ class CryspyCalculator:
         if isinstance(self._cryspy_obj, cryspy.scripts.cl_rhochi.RhoChi):
             if self._cryspy_obj.experiments is not None:
                 experiments = "data_" + self._cryspy_obj.experiments[0].data_name + "\n\n" + \
-                              self._cryspy_obj.experiments[0].params_to_cif() + "\n" + self._cryspy_obj.experiments[
-                                  0].data_to_cif()  # temporarily solution, as params_to_cif, data_to_cif and calc_to_cif are not implemented yet in cryspy 0.2.0
-                calculations = self._cryspy_obj.experiments[0].calc_to_cif()
+                              self._cryspy_obj.experiments[0].params_to_cif() + "\n" + \
+                              self._cryspy_obj.experiments[0].data_to_cif()
+                calculations = "data_" + self._cryspy_obj.experiments[0].data_name + "\n\n" + \
+                               self._cryspy_obj.experiments[0].calc_to_cif()
             if self._cryspy_obj.crystals is not None:
                 phases = self._cryspy_obj.crystals[0].to_cif()
         return {
