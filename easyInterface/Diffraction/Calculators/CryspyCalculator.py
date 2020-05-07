@@ -895,19 +895,23 @@ class CryspyCalculator:
 
     def asCifDict(self) -> dict:
         """..."""
+        main = {}
+        phases = {}
         experiments = {}
         calculations = {}
-        phases = {}
         if isinstance(self._cryspy_obj, cryspy.scripts.cl_rhochi.RhoChi):
+            if self._main_rcif is not None:
+                main = str(self._main_rcif).replace("global_ \n\n\n", "")
+            if self._cryspy_obj.crystals is not None:
+                phases = self._cryspy_obj.crystals[0].to_cif()
             if self._cryspy_obj.experiments is not None:
                 experiments = "data_" + self._cryspy_obj.experiments[0].data_name + "\n\n" + \
                               self._cryspy_obj.experiments[0].params_to_cif() + "\n" + \
                               self._cryspy_obj.experiments[0].data_to_cif()
                 calculations = "data_" + self._cryspy_obj.experiments[0].data_name + "\n\n" + \
                                self._cryspy_obj.experiments[0].calc_to_cif()
-            if self._cryspy_obj.crystals is not None:
-                phases = self._cryspy_obj.crystals[0].to_cif()
         return {
+            'main': main,
             'phases': phases,
             'experiments': experiments,
             'calculations': calculations
