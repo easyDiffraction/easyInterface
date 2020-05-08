@@ -55,8 +55,9 @@ if __name__ == '__main__':
 
     upgradePip()
 
-    installFromGit(owner='ikibalin', repo='cryspy', branch='transition-to-version-0.2', egg='cryspy_0.2.0_beta')
+    #installFromGit(owner='ikibalin', repo='cryspy', branch='transition-to-version-0.2', egg='cryspy_0.2.0_beta')
     install(
+        'cryspy',
         'dictdiffer',
         'asteval',
         'pytest',
