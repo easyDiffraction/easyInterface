@@ -394,20 +394,15 @@ class CryspyCalculator:
         :param save_dir: Directory to where the main cif file should be saved.
         """
         self._log.debug('----> Start')
-        self._log.info('Writing main cif file')
         if not isinstance(self._cryspy_obj, cryspy.scripts.cl_rhochi.RhoChi):
             self._log.warning('Cryspy object is malformed. Failure...')
             self._log.debug('<---- End')
             return
-        main_block = self._main_rcif
         save_to = os.path.join(save_dir, filename)
-        if self._cryspy_obj.crystals is not None:
-            main_block["_phases"].value = phase_filename
-        if self._cryspy_obj.experiments is not None:
-            main_block["_experiments"].value = exp_filename
         try:
+            self._log.info('Writing main cif file')
             with open(save_to, "w") as f:
-                f.write(self.blockToCif(main_block))
+                f.write(self.asCifDict()["main"])
         except PermissionError:
             self._log.warning('No permission to write to %s', save_to)
         except AttributeError:
@@ -423,23 +418,17 @@ class CryspyCalculator:
         :param save_dir: Directory to where the phases cif file should be saved.
         """
         self._log.debug('----> Start')
-        save_to = os.path.join(save_dir, phase_name)
         if not isinstance(self._cryspy_obj, cryspy.scripts.cl_rhochi.RhoChi):
             self._log.warning('Cryspy object is malformed. Failure...')
             self._log.debug('<---- End')
             return
-        phases_block = pycifstar.Global()
-        if self._cryspy_obj.crystals is not None:
-            self._log.info('Writing phase cif files')
-            phase_str = ''
-            for crystal in self._cryspy_obj.crystals:
-                phase_str += crystal.to_cif() + '\n'
-            phases_block.take_from_string(phase_str)
-        else:
+        save_to = os.path.join(save_dir, phase_name)
+        if self._cryspy_obj.crystals is None:
             self._log.info('No experiments to save. creating empty file: %s', save_to)
         try:
+            self._log.info('Writing phase cif files')
             with open(save_to, "w") as f:
-                f.write(self.blockToCif(phases_block))
+                f.write(self.asCifDict()["phases"])
         except PermissionError:
             self._log.warning('No permission to write to %s', save_to)
         self._log.debug('<---- End')
@@ -452,23 +441,18 @@ class CryspyCalculator:
         :param exp_name: What to call the experiments file.
         :param save_dir: Directory to where the experiment cif file should be saved.
         """
+        self._log.debug('----> Start')
         if not isinstance(self._cryspy_obj, cryspy.scripts.cl_rhochi.RhoChi):
             self._log.warning('Cryspy object is malformed. Failure...')
             self._log.debug('<---- End')
             return
         save_to = os.path.join(save_dir, exp_name)
-        exp_block = pycifstar.Global()
-        if self._cryspy_obj.experiments is not None:
-            exp_str = ''
-            for experiment in self._cryspy_obj.experiments:
-                exp_str += "data_" + experiment.data_name + "\n\n" + \
-                              experiment.params_to_cif() + "\n" + experiment.data_to_cif() + '\n'
-            exp_block.take_from_string(exp_str)
-        else:
+        if self._cryspy_obj.experiments is None:
             self._log.info('No experiments to save. creating empty file: %s', save_to)
         try:
+            self._log.info('Writing experiment cif files')
             with open(save_to, "w") as f:
-                f.write(self.blockToCif(exp_block))
+                f.write(self.asCifDict()["experiments"])
         except PermissionError:
             self._log.warning('No permission to write to %s', save_to)
         self._log.debug('<---- End')
@@ -909,28 +893,28 @@ class CryspyCalculator:
         self._cryspy_obj = RhoChi().from_cif(cif)
 
     def asCifDict(self) -> dict:
-        """..."""
-        main = {}
-        phases = {}
-        experiments = {}
-        calculations = {}
+        """Returns dict of all the CIFs"""
+        main = ""
+        phases = ""
+        experiments = ""
+        calculations = ""
         if isinstance(self._cryspy_obj, cryspy.scripts.cl_rhochi.RhoChi):
+            # main.cif
             if self._main_rcif is not None:
-                main = str(self._main_rcif).replace("global_ \n\n\n", "")
+                main = self.blockToCif(self._main_rcif)
+            # phases.cif
             if self._cryspy_obj.crystals is not None:
-                phases = self._cryspy_obj.crystals[0].to_cif()
+                for phase in self._cryspy_obj.crystals:
+                    phases += phase.to_cif() + '\n'
+            # experiments.cif & calculations.cif
             if self._cryspy_obj.experiments is not None:
-                experiments = "data_" + self._cryspy_obj.experiments[0].data_name + "\n\n" + \
-                              self._cryspy_obj.experiments[0].params_to_cif() + "\n" + \
-                              self._cryspy_obj.experiments[0].data_to_cif()
-                calculations = "data_" + self._cryspy_obj.experiments[0].data_name + "\n\n" + \
-                               self._cryspy_obj.experiments[0].calc_to_cif()
-        return {
-            'main': main,
-            'phases': phases,
-            'experiments': experiments,
-            'calculations': calculations
-        }
+                for experiment in self._cryspy_obj.experiments:
+                    experiments += "data_" + experiment.data_name + "\n\n" + \
+                                   experiment.params_to_cif() + "\n" + \
+                                   experiment.data_to_cif()
+                    calculations += "data_" + experiment.data_name + "\n\n" + \
+                                    experiment.calc_to_cif()
+        return { 'main': main, 'phases': phases, 'experiments': experiments, 'calculations': calculations }
 
     @time_it
     def refine(self) -> Tuple[dict, dict]:
