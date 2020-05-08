@@ -335,16 +335,22 @@ class CalculatorInterface:
         """
         self.calculator.writeExpCif(save_dir)
 
+    def writeCalcCif(self, save_dir: str) -> NoReturn:
+        """
+        Write the `calculations.cif` where all calculations in the calculator are saved to file.
+
+        :param save_dir: Directory to where the experiment cif file should be saved.
+        """
+        self.calculator.writeCalcCif(save_dir)
+
     def saveCifs(self, save_dir: str) -> NoReturn:
         """
-        Write project cif files (`main.cif`, `experiments.cif` and `phases.cif`) to a user supplied directory. This
-        contains all information needed to recreate the project dictionary.
+        Write project cif files (`main.cif`, `phases.cif`, `experiments.cif` and `calculations.cif`) to a user
+        supplied directory. This contains all information needed to recreate the project dictionary.
 
         :param save_dir: Directory to where the project cif files should be saved.
         """
-        self.writeMainCif(save_dir)
-        self.writePhaseCif(save_dir)
-        self.writeExpCif(save_dir)
+        self.calculator.saveCifs(save_dir)
 
     ###
     # Syncing between Calculator/Dict

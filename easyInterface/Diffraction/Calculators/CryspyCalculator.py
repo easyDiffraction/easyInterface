@@ -382,23 +382,29 @@ class CryspyCalculator:
         text = re.sub("\n{3}", "\n\n", text)
         return text
 
-    def writeMainCif(self, save_dir: str, filename: str = 'main.cif', exp_filename: str = 'experiments.cif',
-                     phase_filename: str = 'phases.cif') -> NoReturn:
+    def writeMainCif(self, save_dir: str, main_filename: str = 'main.cif', phase_filename: str = 'phases.cif',
+                     exp_filename: str = 'experiments.cif', calc_filename: str = 'calculations.cif') -> NoReturn:
         """
         Write the `main.cif` where links to the experiments and phases are stored and other generalised project
         information.
 
+        :param save_dir: Directory to where the main cif file should be saved.
+        :param main_filename:  What to call the main file.
         :param phase_filename: What to call the phases file.
         :param exp_filename: What to call the experiments file.
-        :param filename:  What to call the main file.
-        :param save_dir: Directory to where the main cif file should be saved.
+        :param calc_filename: What to call the calculations file.
         """
         self._log.debug('----> Start')
         if not isinstance(self._cryspy_obj, cryspy.scripts.cl_rhochi.RhoChi):
             self._log.warning('Cryspy object is malformed. Failure...')
             self._log.debug('<---- End')
             return
-        save_to = os.path.join(save_dir, filename)
+        if self._cryspy_obj.crystals is not None:
+            self._main_rcif["_phases"].value = phase_filename
+        if self._cryspy_obj.experiments is not None:
+            self._main_rcif["_experiments"].value = exp_filename
+            self._main_rcif["_calculations"].value = calc_filename
+        save_to = os.path.join(save_dir, main_filename)
         try:
             self._log.info('Writing main cif file')
             with open(save_to, "w") as f:
@@ -426,7 +432,7 @@ class CryspyCalculator:
         if self._cryspy_obj.crystals is None:
             self._log.info('No experiments to save. creating empty file: %s', save_to)
         try:
-            self._log.info('Writing phase cif files')
+            self._log.info('Writing phases cif file')
             with open(save_to, "w") as f:
                 f.write(self.asCifDict()["phases"])
         except PermissionError:
@@ -450,29 +456,54 @@ class CryspyCalculator:
         if self._cryspy_obj.experiments is None:
             self._log.info('No experiments to save. creating empty file: %s', save_to)
         try:
-            self._log.info('Writing experiment cif files')
+            self._log.info('Writing experiments cif file')
             with open(save_to, "w") as f:
                 f.write(self.asCifDict()["experiments"])
         except PermissionError:
             self._log.warning('No permission to write to %s', save_to)
         self._log.debug('<---- End')
 
-    def saveCifs(self, save_dir: str, filename: str = 'main.cif', exp_name: str = 'experiments.cif',
-                 phase_name: str = 'phases.cif') -> NoReturn:
+    def writeCalcCif(self, save_dir: str, calc_name: str = 'calculations.cif') -> NoReturn:
         """
-        Write project cif files (`main.cif`, `experiments.cif` and `phases.cif`) to a user supplied directory. This
-        contains all information needed to recreate the calculator object.
+        Write the `calculations.cif` where all calculations in the calculator are saved to file.
 
+        :param calc_name: What to call the calculations file.
+        :param save_dir: Directory to where the calculations cif file should be saved.
+        """
+        self._log.debug('----> Start')
+        if not isinstance(self._cryspy_obj, cryspy.scripts.cl_rhochi.RhoChi):
+            self._log.warning('Cryspy object is malformed. Failure...')
+            self._log.debug('<---- End')
+            return
+        save_to = os.path.join(save_dir, calc_name)
+        if self._cryspy_obj.experiments is None:
+            self._log.info('No calculations to save. creating empty file: %s', save_to)
+        try:
+            self._log.info('Writing calculations cif file')
+            with open(save_to, "w") as f:
+                f.write(self.asCifDict()["calculations"])
+        except PermissionError:
+            self._log.warning('No permission to write to %s', save_to)
+        self._log.debug('<---- End')
+
+    def saveCifs(self, save_dir: str, main_name: str = 'main.cif', phase_name: str = 'phases.cif',
+                 exp_name: str = 'experiments.cif', calc_name: str = 'calculations.cif') -> NoReturn:
+        """
+        Write project cif files (`main.cif`, `phases.cif`, `experiments.cif` and `calculations.cif`) to a user
+        supplied directory. This contains all information needed to recreate the project dictionary.
+
+        :param save_dir: Directory to where the main cif file should be saved.
+        :param main_name:  What to call the main file.
         :param phase_name: What to call the phases file.
         :param exp_name: What to call the experiments file.
-        :param filename:  What to call the main file.
-        :param save_dir: Directory to where the main cif file should be saved.
+        :param calc_name: What to call the calculations file.
         """
         self._log.debug('----> Start')
         try:
-            self.writeMainCif(save_dir, filename)
+            self.writeMainCif(save_dir, main_name)
             self.writePhaseCif(save_dir, phase_name)
             self.writeExpCif(save_dir, exp_name)
+            self.writeCalcCif(save_dir, calc_name)
             self._log.info('Cifs saved successfully')
         except PermissionError:
             self._log.warning('Unable to save cifs')
