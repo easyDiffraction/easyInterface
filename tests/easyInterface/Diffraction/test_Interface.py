@@ -288,7 +288,7 @@ def test_setExperimentsDictFromCryspyObj(cal):
     experiment_dict = cal.project_dict['experiments']
 
     assert len(experiment_dict) == 1
-    assert len(experiment_dict['pd']) == 9
+    assert len(experiment_dict['pd']) == 10
     # wavelength
     assert len(experiment_dict['pd']['wavelength']) == 5
     assert experiment_dict['pd']['wavelength'].value == 0.84
@@ -348,18 +348,18 @@ def test_setCalculationsDictFromCryspyObj(cal):
     # bragg_peaks
     assert len(calculation_dict['pd']['bragg_peaks']) == 1
     assert sum(calculation_dict['pd']['bragg_peaks']['Fe3O4']['h']) == 681
-    assert sum(calculation_dict['pd']['bragg_peaks']['Fe3O4']['ttheta']) == pytest.approx(5027.87268)
+    assert sum(calculation_dict['pd']['bragg_peaks']['Fe3O4']['ttheta']) == pytest.approx(4993.5717)
     # calculated_pattern
-    assert len(calculation_dict['pd']['calculated_pattern']) == 7
+    assert len(calculation_dict['pd']['calculated_pattern']) == 8
     assert len(calculation_dict['pd']['calculated_pattern']['x']) == 381
     assert sum(calculation_dict['pd']['calculated_pattern']['x']) == 16002.0
-    assert sum(calculation_dict['pd']['calculated_pattern']['y_diff_upper']) == pytest.approx(37056.915414296)
+    assert sum(calculation_dict['pd']['calculated_pattern']['y_diff_upper']) == pytest.approx(162647.08)
 
     # calculated data limits
     assert len(calculation_dict['pd']['limits']) == 2
     assert calculation_dict['pd']['limits']['main']['x_min'] == 4.0
     assert calculation_dict['pd']['limits']['main']['y_max'] == pytest.approx(6134.188081)
-    assert calculation_dict['pd']['limits']['difference']['y_min'] == pytest.approx(-4087.48283)
+    assert calculation_dict['pd']['limits']['difference']['y_min'] == pytest.approx(-1647.0144)
     assert calculation_dict['pd']['limits']['difference']['y_max'] == pytest.approx(4601.62523)
 
 
@@ -481,8 +481,8 @@ def test_setPhaseDefinition(cal):
     phase_ref = cal.getPhase('Fe3O4')
     assert phase_added['phasename'] == phase_ref['phasename']
     assert phase_added['spacegroup']['crystal_system'].value == phase_ref['spacegroup']['crystal_system'].value
-    assert phase_added['spacegroup']['space_group_name_HM_alt'].value == phase_ref['spacegroup'][
-        'space_group_name_HM_alt'].value
+    assert phase_added['spacegroup']['space_group_name_HM_ref'].value == phase_ref['spacegroup'][
+        'space_group_name_HM_ref'].value
     assert phase_added['spacegroup']['space_group_IT_number'].value == phase_ref['spacegroup'][
         'space_group_IT_number'].value
     assert phase_added['spacegroup']['origin_choice'].value == phase_ref['spacegroup']['origin_choice'].value
@@ -505,8 +505,8 @@ def test_addPhaseDefinition(cal):
     phase_ref = cal.getPhase('Fe3O4')
     assert phase_added['phasename'] == phase_ref['phasename']
     assert phase_added['spacegroup']['crystal_system'].value == phase_ref['spacegroup']['crystal_system'].value
-    assert phase_added['spacegroup']['space_group_name_HM_alt'].value == phase_ref['spacegroup'][
-        'space_group_name_HM_alt'].value
+    assert phase_added['spacegroup']['space_group_name_HM_ref'].value == phase_ref['spacegroup'][
+        'space_group_name_HM_ref'].value
     assert phase_added['spacegroup']['space_group_IT_number'].value == phase_ref['spacegroup'][
         'space_group_IT_number'].value
     assert phase_added['spacegroup']['origin_choice'].value == phase_ref['spacegroup']['origin_choice'].value

@@ -165,7 +165,7 @@ def test_get_phases(cal):
     assert len(phases) == len(cal._cryspy_obj.crystals)
     # Spacegroup
     assert phases.getItemByPath(['Fe3O4', 'spacegroup', 'origin_choice']).value == '2'
-    assert phases.getItemByPath(['Fe3O4', 'spacegroup', 'space_group_name_HM_alt']).value == 'F 41/d -3 2/m'
+    assert phases.getItemByPath(['Fe3O4', 'spacegroup', 'space_group_name_HM_ref']).value == 'F d -3 m'
     # Cell
     assert phases.getItemByPath(['Fe3O4', 'cell', 'length_a']).value == 8.36212
     assert phases.getItemByPath(['Fe3O4', 'cell', 'length_a']).value == phases.getItemByPath(
@@ -251,7 +251,7 @@ def test_set_experiments(cal):
     cal.setExperiments(experiments)
     experiments = cal.getExperiments()
     assert len(experiments) == 1
-    assert experiments.getItemByPath(['pd', 'measured_pattern', 'y_obs'])[0] == 500
+    assert experiments.getItemByPath(['pd', 'measured_pattern', 'y_obs'])[0] == pytest.approx(767.68, 1E-3)
 
 
 def test_set_obj_from_project_dicts(cal):
@@ -319,6 +319,7 @@ def test_cif_writers(cal):
             assert os.path.exists(os.path.join(path, 'phases.cif'))
             with open(os.path.join(path, 'phases.cif'), 'r') as new_reader:
                 new_data = new_reader.read()
+                print(new_data)
                 assert new_data.find('data_Fe3O4') != -1
                 assert new_data.find('_cell_length_b 8.56212') != -1
                 assert new_data.find('Fe3B Cani 3.041 3.041 3.041 0.0 0.0 0.0') != -1

@@ -1116,9 +1116,10 @@ class CryspyCalculator:
             bg.intensity.refinement = experiment['background'][key]['intensity'].refine
             return bg
 
+        bg_keys = [float(key) for key in experiment['background'].keys()]
+        bg_keys.sort()
         exp['background'] = PdBackgroundL(
-            list(map(lambda key: bg_mapper(key), experiment['background'].keys())
-                 )
+            list(map(lambda key: bg_mapper(str(key)), bg_keys))
         )
 
         # backgrounds = PdBackgroundL(backgrounds)
@@ -1235,6 +1236,7 @@ class CryspyCalculator:
                                                      [ttheta, intensity])
             background['intensity']['mapping'] = mapping_exp + '.background.intensity[{}]'.format(ii)
             backgrounds.append(background)
+        backgrounds.sort(key=lambda x: float(x['ttheta']))
         backgrounds = Backgrounds(backgrounds)
 
         # Instrument resolution
