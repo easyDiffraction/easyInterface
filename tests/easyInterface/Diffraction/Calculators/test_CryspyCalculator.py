@@ -319,7 +319,6 @@ def test_cif_writers(cal):
             assert os.path.exists(os.path.join(path, 'phases.cif'))
             with open(os.path.join(path, 'phases.cif'), 'r') as new_reader:
                 new_data = new_reader.read()
-                print(new_data)
                 assert new_data.find('data_Fe3O4') != -1
                 assert new_data.find('_cell_length_b 8.56212') != -1
                 assert new_data.find('Fe3B Cani 3.041 3.041 3.041 0.0 0.0 0.0') != -1

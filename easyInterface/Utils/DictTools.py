@@ -375,6 +375,8 @@ class PathDict(UserDict):
                         new_value = ()
                         modifier = self.setItemByPath
                     else:
+                        if path[-1] == '':
+                            path = path[:-1]
                         path.append(key)
                         new_value = ()
                         modifier = self.rmItemByPath

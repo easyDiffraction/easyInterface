@@ -228,12 +228,12 @@ def test_setExperimentDefinitionFromString():
     interface.setPhaseDefinition(phase_path)
     with open(exp_path, 'r') as file_reader:
         exp_content = file_reader.read()
-    interface.setExperimentDefinitionFromString(exp_content)
+    interface.addExperimentDefinitionFromString(exp_content)
 
     experiment_dict = interface.project_dict['experiments']
 
     assert len(experiment_dict) == 1
-    assert len(experiment_dict['pd']) == 9
+    assert len(experiment_dict['pd']) == 10
     # wavelength
     assert len(experiment_dict['pd']['wavelength']) == 5
     assert experiment_dict['pd']['wavelength'].value == 0.84
@@ -640,8 +640,8 @@ def test_cif_writers(cal):
                 new_data = new_reader.read()
                 assert new_data.find('data_Fe3O4') != -1
                 assert new_data.find('_cell_length_b 8.36212') != -1
-                assert new_data.find('Fe3B Fe3+ 0.5 0.5 0.5 1.0 Uiso d 0.0 16 ') != -1
-                assert new_data.find('Fe3A 2.0 1.0 ') != -1
+                assert new_data.find('Fe3B Fe3+ 0.5 0.5 0.5 1.0 Uiso 0.0 16 d') != -1
+                assert new_data.find('Fe3A 2.0 1.0') != -1
                 assert new_data.find('Fe3A Cani -3.468 -3.468 -3.468 0.0 0.0 0.0') != -1
         elif 'experiments' in option:
             assert os.path.exists(os.path.join(path, 'experiments.cif'))

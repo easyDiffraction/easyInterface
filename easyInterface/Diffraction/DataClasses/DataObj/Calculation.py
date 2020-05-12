@@ -73,9 +73,12 @@ class CalculatedPattern(LoggedPathDict):
     """
     Storage container for a calculated pattern
     """
-    def __init__(self, x: list, y_diff_lower: list, y_diff_upper: list,
-                 y_calc_up: list = [], y_calc_down: list = [], y_calc_bkg: list = []):
-        super().__init__(x=x, y_calc_sum=np.array(y_calc_up) + np.array(y_calc_down), y_calc_diff=np.array(y_calc_up) - np.array(y_calc_down),
+    def __init__(self, x: list, y_diff_lower: list, y_diff_upper: list, y_calc_up: list, y_calc_down: list = [], y_calc_bkg: list = []):
+        y_calc_down_temp = y_calc_down
+        if len(y_calc_down) == 0:
+            y_calc_down_temp = [0]*len(y_calc_up)
+
+        super().__init__(x=x, y_calc_sum=np.array(y_calc_up) + np.array(y_calc_down_temp), y_calc_diff=np.array(y_calc_up) - np.array(y_calc_down_temp),
                          y_calc_up=y_calc_up, y_calc_down=y_calc_down,
                          y_diff_lower=y_diff_lower, y_diff_upper=y_diff_upper,
                          y_calc_bkg=y_calc_bkg)
