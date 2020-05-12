@@ -368,7 +368,7 @@ class CalculatorInterface:
             self.project_dict.setItemByPath(['info', 'phase_ids'], list(phases.keys()))
             self.project_dict.endBulkUpdate()
         else:
-            k, v = self.project_dict['phases'].dictComparison(phases)
+            k, v, t = self.project_dict['phases'].dictComparison(phases)
             if not k:
                 return
 
@@ -413,7 +413,7 @@ class CalculatorInterface:
             self.project_dict.setItemByPath(['info', 'experiment_ids'], list(experiments.keys()))
             self.project_dict.endBulkUpdate()
         else:
-            k, v = self.project_dict['experiments'].dictComparison(experiments)
+            k, v, t = self.project_dict['experiments'].dictComparison(experiments)
 
             if not k:
                 return
@@ -507,7 +507,7 @@ class CalculatorInterface:
         if isinstance(phase, Phase):
             new_phase_name = phase['phasename']
             if new_phase_name in self.project_dict['phases'].keys():
-                k, v = self.project_dict.getItemByPath(['phases', new_phase_name]).dictComparison(phase)
+                k, v, t = self.project_dict.getItemByPath(['phases', new_phase_name]).dictComparison(phase)
                 k = [['phases', new_phase_name, *ik] for ik in k]
                 self._mappedBulkUpdate(self._mappedValueUpdater, k, v)
             else:
@@ -526,7 +526,7 @@ class CalculatorInterface:
         """
         if isinstance(phases, Phase):
             new_phase_name = phases['phasename']
-            k, v = self.project_dict.getItemByPath(['phases', new_phase_name]).dictComparison(phases)
+            k, v, t = self.project_dict.getItemByPath(['phases', new_phase_name]).dictComparison(phases)
             k = [['phases', new_phase_name, *ik] for ik in k]
         elif isinstance(phases, Phases):
             k = [['phases', item] for item in list(phases.keys())]
@@ -581,7 +581,7 @@ class CalculatorInterface:
         if isinstance(experiment, Experiment):
             new_phase_name = experiment['name']
             if new_phase_name in self.project_dict['experiments'].keys():
-                k, v = self.project_dict.getItemByPath(['experiments', new_phase_name]).dictComparison(experiment)
+                k, v, t = self.project_dict.getItemByPath(['experiments', new_phase_name]).dictComparison(experiment)
                 k = [['experiments', new_phase_name, *ik] for ik in k]
                 self._mappedBulkUpdate(self._mappedValueUpdater, k, v)
             else:

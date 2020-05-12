@@ -223,10 +223,6 @@ class _RemoveItemCommand(_EmptyCommand):
         self._dictionary._realDelItem(self._key)
 
 
-class RmItem:
-    pass
-
-
 class PathDict(UserDict):
     """
     The PathDict class extends a python dictionary with methods to access its nested
@@ -252,10 +248,10 @@ class PathDict(UserDict):
             if isinstance(key, list):
                 del self.getItemByPath(key[:-1])[key[-1]]
             else:
-                del self[key]
+                super().__delitem__(key)
+                # del self[key]
         except TypeError as ex:
             raise KeyError(str(ex))
-
     def _realSetItemByPath(self, keys: list, value: Any) -> NoReturn:
         """Actually sets the value in a nested object by the key sequence."""
         self.getItemByPath(keys[:-1])[keys[-1]] = value
@@ -313,7 +309,7 @@ class PathDict(UserDict):
                 base_dict[key] = item.asDict()
         return base_dict
 
-    def dictComparison(self, another_dict: Union['PathDict', dict], ignore=None) -> Tuple[list, list]:
+    def dictComparison(self, another_dict: Union['PathDict', dict], ignore=None) -> Tuple[list, list, list]:
         """
         Compare self to a dictionary or PathDict and return the update path and value
         :param ignore: What to ignore e.g. set(['a']))
@@ -324,6 +320,7 @@ class PathDict(UserDict):
         if not isinstance(another_dict, (PathDict, dict)):
             raise TypeError
 
+        type_list = []
         key_list = []
         value_list = []
 
@@ -331,38 +328,61 @@ class PathDict(UserDict):
 
         for item in items:
             type = item[0]
-            path = item[1]
+            node = item[1]
             changes = item[2]
-
-            if isinstance(path, str):
-                path = path.split(".")
-
-            if type == 'change':
-                if isinstance(path[-1], int):
+            if type == dictdiffer.CHANGE:
+                dest = dictdiffer.utils.dot_lookup(self, node, parent=True)
+                if isinstance(node, dictdiffer.string_types):
+                    path = node.split('.')
+                    last_node = path[-1]
                     path = path[:-1]
-                    if path in key_list:
-                        continue
-                    new_value = another_dict.getItemByPath(path)
                 else:
-                    new_value = changes[1]
-            elif type == 'add':
-                if not isinstance(changes[0][0], int):
-                    path.append(changes[0][0])
-                    new_value = changes[0][1]
-                else:
-                    if path in key_list:
-                        continue
-                    new_value = another_dict.getItemByPath(path)
-                if path[0] == '':
-                    del path[0]
-            elif type == 'remove':
-                path = [item[2][0][0]]
-                new_value = RmItem()
+                    path = node[:-1]
+                    last_node = node[-1]
+                if isinstance(dest, dictdiffer.LIST_TYPES):
+                    last_node = int(last_node)
+                path.append(last_node)
+                _, new_value = changes
+                modifier = self.setItemByPath
+                key_list.append(path)
+                value_list.append(new_value)
+                type_list.append(modifier)
+            elif type == dictdiffer.ADD:
+                for key, value in changes:
+                    dest = dictdiffer.utils.dot_lookup(self, node)
+                    path = node.split('.')
+                    if isinstance(dest, (dictdiffer.LIST_TYPES, dictdiffer.SET_TYPES)):
+                        if isinstance(dest, dictdiffer.LIST_TYPES):
+                            dest = deepcopy(dest)
+                            dest.insert(key, value)
+                        else:
+                            dest = value
+                        new_value = dest
+                        modifier = self.setItemByPath
+                    else:
+                        path.append(key)
+                        new_value = value
+                        modifier = self.setItemByPath
+                    key_list.append(path)
+                    value_list.append(new_value)
+                    type_list.append(modifier)
 
-            key_list.append(path)
-            value_list.append(new_value)
+            elif type == dictdiffer.REMOVE:
+                for key, value in changes:
+                    dest = dictdiffer.utils.dot_lookup(self, node)
+                    path = node.split('.')
+                    if isinstance(dest, dictdiffer.SET_TYPES):
+                        new_value = ()
+                        modifier = self.setItemByPath
+                    else:
+                        path.append(key)
+                        new_value = ()
+                        modifier = self.rmItemByPath
+                    key_list.append(path)
+                    value_list.append(new_value)
+                    type_list.append(modifier)
 
-        return key_list, value_list
+        return key_list, value_list, type_list
 
 
 class UndoableDict(PathDict):
@@ -382,13 +402,13 @@ class UndoableDict(PathDict):
         Calls the undoable command to override PathDict assignment to self[key]
         implementation and pushes this command on the stack.
         """
-        if isinstance(val, RmItem):
-            self.__stack.push(_RemoveItemCommand(self, key))
+        if key in self:
+            self.__stack.push(_SetItemCommand(self, key, val))
         else:
-            if key in self:
-                self.__stack.push(_SetItemCommand(self, key, val))
-            else:
-                self.__stack.push(_AddItemCommand(self, key, val))
+            self.__stack.push(_AddItemCommand(self, key, val))
+
+    def __delitem__(self, key):
+        self.__stack.push(_RemoveItemCommand(self, key))
 
     @property
     def macro_running(self) -> bool:
@@ -399,8 +419,10 @@ class UndoableDict(PathDict):
         Calls the undoable command to set a value in a nested object
         by key sequence and pushes this command on the stack.
         """
-        if isinstance(value, RmItem):
-            self.__stack.push(_RemoveItemCommand(self, keys))
+        # For backwards compatibility
+        if isinstance(value, tuple):
+            if len(value) == 0:
+                self.__stack.push(_RemoveItemCommand(self, keys))
         else:
             self.__stack.push(_SetItemCommand(self, keys, value))
 

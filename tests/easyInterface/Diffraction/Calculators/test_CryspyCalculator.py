@@ -323,7 +323,7 @@ def test_cif_writers(cal):
                 assert new_data.find('data_Fe3O4') != -1
                 assert new_data.find('_cell_length_b 8.56212') != -1
                 assert new_data.find('Fe3B Cani 3.041 3.041 3.041 0.0 0.0 0.0') != -1
-                assert new_data.find('Fe3A 2.0 1.0 ') != -1
+                assert new_data.find('Fe3A 2.0 1.0') != -1
                 assert new_data.find('Fe3A Fe3+ 0.125 0.125 0.125 1.0 Uiso 0.0') != -1
         elif 'experiments' in option:
             assert os.path.exists(os.path.join(path, 'experiments.cif'))

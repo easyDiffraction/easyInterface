@@ -6,6 +6,8 @@ def PathDictDerived(input_constructor, expected:list, expected_type: list, *args
     constructed = input_constructor(*args)
     assert isinstance(constructed, PathDict)
     keys = constructed.keys()
+    print(list(keys))
+    print(expected)
     assert len(keys) == len(expected)
 
 

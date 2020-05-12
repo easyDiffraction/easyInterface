@@ -103,7 +103,7 @@ class Calculation(LoggedPathDict):
     @classmethod
     def fromPars(cls, name: str, bragg_crystals: CrystalBraggPeaks,
                  y_calc_lower: list, y_calc_upper: list,
-                 tth: list, y_calc: list, y_diff_lower: list, y_diff_upper: list):
+                 tth: list, y_calc: list, y_diff_lower: list, y_diff_upper: list, y_calc_bkg: list):
         bragg_peaks = BraggPeaks(bragg_crystals)
         calculated_pattern = CalculatedPattern(tth, y_calc, y_diff_lower, y_diff_upper, y_calc_bkg)
         limits = Limits(y_calc_lower, y_calc_upper, y_diff_upper, y_diff_lower, x_calc=tth, y_calc=y_calc)

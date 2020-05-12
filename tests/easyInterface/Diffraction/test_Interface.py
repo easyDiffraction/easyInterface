@@ -360,7 +360,7 @@ def test_setCalculationsDictFromCryspyObj(cal):
     assert calculation_dict['pd']['limits']['main']['x_min'] == 4.0
     assert calculation_dict['pd']['limits']['main']['y_max'] == pytest.approx(6134.188081)
     assert calculation_dict['pd']['limits']['difference']['y_min'] == pytest.approx(-1647.0144)
-    assert calculation_dict['pd']['limits']['difference']['y_max'] == pytest.approx(4601.62523)
+    assert calculation_dict['pd']['limits']['difference']['y_max'] == pytest.approx(5185.9742)
 
 
 def test_phasesCount(cal):
@@ -429,10 +429,10 @@ def refineHelper(cal):
     assert pytest.approx(cal.project_dict['phases']['Fe3O4']['cell']['length_a'].value, 8.36212)
     r = cal.refine()
     rr = {'num_refined_parameters': 1,
-          'refinement_message': 'Optimization terminated successfully.',
-          'nfev': 27,
+          'refinement_message': 'Desired error not necessarily achieved due to precision loss.',
+          'nfev': 274,
           'nit': 5,
-          'njev': 9,
+          'njev': 89,
           }
     chi_ref = 3.3723747910939683
     chi_found = r['final_chi_sq']
