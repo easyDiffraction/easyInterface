@@ -199,7 +199,10 @@ class _SetItemCommand(_EmptyCommand):
 
     def undo(self) -> NoReturn:
         if self._new_value is not self._old_value:
-            self._dictionary._realSetItem(self._key, self._old_value)
+            if self._old_value is None:
+                self._dictionary._realDelItem(self._key)
+            else:
+                self._dictionary._realSetItem(self._key, self._old_value)
 
     def redo(self) -> NoReturn:
         if self._new_value is not self._old_value:
