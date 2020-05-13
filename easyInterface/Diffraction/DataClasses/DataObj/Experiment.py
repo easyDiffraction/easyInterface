@@ -204,6 +204,14 @@ class Backgrounds(ContainerObj):
     def __repr__(self):
         return '{} Backgrounds'.format(len(self))
 
+    def sort(self, reverse=False):
+        keys = list(self.keys())
+        keys.sort(reverse=reverse)
+        new_bg = []
+        for key in keys:
+            new_bg.append(self[key])
+        super().__init__(new_bg, Background)
+
 
 class MeasuredPattern(LoggedPathDict):
     """
