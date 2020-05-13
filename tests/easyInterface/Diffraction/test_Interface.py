@@ -429,20 +429,18 @@ def refineHelper(cal):
     assert cal.project_dict['phases']['Fe3O4']['cell']['length_a'].refine
     assert pytest.approx(cal.project_dict['phases']['Fe3O4']['cell']['length_a'].value, 8.36212)
     r = cal.refine()
-    if platform  == "darwin":
-        rr = {'num_refined_parameters': 1,
-              'refinement_message': 'Desired error not necessarily achieved due to precision loss.',
-              'nfev': 274,
-              'nit': 5,
-              'njev': 89,
-              }
-    else:
-        rr = {'num_refined_parameters': 1,
-              'refinement_message': 'Desired error not necessarily achieved due to precision loss.',
-              'nfev': 256,
-              'nit': 5,
-              'njev': 83,
-              }
+    rr = {'num_refined_parameters': 1,
+          'refinement_message': 'Desired error not necessarily achieved due to precision loss.',
+          'nfev': 256,
+          'nit': 5,
+          'njev': 83,
+          }
+    if platform == "darwin":
+        rr['nfev'] = 274
+        rr['njev'] = 89
+    elif platform == 'win32':
+        rr['nfev'] = 271
+        rr['njev'] = 88
     chi_ref = 3.3723747910939683
     chi_found = r['final_chi_sq']
     del r['final_chi_sq']
