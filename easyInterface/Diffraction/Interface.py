@@ -894,6 +894,8 @@ class CalculatorInterface:
         return self.calculator.getProjectName()
 
     def setProjectKeywords(self, value: list) -> NoReturn:
+        if isinstance(value, list):
+            value = '\'%s\'' % ', '.join(value)
         self.calculator.setProjectKeywords(value)
 
     def getProjectKeywords(self) -> list:
