@@ -217,7 +217,7 @@ class _RemoveItemCommand(_EmptyCommand):
         self.setText("Removing: {}".format(self._key))
 
     def undo(self) -> NoReturn:
-        self._dictionary._realSetItemByPath(self._key, self._old_value)
+        self._dictionary._realAddItemByPath(self._key, self._old_value)
 
     def redo(self) -> NoReturn:
         self._dictionary._realDelItem(self._key)
@@ -252,9 +252,18 @@ class PathDict(UserDict):
                 # del self[key]
         except TypeError as ex:
             raise KeyError(str(ex))
+
     def _realSetItemByPath(self, keys: list, value: Any) -> NoReturn:
         """Actually sets the value in a nested object by the key sequence."""
         self.getItemByPath(keys[:-1])[keys[-1]] = value
+
+    def _realAddItemByPath(self, keys: list, value: Any) -> NoReturn:
+        """Actually sets the value in a nested object by the key sequence."""
+        item = self.getItemByPath(keys[:-1])
+        if isinstance(item, dictdiffer.LIST_TYPES):
+            item.insert(keys[-1], value)
+        else:
+            item[keys[-1]] = value
 
     # Public methods
 
