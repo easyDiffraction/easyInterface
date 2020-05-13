@@ -850,6 +850,7 @@ class CalculatorInterface:
                 self.updateExperiments()
             self.setCalculatorFromProject()
             self.__last_updated = datetime.now()
+
         try:
             update_str = self.project_dict.getItemByPath(key)['mapping']
             try:
@@ -875,6 +876,7 @@ class CalculatorInterface:
                 self.updateExperiments()
             self.setCalculatorFromProject()
             self.__last_updated = datetime.now()
+
         try:
             update_str = self.project_dict.getItemByPath(key)['mapping']
             try:
@@ -883,3 +885,16 @@ class CalculatorInterface:
                 code_error(key)
         except (KeyError, TypeError):
             code_error(key)
+
+    # TODO this section needs to be modified. Main rcif needs to be moved to interface and this implementation removed
+    def setProjectName(self, value: str) -> NoReturn:
+        self.calculator.setProjectName(value)
+
+    def getProjectName(self) -> str:
+        return self.calculator.getProjectName()
+
+    def setProjectKeywords(self, value: list) -> NoReturn:
+        self.calculator.setProjectKeywords(value)
+
+    def getProjectKeywords(self) -> list:
+        return self.calculator.getProjectKeywords()

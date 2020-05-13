@@ -980,12 +980,26 @@ class CryspyCalculator:
         item = aeval(item_str)
         item.refinement = value
 
+    # TODO this section needs to be modified. Main rcif needs to be moved to interface and this implementation removed
     def getProjectName(self) -> str:
         try:
             name = self._main_rcif["name"].value
         except TypeError:
             name = ''
         return name
+
+    def setProjectName(self, value: str) -> NoReturn:
+        self._main_rcif["name"].value = value
+
+    def getProjectKeywords(self) -> str:
+        try:
+            name = self._main_rcif["keywords"].value
+        except TypeError:
+            name = ''
+        return name
+
+    def setProjectKeywords(self, value: str) -> NoReturn:
+        self._main_rcif["keywords"].value = value
 
     def getPhaseNames(self) -> list:
         return self._phase_names
