@@ -419,7 +419,7 @@ class CryspyCalculator:
 
     def writePhaseCif(self, save_dir: str, phase_name: str = DEFAULT_FILENAMES['phases']) -> NoReturn:
         """
-        Write the `phases.cif` where all phases in the calculator are saved to file. This cif file should be
+        Write the `samples.cif` where all phases in the calculator are saved to file. This cif file should be
         compatible with other crystallographic software.
 
         :param phase_name: What to call the phases file.
@@ -494,7 +494,7 @@ class CryspyCalculator:
                      exp_name: str = DEFAULT_FILENAMES['experiments'],
                      calc_name: str = DEFAULT_FILENAMES['calculations']) -> NoReturn:
         """
-        Write project cif files (`main.cif`, `phases.cif`, `experiments.cif` and `calculations.cif`) to a user
+        Write project cif files (`main.cif`, `samples.cif`, `experiments.cif` and `calculations.cif`) to a user
         supplied directory. This contains all information needed to recreate the project dictionary.
 
         :param save_dir: Directory to where the main cif file should be saved.
@@ -938,7 +938,7 @@ class CryspyCalculator:
             # main.cif
             if self._project_rcif is not None:
                 main = self.blockToCif(self._project_rcif)
-            # phases.cif
+            # samples.cif
             if self._cryspy_obj.crystals is not None:
                 for phase in self._cryspy_obj.crystals:
                     phases += phase.to_cif() + '\n'

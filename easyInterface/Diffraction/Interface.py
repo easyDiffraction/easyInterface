@@ -163,7 +163,7 @@ class CalculatorInterface:
         Example::
 
             interface = CalculatorInterface(calculator)
-            phase_path = '~/Experiments/phases.cif'
+            phase_path = '~/Experiments/samples.cif'
             interface.setPhaseDefinition(phase_path)
         """
         self.calculator.setPhaseDefinition(phase_path)
@@ -319,7 +319,7 @@ class CalculatorInterface:
 
     def writePhaseCif(self, save_dir: str) -> NoReturn:
         """
-        Write the `phases.cif` where all phases in the project dictionary are saved to file. This cif file should be
+        Write the `samples.cif` where all phases in the project dictionary are saved to file. This cif file should be
         compatible with other crystallographic software.
 
         :param save_dir: Directory to where the phases cif file should be saved.
@@ -345,7 +345,7 @@ class CalculatorInterface:
 
     def saveCifs(self, save_dir: str) -> NoReturn:
         """
-        Write project cif files (`main.cif`, `phases.cif`, `experiments.cif` and `calculations.cif`) to a user
+        Write project cif files (`main.cif`, `samples.cif`, `experiments.cif` and `calculations.cif`) to a user
         supplied directory. This contains all information needed to recreate the project dictionary.
 
         :param save_dir: Directory to where the project cif files should be saved.
