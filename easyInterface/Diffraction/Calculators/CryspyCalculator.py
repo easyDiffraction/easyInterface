@@ -43,11 +43,11 @@ PHASE_SEGMENT = "_phases"
 EXPERIMENT_SEGMENT = "_experiments"
 
 class CryspyCalculator:
-    def __init__(self, main_rcif_path: Union[str, type(None)] = None) -> None:
+    def __init__(self, project_rcif_path: Union[str, type(None)] = None) -> None:
         self._log = logging.getLogger(__class__.__module__)
         self._experiment_names = []
-        self._main_rcif_path = main_rcif_path
-        self._main_rcif = None
+        self._project_rcif_path = project_rcif_path
+        self._project_rcif = None
         self._phases_path = ""
         self._phase_names = []
         self._experiments_path = ""
@@ -66,7 +66,7 @@ class CryspyCalculator:
 
         self._log.debug('----> Start')
         self._log.info('Creating cryspy object')
-        if not self._main_rcif_path:
+        if not self._project_rcif_path:
             return RhoChi()
         try:
             phase_segment = self._parseSegment(PHASE_SEGMENT)
@@ -106,15 +106,15 @@ class CryspyCalculator:
         if segment not in (PHASE_SEGMENT, EXPERIMENT_SEGMENT):
             self._log.debug('segment not in phase or experiment')
             return ""
-        rcif_dir_name = os.path.dirname(self._main_rcif_path)
+        rcif_dir_name = os.path.dirname(self._project_rcif_path)
         try:
-            self._main_rcif = pycifstar.read_star_file(self._main_rcif_path)
+            self._project_rcif = pycifstar.read_star_file(self._project_rcif_path)
         except FileNotFoundError:
             self._log.warning('Main cif can not be found')
         rcif_content = ""
-        if segment in str(self._main_rcif):
+        if segment in str(self._project_rcif):
             self._log.debug('segment in main cif')
-            segment_rcif_path = os.path.join(rcif_dir_name, self._main_rcif[segment].value)
+            segment_rcif_path = os.path.join(rcif_dir_name, self._project_rcif[segment].value)
             if os.path.isfile(segment_rcif_path):
                 with open(segment_rcif_path, 'r') as f:
                     self._log.debug('Reading cif segment')
@@ -402,10 +402,10 @@ class CryspyCalculator:
             self._log.debug('<---- End')
             return
         if self._cryspy_obj.crystals is not None:
-            self._main_rcif["_phases"].value = phase_filename
+            self._project_rcif["_phases"].value = phase_filename
         if self._cryspy_obj.experiments is not None:
-            self._main_rcif["_experiments"].value = exp_filename
-            self._main_rcif["_calculations"].value = calc_filename
+            self._project_rcif["_experiments"].value = exp_filename
+            self._project_rcif["_calculations"].value = calc_filename
         save_to = os.path.join(save_dir, main_filename)
         try:
             self._log.info('Writing main cif file')
@@ -936,8 +936,8 @@ class CryspyCalculator:
         calculations = ""
         if isinstance(self._cryspy_obj, cryspy.scripts.cl_rhochi.RhoChi):
             # main.cif
-            if self._main_rcif is not None:
-                main = self.blockToCif(self._main_rcif)
+            if self._project_rcif is not None:
+                main = self.blockToCif(self._project_rcif)
             # phases.cif
             if self._cryspy_obj.crystals is not None:
                 for phase in self._cryspy_obj.crystals:
@@ -988,23 +988,23 @@ class CryspyCalculator:
     # TODO this section needs to be modified. Main rcif needs to be moved to interface and this implementation removed
     def getProjectName(self) -> str:
         try:
-            name = self._main_rcif["name"].value
+            name = self._project_rcif["name"].value
         except TypeError:
             name = ''
         return name
 
     def setProjectName(self, value: str) -> NoReturn:
-        self._main_rcif["name"].value = value
+        self._project_rcif["name"].value = value
 
     def getProjectKeywords(self) -> str:
         try:
-            name = self._main_rcif["keywords"].value
+            name = self._project_rcif["keywords"].value
         except TypeError:
             name = ''
         return name
 
     def setProjectKeywords(self, value: str) -> NoReturn:
-        self._main_rcif["keywords"].value = value
+        self._project_rcif["keywords"].value = value
 
     def getPhaseNames(self) -> list:
         return self._phase_names

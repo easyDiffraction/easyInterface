@@ -135,7 +135,7 @@ class CalculatorInterface:
         try:
             self.project_dict.setItemByPath(['info', 'modified_datetime'],
                                             datetime.fromtimestamp(
-                                                os.path.getmtime(self.calculator._main_rcif_path)).strftime(
+                                                os.path.getmtime(self.calculator._project_rcif_path)).strftime(
                                                 '%d %b %Y, %H:%M:%S'))
         except (TypeError, FileNotFoundError):
             self.project_dict.setItemByPath(['info', 'modified_datetime'], datetime.min)
