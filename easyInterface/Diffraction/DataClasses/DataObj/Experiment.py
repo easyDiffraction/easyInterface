@@ -54,7 +54,7 @@ INTENSITY_DETAILS = {
     }
 }
 
-POLAR_DETAILS = {
+POLARIZATION_DETAILS = {
     'polarization': {
         'header': '',
         'tooltip': '',
@@ -69,10 +69,12 @@ POLAR_DETAILS = {
     }
 }
 
+
 class Resolution(LoggedPathDict):
     """
     Data store for the resolution parameters
     """
+
     def __init__(self, u: Base, v: Base, w: Base, x: Base, y: Base):
         """
         Dictionary store for resolution parameters
@@ -143,10 +145,12 @@ class Resolution(LoggedPathDict):
         return 'u: {}, v: {}, w: {}, x: {}, y:{}'.format(self['u'].value, self['v'].value, self['w'].value,
                                                          self['x'].value, self['y'].value)
 
+
 class Background(LoggedPathDict):
     """
     Data store for the background data parameters
     """
+
     def __init__(self, ttheta: float, intensity: Base):
         """
         Background dictionary
@@ -192,6 +196,7 @@ class Backgrounds(ContainerObj):
     """
     Store for a collection of background points
     """
+
     def __init__(self, backgrounds: Union[Background, dict, list]):
         """
         Constructor for Background data points
@@ -217,6 +222,7 @@ class MeasuredPattern(LoggedPathDict):
     """
     Storage container for measured patterns
     """
+
     def __init__(self, x: list, y_obs: list, sy_obs: list,
                  y_obs_diff: Union[list, None] = None, sy_obs_diff: Union[list, None] = None,
                  y_obs_up: Union[list, None] = None, sy_obs_up: Union[list, None] = None,
@@ -234,7 +240,8 @@ class MeasuredPattern(LoggedPathDict):
         """
         # 1d polarised powder diffraction data
         # if y_obs_up is not None and sy_obs_up is not None and y_obs_down is not None and sy_obs_down is not None:
-        super().__init__(x=x, y_obs=y_obs, sy_obs=sy_obs, y_obs_diff=y_obs_diff, sy_obs_diff=sy_obs_diff, y_obs_up=y_obs_up, sy_obs_up=sy_obs_up,
+        super().__init__(x=x, y_obs=y_obs, sy_obs=sy_obs, y_obs_diff=y_obs_diff, sy_obs_diff=sy_obs_diff,
+                         y_obs_up=y_obs_up, sy_obs_up=sy_obs_up,
                          y_obs_down=y_obs_down, sy_obs_down=sy_obs_down)
         self._log = logging.getLogger(__class__.__module__)
         # # 1d unpolarised powder diffraction data
@@ -302,6 +309,7 @@ class ExperimentPhase(LoggedPathDict):
     """
     Storage container for the Experimental Phase details
     """
+
     def __init__(self, name: str, scale: Base):
         """
         Constructor for the Experimental phase container
@@ -345,6 +353,7 @@ class ExperimentPhases(ContainerObj):
     """
     Storage of multiple phase markers associated with experiments
     """
+
     def __init__(self, experiment_phases: Union[list, ExperimentPhase, dict]):
         """
         Constructor for holding multiple experiments
@@ -358,7 +367,7 @@ class ExperimentPhases(ContainerObj):
         return '{} Experimental phases'.format(len(self))
 
 
-class chi2(LoggedPathDict):
+class RefinementType(LoggedPathDict):
     _default = {'_sum': False, '_diff': False}
 
     def __init__(self):
@@ -388,28 +397,29 @@ class chi2(LoggedPathDict):
             self.object.diff = value
         self['_diff'] = value
 
+
 class Polarization(LoggedPathDict):
     def __init__(self, polarization: Base, efficiency: Base):
         super().__init__(polarization=polarization, efficiency=efficiency)
 
-        self.setItemByPath(['polarization', 'header'], POLAR_DETAILS['polarization']['header'])
-        self.setItemByPath(['polarization', 'tooltip'], POLAR_DETAILS['polarization']['tooltip'])
-        self.setItemByPath(['polarization', 'url'], POLAR_DETAILS['polarization']['url'])
+        self.setItemByPath(['polarization', 'header'], POLARIZATION_DETAILS['polarization']['header'])
+        self.setItemByPath(['polarization', 'tooltip'], POLARIZATION_DETAILS['polarization']['tooltip'])
+        self.setItemByPath(['polarization', 'url'], POLARIZATION_DETAILS['polarization']['url'])
 
-        self.setItemByPath(['efficiency', 'header'], POLAR_DETAILS['efficiency']['header'])
-        self.setItemByPath(['efficiency', 'tooltip'], POLAR_DETAILS['efficiency']['tooltip'])
-        self.setItemByPath(['efficiency', 'url'], POLAR_DETAILS['efficiency']['url'])
+        self.setItemByPath(['efficiency', 'header'], POLARIZATION_DETAILS['efficiency']['header'])
+        self.setItemByPath(['efficiency', 'tooltip'], POLARIZATION_DETAILS['efficiency']['tooltip'])
+        self.setItemByPath(['efficiency', 'url'], POLARIZATION_DETAILS['efficiency']['url'])
 
     @classmethod
     def default(cls):
-        polarization = Base(*POLAR_DETAILS['polarization']['default'])
-        efficiency = Base(*POLAR_DETAILS['efficiency']['default'])
+        polarization = Base(*POLARIZATION_DETAILS['polarization']['default'])
+        efficiency = Base(*POLARIZATION_DETAILS['efficiency']['default'])
         return cls(polarization, efficiency)
 
     @classmethod
     def fromPars(cls, polarization, efficiency):
-        polarization = Base(polarization, POLAR_DETAILS['polarization']['default'][1])
-        efficiency = Base(efficiency, POLAR_DETAILS['efficiency']['default'][1])
+        polarization = Base(polarization, POLARIZATION_DETAILS['polarization']['default'][1])
+        efficiency = Base(efficiency, POLARIZATION_DETAILS['efficiency']['default'][1])
         return cls(polarization, efficiency)
 
 
@@ -417,7 +427,9 @@ class Experiment(LoggedPathDict):
     """
     Experimental details data container
     """
-    def __init__(self, name: str, wavelength: Base, offset: Base, field: Base, phase: ExperimentPhases, background: Backgrounds,
+
+    def __init__(self, name: str, wavelength: Base, offset: Base, field: Base, phase: ExperimentPhases,
+                 background: Backgrounds,
                  resolution: Resolution, measured_pattern: MeasuredPattern):
         """
         Constructor for experimental data container
@@ -431,11 +443,13 @@ class Experiment(LoggedPathDict):
         :param measured_pattern: What was actually measured
         """
 
-        chi_2 = chi2()
-        chi_2.sum = True
+        refinement_type = RefinementType()
+        refinement_type.sum = True
 
-        super().__init__(name=name, wavelength=wavelength, offset=offset, field=field, phase=phase, background=background,
-                         resolution=resolution, measured_pattern=measured_pattern, chi2=chi_2, polarization=Polarization.default())
+        super().__init__(name=name, wavelength=wavelength, offset=offset, field=field, phase=phase,
+                         background=background,
+                         resolution=resolution, measured_pattern=measured_pattern, refinement_type=refinement_type,
+                         polarization=Polarization.default())
         self._log = logging.getLogger(__class__.__module__)
 
         self.setItemByPath(['wavelength', 'header'], EXPERIMENT_DETAILS['wavelength']['header'])
@@ -499,6 +513,7 @@ class Experiments(ContainerObj):
     """
     Container for multiple experiments
     """
+
     def __init__(self, experiments: Union[Experiment, dict, list]):
         """
         Constructor for holding multiple experiments

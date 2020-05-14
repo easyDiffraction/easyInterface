@@ -214,10 +214,10 @@ def test_exp_phase_from_pars():
 
 
 def genericTestExperiment(exp_constructor, *args):
-    expected = ['name', 'wavelength', 'offset', 'field', 'phase', 'background', 'resolution', 'measured_pattern', 'chi2',
+    expected = ['name', 'wavelength', 'offset', 'field', 'phase', 'background', 'resolution', 'measured_pattern', 'refinement_type',
      'polarization']
 
-    expected_type = [str, Base, Base, Base, ExperimentPhases, Backgrounds, Resolution, MeasuredPattern, chi2, Polarization]
+    expected_type = [str, Base, Base, Base, ExperimentPhases, Backgrounds, Resolution, MeasuredPattern, RefinementType, Polarization]
     PathDictDerived(exp_constructor, expected, expected_type, *args)
 
     exp = exp_constructor(*args)

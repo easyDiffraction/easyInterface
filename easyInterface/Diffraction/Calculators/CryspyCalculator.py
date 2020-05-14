@@ -26,7 +26,7 @@ from easyInterface.Diffraction.DataClasses.DataObj.Experiment import *
 from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import *
 from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import Base
 from easyInterface.Utils.Helpers import time_it
-
+from easyInterface.Diffraction import DEFAULT_FILENAMES
 # Version info
 cryspy_version = 'Undefined'
 try:
@@ -41,7 +41,6 @@ CALCULATOR_INFO = {
 
 PHASE_SEGMENT = "_phases"
 EXPERIMENT_SEGMENT = "_experiments"
-
 
 class CryspyCalculator:
     def __init__(self, main_rcif_path: Union[str, type(None)] = None) -> None:
@@ -382,8 +381,11 @@ class CryspyCalculator:
         text = re.sub("\n{3}", "\n\n", text)
         return text
 
-    def writeMainCif(self, save_dir: str, main_filename: str = 'main.cif', phase_filename: str = 'phases.cif',
-                     exp_filename: str = 'experiments.cif', calc_filename: str = 'calculations.cif') -> NoReturn:
+    def writeMainCif(self, save_dir: str,
+                     main_filename: str = DEFAULT_FILENAMES['project'],
+                     phase_filename: str = DEFAULT_FILENAMES['phases'],
+                     exp_filename: str = DEFAULT_FILENAMES['experiments'],
+                     calc_filename: str = DEFAULT_FILENAMES['calculations']) -> NoReturn:
         """
         Write the `main.cif` where links to the experiments and phases are stored and other generalised project
         information.
@@ -415,7 +417,7 @@ class CryspyCalculator:
             self._log.warning('No information stored in the object. Saving failed')
         self._log.debug('<---- End')
 
-    def writePhaseCif(self, save_dir: str, phase_name: str = 'phases.cif') -> NoReturn:
+    def writePhaseCif(self, save_dir: str, phase_name: str = DEFAULT_FILENAMES['phases']) -> NoReturn:
         """
         Write the `phases.cif` where all phases in the calculator are saved to file. This cif file should be
         compatible with other crystallographic software.
@@ -439,7 +441,7 @@ class CryspyCalculator:
             self._log.warning('No permission to write to %s', save_to)
         self._log.debug('<---- End')
 
-    def writeExpCif(self, save_dir: str, exp_name: str = 'experiments.cif') -> NoReturn:
+    def writeExpCif(self, save_dir: str, exp_name: str = DEFAULT_FILENAMES['experiments']) -> NoReturn:
         """
         Write the `experiments.cif` where all experiments in the calculator are saved to file. This includes the
         instrumental parameters and which phases are in the experiment/s
@@ -463,7 +465,7 @@ class CryspyCalculator:
             self._log.warning('No permission to write to %s', save_to)
         self._log.debug('<---- End')
 
-    def writeCalcCif(self, save_dir: str, calc_name: str = 'calculations.cif') -> NoReturn:
+    def writeCalcCif(self, save_dir: str, calc_name: str = DEFAULT_FILENAMES['calculations']) -> NoReturn:
         """
         Write the `calculations.cif` where all calculations in the calculator are saved to file.
 
@@ -486,8 +488,11 @@ class CryspyCalculator:
             self._log.warning('No permission to write to %s', save_to)
         self._log.debug('<---- End')
 
-    def saveCifs(self, save_dir: str, main_name: str = 'main.cif', phase_name: str = 'phases.cif',
-                 exp_name: str = 'experiments.cif', calc_name: str = 'calculations.cif') -> NoReturn:
+    def saveCifs(self, save_dir: str,
+                     main_name: str = DEFAULT_FILENAMES['project'],
+                     phase_name: str = DEFAULT_FILENAMES['phases'],
+                     exp_name: str = DEFAULT_FILENAMES['experiments'],
+                     calc_name: str = DEFAULT_FILENAMES['calculations']) -> NoReturn:
         """
         Write project cif files (`main.cif`, `phases.cif`, `experiments.cif` and `calculations.cif`) to a user
         supplied directory. This contains all information needed to recreate the project dictionary.
@@ -1162,7 +1167,7 @@ class CryspyCalculator:
                                                 experiment['measured_pattern']['sy_obs_up'],
                                                 experiment['measured_pattern']['y_obs_down'],
                                                 experiment['measured_pattern']['sy_obs_down']))))
-            exp['chi2'] = Chi2(sum=experiment['chi2'].sum, diff=experiment['chi2'].diff, up=False, down=False)
+            exp['chi2'] = Chi2(sum=experiment['refinement_type'].sum, diff=experiment['refinement_type'].diff, up=False, down=False)
             exp['diffrn_radiation'] = DiffrnRadiation(polarization=experiment['polarization']['polarization'].value,
                                                       efficiency=experiment['polarization']['efficiency'].value)
             exp['diffrn_radiation'].polarization.refinement = experiment['polarization']['polarization'].refine
@@ -1304,10 +1309,10 @@ class CryspyCalculator:
 
         if data.isPolarised:
             options = ['sum', 'diff']
-            experiment['chi2'].set_object(calculator_experiment.chi2)
+            experiment['refinement_type'].set_object(calculator_experiment.chi2)
             for option in options:
                 if getattr(calculator_experiment.chi2, option):
-                    setattr(experiment['chi2'], option, True)
+                    setattr(experiment['refinement_type'], option, True)
             experiment['polarization'][
                 'polarization'].value = calculator_experiment.diffrn_radiation.polarization.value
             experiment['polarization']['polarization']['store'][

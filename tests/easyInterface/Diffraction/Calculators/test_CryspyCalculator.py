@@ -8,10 +8,11 @@ from easyInterface import logger, logging
 logger.addSysOutput()
 logger.setLevel(logging.DEBUG)
 
+from easyInterface.Diffraction import DEFAULT_FILENAMES
 from easyInterface.Diffraction.Calculators import CryspyCalculator
 
 test_data = os.path.join("tests", "Data")
-file_path = os.path.join(test_data, 'main.cif')
+file_path = os.path.join(test_data, DEFAULT_FILENAMES['project'])
 
 
 @pytest.fixture
@@ -63,7 +64,7 @@ def test__parse_segment(cal):
     assert True
 
 def test_addExpDefinitionFromString(cal):
-    file = os.path.join(test_data, 'experiments.cif')
+    file = os.path.join(test_data, DEFAULT_FILENAMES['experiments'])
 
     with open(file, 'r') as file_reader:
         exp_str = file_reader.read()
@@ -72,7 +73,7 @@ def test_addExpDefinitionFromString(cal):
 
 
 def test_set_exps_definition(cal):
-    file = os.path.join(test_data, 'experiments.cif')
+    file = os.path.join(test_data, DEFAULT_FILENAMES['experiments'])
     cal.setExpsDefinition(file)
     assert len(cal._cryspy_obj.experiments) == 1
     assert cal._experiments_path == file
@@ -309,15 +310,15 @@ def test_cif_writers(cal):
             option = ['main', 'phases', 'experiments']
 
         if 'main' in option:
-            assert os.path.exists(os.path.join(path, 'main.cif'))
-            with open(os.path.join(path, 'main.cif'), 'r') as new_reader:
+            assert os.path.exists(os.path.join(path, DEFAULT_FILENAMES['project']))
+            with open(os.path.join(path, DEFAULT_FILENAMES['project']), 'r') as new_reader:
                 new_data = new_reader.read()
                 assert new_data.find('_name Fe3O4') != -1
-                assert new_data.find('_phases phases.cif') != -1
-                assert new_data.find('_experiments experiments.cif') != -1
+                assert new_data.find('_phases %s' % DEFAULT_FILENAMES['phases']) != -1
+                assert new_data.find('_experiments %s' % DEFAULT_FILENAMES['experiments']) != -1
         elif'phases' in option:
-            assert os.path.exists(os.path.join(path, 'phases.cif'))
-            with open(os.path.join(path, 'phases.cif'), 'r') as new_reader:
+            assert os.path.exists(os.path.join(path, DEFAULT_FILENAMES['phases']))
+            with open(os.path.join(path, DEFAULT_FILENAMES['phases']), 'r') as new_reader:
                 new_data = new_reader.read()
                 assert new_data.find('data_Fe3O4') != -1
                 assert new_data.find('_cell_length_b 8.56212') != -1
@@ -325,8 +326,8 @@ def test_cif_writers(cal):
                 assert new_data.find('Fe3A 2.0 1.0') != -1
                 assert new_data.find('Fe3A Fe3+ 0.125 0.125 0.125 1.0 Uiso 0.0') != -1
         elif 'experiments' in option:
-            assert os.path.exists(os.path.join(path, 'experiments.cif'))
-            with open(os.path.join(path, 'experiments.cif'), 'r') as new_reader:
+            assert os.path.exists(os.path.join(path, DEFAULT_FILENAMES['experiments']))
+            with open(os.path.join(path, DEFAULT_FILENAMES['experiments']), 'r') as new_reader:
                 new_data = new_reader.read()
                 assert new_data.find('data_pd') != -1
                 assert new_data.find('_setup_offset_2theta -0.385404') != -1
