@@ -219,7 +219,7 @@ class CalculatorInterface:
         self.project_dict.rmItemByPath(['phases', phase_name])
         self.__last_updated = datetime.now()
 
-    def addPhaseToExp(self, exp_name: str, phase_name: str, scale: float = 0.0, field: float = 0.0) -> NoReturn:
+    def addPhaseToExp(self, exp_name: str, phase_name: str, scale: float = 0.0) -> NoReturn:
         """
         Link a phase in the project dictionary to an experiment in the project dictionary. Links in the calculator will
         also be made.
@@ -368,20 +368,20 @@ class CalculatorInterface:
             self.project_dict.setItemByPath(['info', 'phase_ids'], list(phases.keys()))
             self.project_dict.endBulkUpdate()
         else:
-            k, v, t = self.project_dict['phases'].dictComparison(phases)
-            if not k:
+            keys, values, d_updaters = self.project_dict['phases'].dictComparison(phases)
+            if not keys:
                 return
 
-            k = [['phases', *key] for key in k]
+            keys = [['phases', *key] for key in keys]
 
-            k.append(['info', 'phase_ids'])
-            v.append(list(phases.keys()))
+            keys.append(['info', 'phase_ids'])
+            values.append(list(phases.keys()))
 
             if self.project_dict.macro_running:
-                for key, value in zip(k, v):
+                for key, value in zip(keys, values):
                     self.project_dict.setItemByPath(key, value)
             else:
-                self.project_dict.bulkUpdate(k, v, 'Bulk update of phases')
+                self.project_dict.bulkUpdate(keys, values, 'Bulk update of phases')
         self.__last_updated = datetime.now()
 
     def getPhase(self, phase_name: Union[str, None]) -> Phase:
@@ -413,20 +413,20 @@ class CalculatorInterface:
             self.project_dict.setItemByPath(['info', 'experiment_ids'], list(experiments.keys()))
             self.project_dict.endBulkUpdate()
         else:
-            k, v, t = self.project_dict['experiments'].dictComparison(experiments)
+            keys, values, d_updaters = self.project_dict['experiments'].dictComparison(experiments)
 
-            if not k:
+            if not keys:
                 return
-            k = [['experiments', *key] for key in k]
+            keys = [['experiments', *key] for key in keys]
 
-            k.append(['info', 'experiment_ids'])
-            v.append(list(experiments.keys()))
+            keys.append(['info', 'experiment_ids'])
+            values.append(list(experiments.keys()))
 
             if self.project_dict.macro_running:
-                for key, value in zip(k, v):
+                for key, value in zip(keys, values):
                     self.project_dict.setItemByPath(key, value)
             else:
-                self.project_dict.bulkUpdate(k, v, 'Bulk update of experiments')
+                self.project_dict.bulkUpdate(keys, values, 'Bulk update of experiments')
         self.__last_updated = datetime.now()
 
     def getExperiment(self, experiment_name: Union[str, None]) -> Experiment:
@@ -507,9 +507,9 @@ class CalculatorInterface:
         if isinstance(phase, Phase):
             new_phase_name = phase['phasename']
             if new_phase_name in self.project_dict['phases'].keys():
-                k, v, t = self.project_dict.getItemByPath(['phases', new_phase_name]).dictComparison(phase)
-                k = [['phases', new_phase_name, *ik] for ik in k]
-                self._mappedBulkUpdate(self._mappedValueUpdater, k, v)
+                keys, values, d_updater = self.project_dict.getItemByPath(['phases', new_phase_name]).dictComparison(phase)
+                keys = [['phases', new_phase_name, *ik] for ik in keys]
+                self._mappedBulkUpdate(self._mappedValueUpdater, keys, values)
             else:
                 self.addPhase(phase)
             self.__last_updated = datetime.now()
@@ -526,14 +526,14 @@ class CalculatorInterface:
         """
         if isinstance(phases, Phase):
             new_phase_name = phases['phasename']
-            k, v, t = self.project_dict.getItemByPath(['phases', new_phase_name]).dictComparison(phases)
-            k = [['phases', new_phase_name, *ik] for ik in k]
+            keys, values, d_updater = self.project_dict.getItemByPath(['phases', new_phase_name]).dictComparison(phases)
+            keys = [['phases', new_phase_name, *ik] for ik in keys]
         elif isinstance(phases, Phases):
-            k = [['phases', item] for item in list(phases.keys())]
-            v = [phases[key] for key in phases.keys()]
+            keys = [['phases', item] for item in list(phases.keys())]
+            values = [phases[key] for key in phases.keys()]
         else:
             raise TypeError
-        self._mappedBulkUpdate(self._mappedValueUpdater, k, v)
+        self._mappedBulkUpdate(self._mappedValueUpdater, keys, values)
         self.__last_updated = datetime.now()
 
     def setPhaseRefine(self, phase: str, key: List[str], value: bool = True) -> NoReturn:
@@ -581,9 +581,9 @@ class CalculatorInterface:
         if isinstance(experiment, Experiment):
             new_phase_name = experiment['name']
             if new_phase_name in self.project_dict['experiments'].keys():
-                k, v, t = self.project_dict.getItemByPath(['experiments', new_phase_name]).dictComparison(experiment)
-                k = [['experiments', new_phase_name, *ik] for ik in k]
-                self._mappedBulkUpdate(self._mappedValueUpdater, k, v)
+                keys, values, d_updater = self.project_dict.getItemByPath(['experiments', new_phase_name]).dictComparison(experiment)
+                keys = [['experiments', new_phase_name, *ik] for ik in keys]
+                self._mappedBulkUpdate(self._mappedValueUpdater, keys, values)
             else:
                 self.addExperiment(experiment)
         else:

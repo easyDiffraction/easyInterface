@@ -314,7 +314,7 @@ def test_cif_writers(cal):
             with open(os.path.join(path, DEFAULT_FILENAMES['project']), 'r') as new_reader:
                 new_data = new_reader.read()
                 assert new_data.find('_name Fe3O4') != -1
-                assert new_data.find('_phases %s' % DEFAULT_FILENAMES['phases']) != -1
+                assert new_data.find('_samples %s' % DEFAULT_FILENAMES['phases']) != -1
                 assert new_data.find('_experiments %s' % DEFAULT_FILENAMES['experiments']) != -1
         elif'phases' in option:
             assert os.path.exists(os.path.join(path, DEFAULT_FILENAMES['phases']))

@@ -39,7 +39,7 @@ CALCULATOR_INFO = {
     'url': 'https://github.com/ikibalin/cryspy'
 }
 
-PHASE_SEGMENT = "_phases"
+PHASE_SEGMENT = "_samples"
 EXPERIMENT_SEGMENT = "_experiments"
 
 class CryspyCalculator:
@@ -402,7 +402,7 @@ class CryspyCalculator:
             self._log.debug('<---- End')
             return
         if self._cryspy_obj.crystals is not None:
-            self._project_rcif["_phases"].value = phase_filename
+            self._project_rcif["_samples"].value = phase_filename
         if self._cryspy_obj.experiments is not None:
             self._project_rcif["_experiments"].value = exp_filename
             self._project_rcif["_calculations"].value = calc_filename
@@ -1189,7 +1189,7 @@ class CryspyCalculator:
         # Setup the instrument...
         if experiment['measured_pattern'].isPolarised:
             exp['setup'] = Setup(wavelength=experiment['wavelength'].value, offset_ttheta=experiment['offset'].value,
-                                 field=experiment['field'].value)
+                                 field=experiment['magnetic_field'].value)
 
         else:
             exp['setup'] = Setup(wavelength=experiment['wavelength'].value, offset_ttheta=experiment['offset'].value)
@@ -1231,9 +1231,9 @@ class CryspyCalculator:
         offset = calculator_setup.offset_ttheta
 
         is_polarised = hasattr(calculator_setup, 'field')
-        field = None
+        magnetic_field = None
         if is_polarised:
-            field = calculator_setup.field
+            magnetic_field = calculator_setup.field
             chi2 = {'sum': True, 'diff': False, 'up': False, 'down': False}
             rad = {'polarization': 0, 'efficiency': 1}
             for obj in calculator_experiment.optional_objs:
@@ -1303,9 +1303,9 @@ class CryspyCalculator:
 
         experiment = self._createProjItemFromObj(Experiment.fromPars,
                                                  ['name', 'wavelength', 'offset', 'phase',
-                                                  'background', 'resolution', 'measured_pattern', 'field'],
+                                                  'background', 'resolution', 'measured_pattern', 'magnetic_field'],
                                                  [calculator_experiment_name, wavelength, offset, scale[0],
-                                                  backgrounds, resolution, data, field])
+                                                  backgrounds, resolution, data, magnetic_field])
 
         if data.isPolarised:
             options = ['sum', 'diff']
@@ -1360,6 +1360,6 @@ class CryspyCalculator:
                 experiment['phase'][item.label]['name'] = item.label
         experiment['wavelength']['mapping'] = mapping_exp + '.setup.wavelength'
         experiment['offset']['mapping'] = mapping_exp + '.setup.offset_ttheta'
-        experiment['field']['mapping'] = mapping_exp + '.setup.field'
+        experiment['magnetic_field']['mapping'] = mapping_exp + '.setup.field'
 
         return experiment

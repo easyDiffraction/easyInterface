@@ -214,7 +214,7 @@ def test_exp_phase_from_pars():
 
 
 def genericTestExperiment(exp_constructor, *args):
-    expected = ['name', 'wavelength', 'offset', 'field', 'phase', 'background', 'resolution', 'measured_pattern', 'refinement_type',
+    expected = ['name', 'wavelength', 'offset', 'magnetic_field', 'phase', 'background', 'resolution', 'measured_pattern', 'refinement_type',
      'polarization']
 
     expected_type = [str, Base, Base, Base, ExperimentPhases, Backgrounds, Resolution, MeasuredPattern, RefinementType, Polarization]

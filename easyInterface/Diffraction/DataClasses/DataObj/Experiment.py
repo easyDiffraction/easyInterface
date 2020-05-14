@@ -19,7 +19,7 @@ EXPERIMENT_DETAILS = {
         'url': '',
         'default': (0, 'deg')
     },
-    'field': {
+    'magnetic_field': {
         'header': 'Field',
         'tooltip': 'Applied magnetic field',
         'url': '',
@@ -428,7 +428,7 @@ class Experiment(LoggedPathDict):
     Experimental details data container
     """
 
-    def __init__(self, name: str, wavelength: Base, offset: Base, field: Base, phase: ExperimentPhases,
+    def __init__(self, name: str, wavelength: Base, offset: Base, magnetic_field: Base, phase: ExperimentPhases,
                  background: Backgrounds,
                  resolution: Resolution, measured_pattern: MeasuredPattern):
         """
@@ -446,7 +446,7 @@ class Experiment(LoggedPathDict):
         refinement_type = RefinementType()
         refinement_type.sum = True
 
-        super().__init__(name=name, wavelength=wavelength, offset=offset, field=field, phase=phase,
+        super().__init__(name=name, wavelength=wavelength, offset=offset, magnetic_field=magnetic_field, phase=phase,
                          background=background,
                          resolution=resolution, measured_pattern=measured_pattern, refinement_type=refinement_type,
                          polarization=Polarization.default())
@@ -460,9 +460,9 @@ class Experiment(LoggedPathDict):
         self.setItemByPath(['offset', 'tooltip'], EXPERIMENT_DETAILS['offset']['tooltip'])
         self.setItemByPath(['offset', 'url'], EXPERIMENT_DETAILS['offset']['url'])
 
-        self.setItemByPath(['field', 'header'], EXPERIMENT_DETAILS['field']['header'])
-        self.setItemByPath(['field', 'tooltip'], EXPERIMENT_DETAILS['field']['tooltip'])
-        self.setItemByPath(['field', 'url'], EXPERIMENT_DETAILS['field']['url'])
+        self.setItemByPath(['magnetic_field', 'header'], EXPERIMENT_DETAILS['magnetic_field']['header'])
+        self.setItemByPath(['magnetic_field', 'tooltip'], EXPERIMENT_DETAILS['magnetic_field']['tooltip'])
+        self.setItemByPath(['magnetic_field', 'url'], EXPERIMENT_DETAILS['magnetic_field']['url'])
 
     @classmethod
     def default(cls, name: str) -> 'Experiment':
@@ -474,7 +474,7 @@ class Experiment(LoggedPathDict):
         """
         wavelength = Base(*EXPERIMENT_DETAILS['wavelength']['default'])
         offset = Base(*EXPERIMENT_DETAILS['offset']['default'])
-        field = Base(*EXPERIMENT_DETAILS['field']['default'])
+        field = Base(*EXPERIMENT_DETAILS['magnetic_field']['default'])
         phase = ExperimentPhases({})
         backgrounds = Backgrounds(Background.default())
         resolution = Resolution.default()
@@ -483,7 +483,7 @@ class Experiment(LoggedPathDict):
 
     @classmethod
     def fromPars(cls, name: str, wavelength: float, offset: float, scale: float, background: Backgrounds,
-                 resolution: Resolution, measured_pattern: MeasuredPattern, field: float = None) -> 'Experiment':
+                 resolution: Resolution, measured_pattern: MeasuredPattern, magnetic_field: float = None) -> 'Experiment':
         """
         Constructor of experiment from parameters
 
@@ -498,12 +498,12 @@ class Experiment(LoggedPathDict):
         """
         wavelength = Base(wavelength, EXPERIMENT_DETAILS['wavelength']['default'][1])
         offset = Base(offset, EXPERIMENT_DETAILS['offset']['default'][1])
-        if field is None:
-            field = Base(*EXPERIMENT_DETAILS['field']['default'])
+        if magnetic_field is None:
+            magnetic_field = Base(*EXPERIMENT_DETAILS['magnetic_field']['default'])
         else:
-            field = Base(field, EXPERIMENT_DETAILS['field']['default'][1])
+            magnetic_field = Base(magnetic_field, EXPERIMENT_DETAILS['magnetic_field']['default'][1])
         phase = ExperimentPhases(ExperimentPhase.fromPars(name, scale))
-        return cls(name, wavelength, offset, field, phase, background, resolution, measured_pattern)
+        return cls(name, wavelength, offset, magnetic_field, phase, background, resolution, measured_pattern)
 
     def __repr__(self):
         return 'Experiment: {}'.format(self['name'])
