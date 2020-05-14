@@ -206,7 +206,7 @@ class Backgrounds(ContainerObj):
 
     def sort(self, reverse=False):
         keys = list(self.keys())
-        keys.sort(reverse=reverse)
+        keys.sort(key=float, reverse=reverse)
         new_bg = []
         for key in keys:
             new_bg.append(self[key])
