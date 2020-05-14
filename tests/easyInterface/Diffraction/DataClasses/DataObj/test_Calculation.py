@@ -108,12 +108,12 @@ def test_calculated_pattern():
     y_calc = list(range(10, 20))
     y_diff_lower = [x_ - 0.1 for x_ in y_calc]
     y_diff_upper = [x_ + 0.1 for x_ in y_calc]
-    expected = ['x', 'y_calc', 'y_diff_lower', 'y_diff_upper']
+    expected = ['x', 'y_diff_lower', 'y_diff_upper', 'y_calc_up']
     expected_type = [list]*4
-    cp = CalculatedPattern(x, y_calc, y_diff_lower, y_diff_upper)
+    cp = CalculatedPattern(x, y_diff_lower, y_diff_upper, y_calc)
     PathDictTest(cp, expected, expected_type)
     assert cp['x'] == x
-    assert cp['y_calc'] == y_calc
+    assert cp['y_calc_up'] == y_calc
     assert cp['y_diff_lower'] == y_diff_lower
     assert cp['y_diff_upper'] == y_diff_upper
 
@@ -156,8 +156,9 @@ def test_calculation_from_pars():
     y_diff_lower = [x_ - 0.25 for x_ in x]
     tth = x
     y_calc = [x_ * 2 for x_ in x]
+    y_calc_bkg = [0]*len(y_calc)
     calc = genericTestCalculation(Calculation.fromPars, name, bragg_crystals, y_obs_lower,
-                                  y_obs_upper, tth, y_calc, y_diff_lower, y_diff_upper)
+                                  y_obs_upper, tth, y_calc, y_diff_lower, y_diff_upper, y_calc_bkg)
 
 
 def test_calculations():

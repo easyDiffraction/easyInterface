@@ -135,7 +135,7 @@ class CalculatorInterface:
         try:
             self.project_dict.setItemByPath(['info', 'modified_datetime'],
                                             datetime.fromtimestamp(
-                                                os.path.getmtime(self.calculator._main_rcif_path)).strftime(
+                                                os.path.getmtime(self.calculator._project_rcif_path)).strftime(
                                                 '%d %b %Y, %H:%M:%S'))
         except (TypeError, FileNotFoundError):
             self.project_dict.setItemByPath(['info', 'modified_datetime'], datetime.min)
@@ -163,13 +163,23 @@ class CalculatorInterface:
         Example::
 
             interface = CalculatorInterface(calculator)
-            phase_path = '~/Experiments/phases.cif'
+            phase_path = '~/Experiments/samples.cif'
             interface.setPhaseDefinition(phase_path)
         """
         self.calculator.setPhaseDefinition(phase_path)
         # This will re-create all local directories
         self.updatePhases()
         self.updateExperiments()
+
+    def addPhaseDefinitionFromString(self, phase_cif_string: str) -> NoReturn:
+        """
+        Set a phase/s to be simulated from a string.
+
+        :param phase_cif_string: String containing the contents of a phase file (`.cif`)
+        """
+        self.calculator.addPhaseDefinitionFromString(phase_cif_string)
+        # This will re-create all local directories
+        self.updatePhases()
 
     def addPhaseDefinition(self, phase_path: str) -> NoReturn:
         """
@@ -253,7 +263,7 @@ class CalculatorInterface:
         # This will re-create all local directories
         self.updateExperiments()
 
-    def setExperimentDefinitionFromString(self, exp_cif_string: str) -> NoReturn:
+    def addExperimentDefinitionFromString(self, exp_cif_string: str) -> NoReturn:
         """
         Set an experiment/s to be simulated from a string. Note that this will not have any crystallographic phases
         associated with it.
@@ -309,7 +319,7 @@ class CalculatorInterface:
 
     def writePhaseCif(self, save_dir: str) -> NoReturn:
         """
-        Write the `phases.cif` where all phases in the project dictionary are saved to file. This cif file should be
+        Write the `samples.cif` where all phases in the project dictionary are saved to file. This cif file should be
         compatible with other crystallographic software.
 
         :param save_dir: Directory to where the phases cif file should be saved.
@@ -325,16 +335,22 @@ class CalculatorInterface:
         """
         self.calculator.writeExpCif(save_dir)
 
+    def writeCalcCif(self, save_dir: str) -> NoReturn:
+        """
+        Write the `calculations.cif` where all calculations in the calculator are saved to file.
+
+        :param save_dir: Directory to where the experiment cif file should be saved.
+        """
+        self.calculator.writeCalcCif(save_dir)
+
     def saveCifs(self, save_dir: str) -> NoReturn:
         """
-        Write project cif files (`main.cif`, `experiments.cif` and `phases.cif`) to a user supplied directory. This
-        contains all information needed to recreate the project dictionary.
+        Write project cif files (`main.cif`, `samples.cif`, `experiments.cif` and `calculations.cif`) to a user
+        supplied directory. This contains all information needed to recreate the project dictionary.
 
         :param save_dir: Directory to where the project cif files should be saved.
         """
-        self.writeMainCif(save_dir)
-        self.writePhaseCif(save_dir)
-        self.writeExpCif(save_dir)
+        self.calculator.saveCifs(save_dir)
 
     ###
     # Syncing between Calculator/Dict
@@ -352,20 +368,20 @@ class CalculatorInterface:
             self.project_dict.setItemByPath(['info', 'phase_ids'], list(phases.keys()))
             self.project_dict.endBulkUpdate()
         else:
-            k, v = self.project_dict['phases'].dictComparison(phases)
-            if not k:
+            keys, values, d_updaters = self.project_dict['phases'].dictComparison(phases)
+            if not keys:
                 return
 
-            k = [['phases', *key] for key in k]
+            keys = [['phases', *key] for key in keys]
 
-            k.append(['info', 'phase_ids'])
-            v.append(list(phases.keys()))
+            keys.append(['info', 'phase_ids'])
+            values.append(list(phases.keys()))
 
             if self.project_dict.macro_running:
-                for key, value in zip(k, v):
+                for key, value in zip(keys, values):
                     self.project_dict.setItemByPath(key, value)
             else:
-                self.project_dict.bulkUpdate(k, v, 'Bulk update of phases')
+                self.project_dict.bulkUpdate(keys, values, 'Bulk update of phases')
         self.__last_updated = datetime.now()
 
     def getPhase(self, phase_name: Union[str, None]) -> Phase:
@@ -397,20 +413,20 @@ class CalculatorInterface:
             self.project_dict.setItemByPath(['info', 'experiment_ids'], list(experiments.keys()))
             self.project_dict.endBulkUpdate()
         else:
-            k, v = self.project_dict['experiments'].dictComparison(experiments)
+            keys, values, d_updaters = self.project_dict['experiments'].dictComparison(experiments)
 
-            if not k:
+            if not keys:
                 return
-            k = [['experiments', *key] for key in k]
+            keys = [['experiments', *key] for key in keys]
 
-            k.append(['info', 'experiment_ids'])
-            v.append(list(experiments.keys()))
+            keys.append(['info', 'experiment_ids'])
+            values.append(list(experiments.keys()))
 
             if self.project_dict.macro_running:
-                for key, value in zip(k, v):
+                for key, value in zip(keys, values):
                     self.project_dict.setItemByPath(key, value)
             else:
-                self.project_dict.bulkUpdate(k, v, 'Bulk update of experiments')
+                self.project_dict.bulkUpdate(keys, values, 'Bulk update of experiments')
         self.__last_updated = datetime.now()
 
     def getExperiment(self, experiment_name: Union[str, None]) -> Experiment:
@@ -428,6 +444,24 @@ class CalculatorInterface:
             return deepcopy(self.project_dict['experiments'])
         else:
             raise KeyError
+
+    def getExperimentFromCif(self, cif_string: str) -> Experiment:
+        """
+        Create an experiment object from a cif string
+        :param cif_string: cif formatted string to be interpreted
+        :returns: Experiment object
+        """
+        new_experiemnt = self.calculator.getExperimentFromCif(cif_string)
+        return new_experiemnt
+
+    def getPhaseFromCif(self, cif_string: str) -> Phase:
+        """
+        Create an phase object from a cif string
+        :param cif_string: cif formatted string to be interpreted
+        :returns: Phase object
+        """
+        new_phase = self.calculator.getPhaseFromCif(cif_string)
+        return new_phase
 
     @time_it
     def updateCalculations(self) -> NoReturn:
@@ -473,9 +507,9 @@ class CalculatorInterface:
         if isinstance(phase, Phase):
             new_phase_name = phase['phasename']
             if new_phase_name in self.project_dict['phases'].keys():
-                k, v = self.project_dict.getItemByPath(['phases', new_phase_name]).dictComparison(phase)
-                k = [['phases', new_phase_name, *ik] for ik in k]
-                self._mappedBulkUpdate(self._mappedValueUpdater, k, v)
+                keys, values, d_updater = self.project_dict.getItemByPath(['phases', new_phase_name]).dictComparison(phase)
+                keys = [['phases', new_phase_name, *ik] for ik in keys]
+                self._mappedBulkUpdate(self._mappedValueUpdater, keys, values)
             else:
                 self.addPhase(phase)
             self.__last_updated = datetime.now()
@@ -492,14 +526,14 @@ class CalculatorInterface:
         """
         if isinstance(phases, Phase):
             new_phase_name = phases['phasename']
-            k, v = self.project_dict.getItemByPath(['phases', new_phase_name]).dictComparison(phases)
-            k = [['phases', new_phase_name, *ik] for ik in k]
+            keys, values, d_updater = self.project_dict.getItemByPath(['phases', new_phase_name]).dictComparison(phases)
+            keys = [['phases', new_phase_name, *ik] for ik in keys]
         elif isinstance(phases, Phases):
-            k = [['phases', item] for item in list(phases.keys())]
-            v = [phases[key] for key in phases.keys()]
+            keys = [['phases', item] for item in list(phases.keys())]
+            values = [phases[key] for key in phases.keys()]
         else:
             raise TypeError
-        self._mappedBulkUpdate(self._mappedValueUpdater, k, v)
+        self._mappedBulkUpdate(self._mappedValueUpdater, keys, values)
         self.__last_updated = datetime.now()
 
     def setPhaseRefine(self, phase: str, key: List[str], value: bool = True) -> NoReturn:
@@ -547,9 +581,9 @@ class CalculatorInterface:
         if isinstance(experiment, Experiment):
             new_phase_name = experiment['name']
             if new_phase_name in self.project_dict['experiments'].keys():
-                k, v = self.project_dict.getItemByPath(['experiments', new_phase_name]).dictComparison(experiment)
-                k = [['experiments', new_phase_name, *ik] for ik in k]
-                self._mappedBulkUpdate(self._mappedValueUpdater, k, v)
+                keys, values, d_updater = self.project_dict.getItemByPath(['experiments', new_phase_name]).dictComparison(experiment)
+                keys = [['experiments', new_phase_name, *ik] for ik in keys]
+                self._mappedBulkUpdate(self._mappedValueUpdater, keys, values)
             else:
                 self.addExperiment(experiment)
         else:
@@ -694,7 +728,7 @@ class CalculatorInterface:
         """
         return self.project_dict["info"]["name"]
 
-    def asCifDict(self) -> str:
+    def asCifDict(self) -> dict:
         """
         Converts the project dictionary into a `cif` structure.
 
@@ -816,6 +850,7 @@ class CalculatorInterface:
                 self.updateExperiments()
             self.setCalculatorFromProject()
             self.__last_updated = datetime.now()
+
         try:
             update_str = self.project_dict.getItemByPath(key)['mapping']
             try:
@@ -841,6 +876,7 @@ class CalculatorInterface:
                 self.updateExperiments()
             self.setCalculatorFromProject()
             self.__last_updated = datetime.now()
+
         try:
             update_str = self.project_dict.getItemByPath(key)['mapping']
             try:
@@ -849,3 +885,18 @@ class CalculatorInterface:
                 code_error(key)
         except (KeyError, TypeError):
             code_error(key)
+
+    # TODO this section needs to be modified. Main rcif needs to be moved to interface and this implementation removed
+    def setProjectName(self, value: str) -> NoReturn:
+        self.calculator.setProjectName(value)
+
+    def getProjectName(self) -> str:
+        return self.calculator.getProjectName()
+
+    def setProjectKeywords(self, value: list) -> NoReturn:
+        if isinstance(value, list):
+            value = '\'%s\'' % ', '.join(value)
+        self.calculator.setProjectKeywords(value)
+
+    def getProjectKeywords(self) -> list:
+        return self.calculator.getProjectKeywords()

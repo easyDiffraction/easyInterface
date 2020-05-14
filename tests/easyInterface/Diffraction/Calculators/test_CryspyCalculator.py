@@ -8,10 +8,11 @@ from easyInterface import logger, logging
 logger.addSysOutput()
 logger.setLevel(logging.DEBUG)
 
+from easyInterface.Diffraction import DEFAULT_FILENAMES
 from easyInterface.Diffraction.Calculators import CryspyCalculator
 
 test_data = os.path.join("tests", "Data")
-file_path = os.path.join(test_data, 'main.cif')
+file_path = os.path.join(test_data, DEFAULT_FILENAMES['project'])
 
 
 @pytest.fixture
@@ -63,7 +64,7 @@ def test__parse_segment(cal):
     assert True
 
 def test_addExpDefinitionFromString(cal):
-    file = os.path.join(test_data, 'experiments.cif')
+    file = os.path.join(test_data, DEFAULT_FILENAMES['experiments'])
 
     with open(file, 'r') as file_reader:
         exp_str = file_reader.read()
@@ -72,7 +73,7 @@ def test_addExpDefinitionFromString(cal):
 
 
 def test_set_exps_definition(cal):
-    file = os.path.join(test_data, 'experiments.cif')
+    file = os.path.join(test_data, DEFAULT_FILENAMES['experiments'])
     cal.setExpsDefinition(file)
     assert len(cal._cryspy_obj.experiments) == 1
     assert cal._experiments_path == file
@@ -165,7 +166,7 @@ def test_get_phases(cal):
     assert len(phases) == len(cal._cryspy_obj.crystals)
     # Spacegroup
     assert phases.getItemByPath(['Fe3O4', 'spacegroup', 'origin_choice']).value == '2'
-    assert phases.getItemByPath(['Fe3O4', 'spacegroup', 'space_group_name_HM_alt']).value == 'F 41/d -3 2/m'
+    assert phases.getItemByPath(['Fe3O4', 'spacegroup', 'space_group_name_HM_ref']).value == 'F d -3 m'
     # Cell
     assert phases.getItemByPath(['Fe3O4', 'cell', 'length_a']).value == 8.36212
     assert phases.getItemByPath(['Fe3O4', 'cell', 'length_a']).value == phases.getItemByPath(
@@ -203,7 +204,7 @@ def test_get_calculations(cal):
     assert 'pd' in calculations.keys()
     assert calculations['pd']['name'] == 'pd'
     assert sum(calculations['pd']['calculated_pattern']['x']) == 16002.0
-    assert pytest.approx(calculations['pd']['calculated_pattern']['y_calc'], 370866.19168)
+    assert pytest.approx(calculations['pd']['calculated_pattern']['y_calc_sum'], 370866.19168)
     assert calculations['pd']['limits']['main']['x_min'] == 4.0
     assert calculations['pd']['limits']['main']['x_max'] == 80.0
     assert pytest.approx(calculations['pd']['limits']['main']['y_min'], 102.0307)
@@ -251,7 +252,7 @@ def test_set_experiments(cal):
     cal.setExperiments(experiments)
     experiments = cal.getExperiments()
     assert len(experiments) == 1
-    assert experiments.getItemByPath(['pd', 'measured_pattern', 'y_obs'])[0] == 500
+    assert experiments.getItemByPath(['pd', 'measured_pattern', 'y_obs'])[0] == pytest.approx(767.68, 1E-3)
 
 
 def test_set_obj_from_project_dicts(cal):
@@ -309,24 +310,24 @@ def test_cif_writers(cal):
             option = ['main', 'phases', 'experiments']
 
         if 'main' in option:
-            assert os.path.exists(os.path.join(path, 'main.cif'))
-            with open(os.path.join(path, 'main.cif'), 'r') as new_reader:
+            assert os.path.exists(os.path.join(path, DEFAULT_FILENAMES['project']))
+            with open(os.path.join(path, DEFAULT_FILENAMES['project']), 'r') as new_reader:
                 new_data = new_reader.read()
                 assert new_data.find('_name Fe3O4') != -1
-                assert new_data.find('_phases phases.cif') != -1
-                assert new_data.find('_experiments experiments.cif') != -1
+                assert new_data.find('_samples %s' % DEFAULT_FILENAMES['phases']) != -1
+                assert new_data.find('_experiments %s' % DEFAULT_FILENAMES['experiments']) != -1
         elif'phases' in option:
-            assert os.path.exists(os.path.join(path, 'phases.cif'))
-            with open(os.path.join(path, 'phases.cif'), 'r') as new_reader:
+            assert os.path.exists(os.path.join(path, DEFAULT_FILENAMES['phases']))
+            with open(os.path.join(path, DEFAULT_FILENAMES['phases']), 'r') as new_reader:
                 new_data = new_reader.read()
                 assert new_data.find('data_Fe3O4') != -1
                 assert new_data.find('_cell_length_b 8.56212') != -1
                 assert new_data.find('Fe3B Cani 3.041 3.041 3.041 0.0 0.0 0.0') != -1
-                assert new_data.find('Fe3A 2.0 1.0 ') != -1
+                assert new_data.find('Fe3A 2.0 1.0') != -1
                 assert new_data.find('Fe3A Fe3+ 0.125 0.125 0.125 1.0 Uiso 0.0') != -1
         elif 'experiments' in option:
-            assert os.path.exists(os.path.join(path, 'experiments.cif'))
-            with open(os.path.join(path, 'experiments.cif'), 'r') as new_reader:
+            assert os.path.exists(os.path.join(path, DEFAULT_FILENAMES['experiments']))
+            with open(os.path.join(path, DEFAULT_FILENAMES['experiments']), 'r') as new_reader:
                 new_data = new_reader.read()
                 assert new_data.find('data_pd') != -1
                 assert new_data.find('_setup_offset_2theta -0.385404') != -1

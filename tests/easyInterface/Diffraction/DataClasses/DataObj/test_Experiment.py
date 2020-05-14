@@ -121,8 +121,9 @@ def test_backgrounds():
 
 
 def test_measured_pattern_default():
-    expected = ['x', 'y_obs', 'sy_obs', 'y_obs_up', 'sy_obs_up', 'y_obs_down', 'sy_obs_down']
-    expected_type = [*[list]*3, *[(list, type(None))]*4]
+    expected = ['x', 'y_obs', 'sy_obs', 'y_obs_diff', 'sy_obs_diff',
+                'y_obs_up', 'sy_obs_up', 'y_obs_down', 'sy_obs_down']
+    expected_type = [*[list]*3, *[(list, type(None))]*6]
     
     PathDictDerived(MeasuredPattern.default, expected, expected_type)
     mp = MeasuredPattern.default()
@@ -213,9 +214,10 @@ def test_exp_phase_from_pars():
 
 
 def genericTestExperiment(exp_constructor, *args):
-    expected = ['name', 'wavelength', 'offset', 'phase', 'background', 'resolution', 'measured_pattern']
+    expected = ['name', 'wavelength', 'offset', 'magnetic_field', 'phase', 'background', 'resolution', 'measured_pattern', 'refinement_type',
+     'polarization']
 
-    expected_type = [str, Base, Base, ExperimentPhases, Backgrounds, Resolution, MeasuredPattern]
+    expected_type = [str, Base, Base, Base, ExperimentPhases, Backgrounds, Resolution, MeasuredPattern, RefinementType, Polarization]
     PathDictDerived(exp_constructor, expected, expected_type, *args)
 
     exp = exp_constructor(*args)

@@ -1,11 +1,13 @@
 {
     "name": "easyInterface",
-    "version": "0.0.8",
-    "date": "17 March 2020",
+    "version": "0.0.9",
+    "date": "14 May 2020",
     "author": "Simon Ward",
     "url": "https://github.com/easyDiffraction/easyInterface",
-    "comments": "A small fix for printing variables",
+    "comments": "Major release before easyScience",
     "changes": [
-        "Introducing pretty units, some unicode characters are now supported"
+        "Lots of work on polarization experiments",
+        "Better internal structure",
+        "Lots of performance updates"
     ]
 }
