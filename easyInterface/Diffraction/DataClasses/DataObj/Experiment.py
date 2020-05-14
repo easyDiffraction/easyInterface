@@ -18,6 +18,12 @@ EXPERIMENT_DETAILS = {
         'tooltip': 'Degree offset in two theta',
         'url': '',
         'default': (0, 'deg')
+    },
+    'magnetic_field': {
+        'header': 'Field',
+        'tooltip': 'Applied magnetic field',
+        'url': '',
+        'default': (0, 'T')
     }
 }
 
@@ -48,11 +54,27 @@ INTENSITY_DETAILS = {
     }
 }
 
+POLARIZATION_DETAILS = {
+    'polarization': {
+        'header': '',
+        'tooltip': '',
+        'url': '',
+        'default': (1, '')
+    },
+    'efficiency': {
+        'header': '',
+        'tooltip': '',
+        'url': '',
+        'default': (1, '')
+    }
+}
+
 
 class Resolution(LoggedPathDict):
     """
     Data store for the resolution parameters
     """
+
     def __init__(self, u: Base, v: Base, w: Base, x: Base, y: Base):
         """
         Dictionary store for resolution parameters
@@ -128,6 +150,7 @@ class Background(LoggedPathDict):
     """
     Data store for the background data parameters
     """
+
     def __init__(self, ttheta: float, intensity: Base):
         """
         Background dictionary
@@ -173,6 +196,7 @@ class Backgrounds(ContainerObj):
     """
     Store for a collection of background points
     """
+
     def __init__(self, backgrounds: Union[Background, dict, list]):
         """
         Constructor for Background data points
@@ -185,14 +209,24 @@ class Backgrounds(ContainerObj):
     def __repr__(self):
         return '{} Backgrounds'.format(len(self))
 
+    def sort(self, reverse=False):
+        keys = list(self.keys())
+        keys.sort(key=float, reverse=reverse)
+        new_bg = []
+        for key in keys:
+            new_bg.append(self[key])
+        super().__init__(new_bg, Background)
+
 
 class MeasuredPattern(LoggedPathDict):
     """
     Storage container for measured patterns
     """
-    def __init__(self, x: list, y_obs: list, sy_obs: list, y_obs_up: Union[list, None] = None, 
-                 sy_obs_up: Union[list, None] = None, y_obs_down: Union[list, None] = None, 
-                 sy_obs_down: Union[list, None] = None):
+
+    def __init__(self, x: list, y_obs: list, sy_obs: list,
+                 y_obs_diff: Union[list, None] = None, sy_obs_diff: Union[list, None] = None,
+                 y_obs_up: Union[list, None] = None, sy_obs_up: Union[list, None] = None,
+                 y_obs_down: Union[list, None] = None, sy_obs_down: Union[list, None] = None):
         """
         Constructor for a measured pattern
 
@@ -206,7 +240,8 @@ class MeasuredPattern(LoggedPathDict):
         """
         # 1d polarised powder diffraction data
         # if y_obs_up is not None and sy_obs_up is not None and y_obs_down is not None and sy_obs_down is not None:
-        super().__init__(x=x, y_obs=y_obs, sy_obs=sy_obs, y_obs_up=y_obs_up, sy_obs_up=sy_obs_up,
+        super().__init__(x=x, y_obs=y_obs, sy_obs=sy_obs, y_obs_diff=y_obs_diff, sy_obs_diff=sy_obs_diff,
+                         y_obs_up=y_obs_up, sy_obs_up=sy_obs_up,
                          y_obs_down=y_obs_down, sy_obs_down=sy_obs_down)
         self._log = logging.getLogger(__class__.__module__)
         # # 1d unpolarised powder diffraction data
@@ -254,22 +289,27 @@ class MeasuredPattern(LoggedPathDict):
         x = []
         y_obs = []
         sy_obs = []
+        y_obs_diff = None
+        sy_obs_diff = None
         y_obs_up = None
         sy_obs_up = None
         y_obs_down = None
         sy_obs_down = None
         if polarised:
+            y_obs_diff = []
+            sy_obs_diff = []
             y_obs_up = []
             sy_obs_up = []
             y_obs_down = []
             sy_obs_down = []
-        return cls(x, y_obs, sy_obs, y_obs_up, sy_obs_up, y_obs_down, sy_obs_down)
+        return cls(x, y_obs, sy_obs, y_obs_diff, sy_obs_diff, y_obs_up, sy_obs_up, y_obs_down, sy_obs_down)
 
 
 class ExperimentPhase(LoggedPathDict):
     """
     Storage container for the Experimental Phase details
     """
+
     def __init__(self, name: str, scale: Base):
         """
         Constructor for the Experimental phase container
@@ -278,9 +318,11 @@ class ExperimentPhase(LoggedPathDict):
         """
         super().__init__(name=name, scale=scale)
         self._log = logging.getLogger(__class__.__module__)
+
         self.setItemByPath(['scale', 'header'], SCALE_DETAILS['scale']['header'])
         self.setItemByPath(['scale', 'tooltip'], SCALE_DETAILS['scale']['tooltip'])
         self.setItemByPath(['scale', 'url'], SCALE_DETAILS['scale']['url'])
+
         self._log.debug('Created phase: {}'.format(self))
 
     @classmethod
@@ -311,6 +353,7 @@ class ExperimentPhases(ContainerObj):
     """
     Storage of multiple phase markers associated with experiments
     """
+
     def __init__(self, experiment_phases: Union[list, ExperimentPhase, dict]):
         """
         Constructor for holding multiple experiments
@@ -324,11 +367,69 @@ class ExperimentPhases(ContainerObj):
         return '{} Experimental phases'.format(len(self))
 
 
+class RefinementType(LoggedPathDict):
+    _default = {'_sum': False, '_diff': False}
+
+    def __init__(self):
+        super().__init__(**self._default)
+        self.object = None
+
+    def set_object(self, obj):
+        self.object = obj
+
+    @property
+    def sum(self):
+        return self['_sum']
+
+    @sum.setter
+    def sum(self, value):
+        if self.object is not None:
+            self.object.sum = value
+        self['_sum'] = value
+
+    @property
+    def diff(self):
+        return self['_diff']
+
+    @diff.setter
+    def diff(self, value):
+        if self.object is not None:
+            self.object.diff = value
+        self['_diff'] = value
+
+
+class Polarization(LoggedPathDict):
+    def __init__(self, polarization: Base, efficiency: Base):
+        super().__init__(polarization=polarization, efficiency=efficiency)
+
+        self.setItemByPath(['polarization', 'header'], POLARIZATION_DETAILS['polarization']['header'])
+        self.setItemByPath(['polarization', 'tooltip'], POLARIZATION_DETAILS['polarization']['tooltip'])
+        self.setItemByPath(['polarization', 'url'], POLARIZATION_DETAILS['polarization']['url'])
+
+        self.setItemByPath(['efficiency', 'header'], POLARIZATION_DETAILS['efficiency']['header'])
+        self.setItemByPath(['efficiency', 'tooltip'], POLARIZATION_DETAILS['efficiency']['tooltip'])
+        self.setItemByPath(['efficiency', 'url'], POLARIZATION_DETAILS['efficiency']['url'])
+
+    @classmethod
+    def default(cls):
+        polarization = Base(*POLARIZATION_DETAILS['polarization']['default'])
+        efficiency = Base(*POLARIZATION_DETAILS['efficiency']['default'])
+        return cls(polarization, efficiency)
+
+    @classmethod
+    def fromPars(cls, polarization, efficiency):
+        polarization = Base(polarization, POLARIZATION_DETAILS['polarization']['default'][1])
+        efficiency = Base(efficiency, POLARIZATION_DETAILS['efficiency']['default'][1])
+        return cls(polarization, efficiency)
+
+
 class Experiment(LoggedPathDict):
     """
     Experimental details data container
     """
-    def __init__(self, name: str, wavelength: Base, offset: Base, phase: ExperimentPhases, background: Backgrounds,
+
+    def __init__(self, name: str, wavelength: Base, offset: Base, magnetic_field: Base, phase: ExperimentPhases,
+                 background: Backgrounds,
                  resolution: Resolution, measured_pattern: MeasuredPattern):
         """
         Constructor for experimental data container
@@ -341,8 +442,14 @@ class Experiment(LoggedPathDict):
         :param resolution: Description of the resolution
         :param measured_pattern: What was actually measured
         """
-        super().__init__(name=name, wavelength=wavelength, offset=offset, phase=phase, background=background,
-                         resolution=resolution, measured_pattern=measured_pattern)
+
+        refinement_type = RefinementType()
+        refinement_type.sum = True
+
+        super().__init__(name=name, wavelength=wavelength, offset=offset, magnetic_field=magnetic_field, phase=phase,
+                         background=background,
+                         resolution=resolution, measured_pattern=measured_pattern, refinement_type=refinement_type,
+                         polarization=Polarization.default())
         self._log = logging.getLogger(__class__.__module__)
 
         self.setItemByPath(['wavelength', 'header'], EXPERIMENT_DETAILS['wavelength']['header'])
@@ -352,6 +459,10 @@ class Experiment(LoggedPathDict):
         self.setItemByPath(['offset', 'header'], EXPERIMENT_DETAILS['offset']['header'])
         self.setItemByPath(['offset', 'tooltip'], EXPERIMENT_DETAILS['offset']['tooltip'])
         self.setItemByPath(['offset', 'url'], EXPERIMENT_DETAILS['offset']['url'])
+
+        self.setItemByPath(['magnetic_field', 'header'], EXPERIMENT_DETAILS['magnetic_field']['header'])
+        self.setItemByPath(['magnetic_field', 'tooltip'], EXPERIMENT_DETAILS['magnetic_field']['tooltip'])
+        self.setItemByPath(['magnetic_field', 'url'], EXPERIMENT_DETAILS['magnetic_field']['url'])
 
     @classmethod
     def default(cls, name: str) -> 'Experiment':
@@ -363,15 +474,16 @@ class Experiment(LoggedPathDict):
         """
         wavelength = Base(*EXPERIMENT_DETAILS['wavelength']['default'])
         offset = Base(*EXPERIMENT_DETAILS['offset']['default'])
+        field = Base(*EXPERIMENT_DETAILS['magnetic_field']['default'])
         phase = ExperimentPhases({})
         backgrounds = Backgrounds(Background.default())
         resolution = Resolution.default()
         measured_pattern = MeasuredPattern.default()
-        return cls(name, wavelength, offset, phase, backgrounds, resolution, measured_pattern)
+        return cls(name, wavelength, offset, field, phase, backgrounds, resolution, measured_pattern)
 
     @classmethod
     def fromPars(cls, name: str, wavelength: float, offset: float, scale: float, background: Backgrounds,
-                 resolution: Resolution, measured_pattern: MeasuredPattern) -> 'Experiment':
+                 resolution: Resolution, measured_pattern: MeasuredPattern, magnetic_field: float = None) -> 'Experiment':
         """
         Constructor of experiment from parameters
 
@@ -386,8 +498,12 @@ class Experiment(LoggedPathDict):
         """
         wavelength = Base(wavelength, EXPERIMENT_DETAILS['wavelength']['default'][1])
         offset = Base(offset, EXPERIMENT_DETAILS['offset']['default'][1])
+        if magnetic_field is None:
+            magnetic_field = Base(*EXPERIMENT_DETAILS['magnetic_field']['default'])
+        else:
+            magnetic_field = Base(magnetic_field, EXPERIMENT_DETAILS['magnetic_field']['default'][1])
         phase = ExperimentPhases(ExperimentPhase.fromPars(name, scale))
-        return cls(name, wavelength, offset, phase, background, resolution, measured_pattern)
+        return cls(name, wavelength, offset, magnetic_field, phase, background, resolution, measured_pattern)
 
     def __repr__(self):
         return 'Experiment: {}'.format(self['name'])
@@ -397,6 +513,7 @@ class Experiments(ContainerObj):
     """
     Container for multiple experiments
     """
+
     def __init__(self, experiments: Union[Experiment, dict, list]):
         """
         Constructor for holding multiple experiments

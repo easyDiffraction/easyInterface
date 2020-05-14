@@ -8,7 +8,9 @@ def test_PathDict():
 
     d1 = PathDict(dict(a=1, b=2, c=dict(d=3, e=dict(f=4, g=5))))
     d2 = PathDict(dict(a=1, b=2, c=dict(d=333, e=dict(f=4, g=555))))
-    assert d1.dictComparison(d2) == ([['c', 'd'], ['c', 'e', 'g']], [333, 555])
+    k, v, t = d1.dictComparison(d2)
+    assert k == [['c', 'd'], ['c', 'e', 'g']]
+    assert v == [333, 555]
 
     d1 = PathDict(dict(a=1, b=2, c=dict(d=3, e=dict(f=4, g=5))))
     d2 = "string"

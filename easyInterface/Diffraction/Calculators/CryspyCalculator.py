@@ -2,14 +2,15 @@
 #  Copyright (c) of the author (github.com/wardsimon)
 #  Created: 12/3/2020
 
-import os
+import os, re
 from typing import Tuple, Optional
 
 import cryspy
 import pycifstar
 from asteval import Interpreter
 from cryspy.cif_like.cl_crystal import Crystal
-from cryspy.cif_like.cl_pd import Pd, PdBackground, PdBackgroundL, PdInstrResolution, PdMeas, PdMeasL, PhaseL, Setup
+from cryspy.cif_like.cl_pd import Pd, PdBackground, PdBackgroundL, PdInstrResolution, PdMeas, PdMeasL, PhaseL, Setup, \
+    Chi2, DiffrnRadiation
 from cryspy.cif_like.cl_pd import Phase as cryspyPhase
 from cryspy.corecif.cl_atom_site import AtomSite, AtomSiteL
 from cryspy.corecif.cl_atom_site_aniso import AtomSiteAniso, AtomSiteAnisoL
@@ -20,18 +21,16 @@ from cryspy.magneticcif.cl_atom_site_susceptibility import AtomSiteSusceptibilit
 # Imports needed to create a cryspyObj
 from cryspy.scripts.cl_rhochi import RhoChi
 from cryspy.symcif.cl_space_group import SpaceGroup as cpSpaceGroup
-
-from easyInterface import logger as logging
 from easyInterface.Diffraction.DataClasses.DataObj.Calculation import *
 from easyInterface.Diffraction.DataClasses.DataObj.Experiment import *
 from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import *
 from easyInterface.Diffraction.DataClasses.Utils.BaseClasses import Base
 from easyInterface.Utils.Helpers import time_it
-
+from easyInterface.Diffraction import DEFAULT_FILENAMES
 # Version info
 cryspy_version = 'Undefined'
 try:
-    from cryspy import __version__ as cryspy_version
+    from cryspy import __version__ as cryspy_version, Fitable, AtomSiteScat, AtomSiteScatL
 except ImportError:
     logging.logger.info('Can not find cryspy version. Using default text')
 CALCULATOR_INFO = {
@@ -40,16 +39,15 @@ CALCULATOR_INFO = {
     'url': 'https://github.com/ikibalin/cryspy'
 }
 
-PHASE_SEGMENT = "_phases"
+PHASE_SEGMENT = "_samples"
 EXPERIMENT_SEGMENT = "_experiments"
 
-
 class CryspyCalculator:
-    def __init__(self, main_rcif_path: Union[str, type(None)] = None) -> None:
+    def __init__(self, project_rcif_path: Union[str, type(None)] = None) -> None:
         self._log = logging.getLogger(__class__.__module__)
         self._experiment_names = []
-        self._main_rcif_path = main_rcif_path
-        self._main_rcif = None
+        self._project_rcif_path = project_rcif_path
+        self._project_rcif = None
         self._phases_path = ""
         self._phase_names = []
         self._experiments_path = ""
@@ -68,6 +66,8 @@ class CryspyCalculator:
 
         self._log.debug('----> Start')
         self._log.info('Creating cryspy object')
+        if not self._project_rcif_path:
+            return RhoChi()
         try:
             phase_segment = self._parseSegment(PHASE_SEGMENT)
         except TypeError:
@@ -106,15 +106,15 @@ class CryspyCalculator:
         if segment not in (PHASE_SEGMENT, EXPERIMENT_SEGMENT):
             self._log.debug('segment not in phase or experiment')
             return ""
-        rcif_dir_name = os.path.dirname(self._main_rcif_path)
+        rcif_dir_name = os.path.dirname(self._project_rcif_path)
         try:
-            self._main_rcif = pycifstar.read_star_file(self._main_rcif_path)
+            self._project_rcif = pycifstar.read_star_file(self._project_rcif_path)
         except FileNotFoundError:
             self._log.warning('Main cif can not be found')
         rcif_content = ""
-        if segment in str(self._main_rcif):
+        if segment in str(self._project_rcif):
             self._log.debug('segment in main cif')
-            segment_rcif_path = os.path.join(rcif_dir_name, self._main_rcif[segment].value)
+            segment_rcif_path = os.path.join(rcif_dir_name, self._project_rcif[segment].value)
             if os.path.isfile(segment_rcif_path):
                 with open(segment_rcif_path, 'r') as f:
                     self._log.debug('Reading cif segment')
@@ -283,6 +283,27 @@ class CryspyCalculator:
                 # self._cryspy_obj.experiments[0].phase.items[0] = (new_phase_name)
         self._log.debug('<---- End')
 
+    def addPhaseDefinitionFromString(self, phase_rcif_content: str) -> NoReturn:
+        """
+        Set an experiment/s to be simulated from a string. Note that this will not have any crystallographic phases
+        associated with it.
+
+        :param phase_rcif_content: String containing the contents of a phase file (`.cif`)
+        """
+        self._log.debug('----> Start')
+        phase = Crystal().from_cif(phase_rcif_content)
+        self._log.warning(f"self._cryspy_obj.crystals: {self._cryspy_obj.crystals}")
+        if phase is None:
+            self._log.error('Phase cif data is malformed')
+        if self._cryspy_obj.crystals is None:
+            self._cryspy_obj.crystals = [phase]
+            #self._log.warning(f"self._cryspy_obj.crystals: {self._cryspy_obj.crystals}")
+        else:
+            self._cryspy_obj.crystals = [*self._cryspy_obj.crystals, phase]
+            self._log.warning(f"self._cryspy_obj.crystals: {self._cryspy_obj.crystals}")
+        self._phase_names = [phase.data_name for phase in self._cryspy_obj.crystals]
+        self._log.debug('<---- End')
+
     def addPhaseDefinition(self, phases_path: str) -> NoReturn:
         """
         Add new phases from a cif file to the list of existing crystal phases in the calculator.
@@ -348,67 +369,79 @@ class CryspyCalculator:
                 self.disassociatePhaseFromExp(experiment.data_name, phase_name)
         self._log.debug('<---- End')
 
-    def writeMainCif(self, save_dir: str, filename: str = 'main.cif', exp_filename: str = 'experiments.cif',
-                     phase_filename: str = 'phases.cif') -> NoReturn:
+    def blockToCif(self, block: 'pycifstar.global_.Global') -> str:
+        """
+        Returns a cleaned up data block as text string.
+
+        :param block: cif data block.
+        :return: cleaned up data block as text string.
+        """
+        text = str(block)
+        text = re.sub("global_\s+", "", text)
+        text = re.sub("\n{3}", "\n\n", text)
+        return text
+
+    def writeMainCif(self, save_dir: str,
+                     main_filename: str = DEFAULT_FILENAMES['project'],
+                     phase_filename: str = DEFAULT_FILENAMES['phases'],
+                     exp_filename: str = DEFAULT_FILENAMES['experiments'],
+                     calc_filename: str = DEFAULT_FILENAMES['calculations']) -> NoReturn:
         """
         Write the `main.cif` where links to the experiments and phases are stored and other generalised project
         information.
 
+        :param save_dir: Directory to where the main cif file should be saved.
+        :param main_filename:  What to call the main file.
         :param phase_filename: What to call the phases file.
         :param exp_filename: What to call the experiments file.
-        :param filename:  What to call the main file.
-        :param save_dir: Directory to where the main cif file should be saved.
+        :param calc_filename: What to call the calculations file.
         """
         self._log.debug('----> Start')
-        self._log.info('Writing main cif file')
         if not isinstance(self._cryspy_obj, cryspy.scripts.cl_rhochi.RhoChi):
             self._log.warning('Cryspy object is malformed. Failure...')
             self._log.debug('<---- End')
             return
-        main_block = self._main_rcif
-        save_to = os.path.join(save_dir, filename)
         if self._cryspy_obj.crystals is not None:
-            main_block["_phases"].value = phase_filename
+            self._project_rcif["_samples"].value = phase_filename
         if self._cryspy_obj.experiments is not None:
-            main_block["_experiments"].value = exp_filename
+            self._project_rcif["_experiments"].value = exp_filename
+            self._project_rcif["_calculations"].value = calc_filename
+        save_to = os.path.join(save_dir, main_filename)
         try:
-            main_block.to_file(save_to)
+            self._log.info('Writing main cif file')
+            with open(save_to, "w") as f:
+                f.write(self.asCifDict()["main"])
         except PermissionError:
             self._log.warning('No permission to write to %s', save_to)
         except AttributeError:
             self._log.warning('No information stored in the object. Saving failed')
         self._log.debug('<---- End')
 
-    def writePhaseCif(self, save_dir: str, phase_name: str = 'phases.cif') -> NoReturn:
+    def writePhaseCif(self, save_dir: str, phase_name: str = DEFAULT_FILENAMES['phases']) -> NoReturn:
         """
-        Write the `phases.cif` where all phases in the calculator are saved to file. This cif file should be
+        Write the `samples.cif` where all phases in the calculator are saved to file. This cif file should be
         compatible with other crystallographic software.
 
         :param phase_name: What to call the phases file.
         :param save_dir: Directory to where the phases cif file should be saved.
         """
         self._log.debug('----> Start')
-        save_to = os.path.join(save_dir, phase_name)
         if not isinstance(self._cryspy_obj, cryspy.scripts.cl_rhochi.RhoChi):
             self._log.warning('Cryspy object is malformed. Failure...')
             self._log.debug('<---- End')
             return
-        phases_block = pycifstar.Global()
-        if self._cryspy_obj.crystals is not None:
-            self._log.info('Writing phase cif files')
-            phase_str = ''
-            for crystal in self._cryspy_obj.crystals:
-                phase_str += crystal.to_cif() + '\n'
-            phases_block.take_from_string(phase_str)
-        else:
+        save_to = os.path.join(save_dir, phase_name)
+        if self._cryspy_obj.crystals is None:
             self._log.info('No experiments to save. creating empty file: %s', save_to)
         try:
-            phases_block.to_file(save_to)
+            self._log.info('Writing phases cif file')
+            with open(save_to, "w") as f:
+                f.write(self.asCifDict()["phases"])
         except PermissionError:
             self._log.warning('No permission to write to %s', save_to)
         self._log.debug('<---- End')
 
-    def writeExpCif(self, save_dir: str, exp_name: str = 'experiments.cif') -> NoReturn:
+    def writeExpCif(self, save_dir: str, exp_name: str = DEFAULT_FILENAMES['experiments']) -> NoReturn:
         """
         Write the `experiments.cif` where all experiments in the calculator are saved to file. This includes the
         instrumental parameters and which phases are in the experiment/s
@@ -416,41 +449,66 @@ class CryspyCalculator:
         :param exp_name: What to call the experiments file.
         :param save_dir: Directory to where the experiment cif file should be saved.
         """
+        self._log.debug('----> Start')
         if not isinstance(self._cryspy_obj, cryspy.scripts.cl_rhochi.RhoChi):
             self._log.warning('Cryspy object is malformed. Failure...')
             self._log.debug('<---- End')
             return
         save_to = os.path.join(save_dir, exp_name)
-        exp_block = pycifstar.Global()
-        if self._cryspy_obj.experiments is not None:
-            exp_str = ''
-            for experiment in self._cryspy_obj.experiments:
-                exp_str += experiment.to_cif() + '\n'
-            exp_block.take_from_string(exp_str)
-        else:
+        if self._cryspy_obj.experiments is None:
             self._log.info('No experiments to save. creating empty file: %s', save_to)
         try:
-            exp_block.to_file(save_to)
+            self._log.info('Writing experiments cif file')
+            with open(save_to, "w") as f:
+                f.write(self.asCifDict()["experiments"])
         except PermissionError:
             self._log.warning('No permission to write to %s', save_to)
         self._log.debug('<---- End')
 
-    def saveCifs(self, save_dir: str, filename: str = 'main.cif', exp_name: str = 'experiments.cif',
-                 phase_name: str = 'phases.cif') -> NoReturn:
+    def writeCalcCif(self, save_dir: str, calc_name: str = DEFAULT_FILENAMES['calculations']) -> NoReturn:
         """
-        Write project cif files (`main.cif`, `experiments.cif` and `phases.cif`) to a user supplied directory. This
-        contains all information needed to recreate the calculator object.
+        Write the `calculations.cif` where all calculations in the calculator are saved to file.
 
+        :param calc_name: What to call the calculations file.
+        :param save_dir: Directory to where the calculations cif file should be saved.
+        """
+        self._log.debug('----> Start')
+        if not isinstance(self._cryspy_obj, cryspy.scripts.cl_rhochi.RhoChi):
+            self._log.warning('Cryspy object is malformed. Failure...')
+            self._log.debug('<---- End')
+            return
+        save_to = os.path.join(save_dir, calc_name)
+        if self._cryspy_obj.experiments is None:
+            self._log.info('No calculations to save. creating empty file: %s', save_to)
+        try:
+            self._log.info('Writing calculations cif file')
+            with open(save_to, "w") as f:
+                f.write(self.asCifDict()["calculations"])
+        except PermissionError:
+            self._log.warning('No permission to write to %s', save_to)
+        self._log.debug('<---- End')
+
+    def saveCifs(self, save_dir: str,
+                     main_name: str = DEFAULT_FILENAMES['project'],
+                     phase_name: str = DEFAULT_FILENAMES['phases'],
+                     exp_name: str = DEFAULT_FILENAMES['experiments'],
+                     calc_name: str = DEFAULT_FILENAMES['calculations']) -> NoReturn:
+        """
+        Write project cif files (`main.cif`, `samples.cif`, `experiments.cif` and `calculations.cif`) to a user
+        supplied directory. This contains all information needed to recreate the project dictionary.
+
+        :param save_dir: Directory to where the main cif file should be saved.
+        :param main_name:  What to call the main file.
         :param phase_name: What to call the phases file.
         :param exp_name: What to call the experiments file.
-        :param filename:  What to call the main file.
-        :param save_dir: Directory to where the main cif file should be saved.
+        :param calc_name: What to call the calculations file.
         """
         self._log.debug('----> Start')
         try:
-            self.writeMainCif(save_dir, filename)
+            self.writeMainCif(save_dir, main_name)
             self.writePhaseCif(save_dir, phase_name)
             self.writeExpCif(save_dir, exp_name)
+            self.writeCalcCif(save_dir, calc_name)
             self._log.info('Cifs saved successfully')
         except PermissionError:
             self._log.warning('Unable to save cifs')
@@ -508,8 +566,8 @@ class CryspyCalculator:
         # This is ~180ms per atom in phase. Limited by cryspy
         calculator_phase_name = calculator_phase.data_name
         # This group is < 1ms
-        space_group = self._getPhasesSpaceGroup(calculator_phase_name)
-        unit_cell = self._getPhaseCell(calculator_phase_name)
+        space_group = self._makePhasesSpaceGroup(calculator_phase)
+        unit_cell = self._makePhaseCell(calculator_phase)
         phase = Phase.fromPars(calculator_phase_name, space_group, unit_cell)
         # Atom sites ~ 6ms
         atoms = list(map(lambda x: self._makeAtom(calculator_phase, x), calculator_phase.atom_site.label))
@@ -635,7 +693,7 @@ class CryspyCalculator:
                                                 calculator_phase.atom_site.fract_z,
                                                 calculator_phase.atom_site.scat_length_neutron):
             x_array, y_array, z_array, _ = calculator_phase.space_group.calc_xyz_mult(x.value, y.value, z.value)
-            scat_length_neutron_array = np.full_like(x_array, scat_length_neutron)
+            scat_length_neutron_array = np.full_like(x_array, scat_length_neutron, dtype=complex)
             atom_site_list[0] += x_array.tolist()
             atom_site_list[1] += y_array.tolist()
             atom_site_list[2] += z_array.tolist()
@@ -658,36 +716,47 @@ class CryspyCalculator:
                 atom_site_list[2].append(1.0)
                 atom_site_list[3].append(scat_length_neutron)
 
+        # convert complex numbers into strings without brackets to be recognizable in GUI
+        scat_length_neutron_str_array = [str(item)[1:-1] for item in atom_site_list[3]]
+
         phase.setItemByPath(['sites', 'fract_x'], atom_site_list[0])
         phase.setItemByPath(['sites', 'fract_y'], atom_site_list[1])
         phase.setItemByPath(['sites', 'fract_z'], atom_site_list[2])
-        phase.setItemByPath(['sites', 'scat_length_neutron'], atom_site_list[3])
+        phase.setItemByPath(['sites', 'scat_length_neutron'], scat_length_neutron_str_array)
 
     def _getPhasesSpaceGroup(self, phase_name: str) -> SpaceGroup:
-        mapping_base = 'self._cryspy_obj.crystals'
         i = self._phase_names.index(phase_name)
         calculator_phase = self._cryspy_obj.crystals[i]
+        space_group = self._makePhasesSpaceGroup(calculator_phase, i)
+        return space_group
+
+    def _makePhasesSpaceGroup(self, calculator_phase: Crystal, index=None) -> SpaceGroup:
+        mapping_base = 'self._cryspy_obj.crystals'
+        i = 0
+        if index is not None:
+            i = self._phase_names.index(calculator_phase.data_name)
         # logging.info(calculator_phase_name)
         mapping_phase = mapping_base + '[{}]'.format(i)
         # Space group
         space_group = self._createProjItemFromObj(SpaceGroup.fromPars,
-                                                  ['crystal_system', 'space_group_name_HM_alt',
+                                                  ['crystal_system', 'space_group_name_HM_ref',
                                                    'space_group_IT_number', 'origin_choice'],
                                                   [calculator_phase.space_group.crystal_system,
-                                                   calculator_phase.space_group.name_hm_alt,
+                                                   calculator_phase.space_group.name_hm_ref,
                                                    calculator_phase.space_group.it_number,
                                                    calculator_phase.space_group.it_coordinate_system_code])
 
         space_group['crystal_system']['mapping'] = mapping_phase + '.space_group.crystal_system'
-        space_group['space_group_name_HM_alt']['mapping'] = mapping_phase + '.space_group.name_hm_alt'
+        space_group['space_group_name_HM_ref']['mapping'] = mapping_phase + '.space_group.name_hm_ref'
         space_group['space_group_IT_number']['mapping'] = mapping_phase + '.space_group.it_number'
         space_group['origin_choice']['mapping'] = mapping_phase + '.space_group.it_coordinate_system_code'
         return space_group
 
-    def _getPhaseCell(self, phase_name: str) -> Cell:
+    def _makePhaseCell(self, calculator_phase: Crystal, index=None) -> Cell:
         mapping_base = 'self._cryspy_obj.crystals'
-        i = self._phase_names.index(phase_name)
-        calculator_phase = self._cryspy_obj.crystals[i]
+        i = 0
+        if index is not None:
+            i = self._phase_names.index(calculator_phase.data_name)
         # logging.info(calculator_phase_name)
         mapping_phase = mapping_base + '[{}]'.format(i)
         unit_cell = self._createProjItemFromObj(Cell.fromPars, ['length_a', 'length_b', 'length_c',
@@ -705,6 +774,22 @@ class CryspyCalculator:
         unit_cell['angle_gamma']['mapping'] = mapping_phase + '.cell.angle_gamma'
         return unit_cell
 
+    def _getPhaseCell(self, phase_name: str) -> Cell:
+        i = self._phase_names.index(phase_name)
+        calculator_phase = self._cryspy_obj.crystals[i]
+        unit_cell = self._makePhaseCell(calculator_phase, i)
+        return unit_cell
+
+    def getExperimentFromCif(self, cif_string) -> Experiment:
+        cryspy_experiment = Pd.from_cif(cif_string)
+        new_exp = self._makeExperiment(cryspy_experiment)
+        return new_exp
+
+    def getPhaseFromCif(self, cif_string) -> Phase:
+        cryspy_phase = Crystal.from_cif(cif_string)
+        new_phase = self._makePhase(cryspy_phase)
+        return new_phase
+
     @time_it
     def getExperiments(self) -> Experiments:
         """
@@ -712,97 +797,11 @@ class CryspyCalculator:
         """
         experiments = []
 
-        mapping_base = 'self._cryspy_obj.experiments'
-
         if self._cryspy_obj.experiments is None:
             return Experiments({})
 
         for i, calculator_experiment in enumerate(self._cryspy_obj.experiments):
-            calculator_experiment_name = calculator_experiment.data_name
-
-            mapping_exp = mapping_base + '[{}]'.format(i)
-
-            # Experimental setup
-            calculator_setup = calculator_experiment.setup
-            wavelength = calculator_setup.wavelength
-            offset = calculator_setup.offset_ttheta
-
-            # Scale
-            scale = calculator_experiment.phase.scale
-
-            # Background
-            calculator_background = calculator_experiment.background
-            backgrounds = []
-            for ii, (ttheta, intensity) in enumerate(
-                    zip(calculator_background.ttheta, calculator_background.intensity)):
-                background = self._createProjItemFromObj(Background.fromPars, ['ttheta', 'intensity'],
-                                                         [ttheta, intensity])
-                background['intensity']['mapping'] = mapping_exp + '.background.intensity[{}]'.format(ii)
-                backgrounds.append(background)
-            backgrounds = Backgrounds(backgrounds)
-
-            # Instrument resolution
-            calculator_resolution = calculator_experiment.resolution
-            resolution = self._createProjItemFromObj(Resolution.fromPars,
-                                                     ['u', 'v', 'w', 'x', 'y'],
-                                                     [calculator_resolution.u,
-                                                      calculator_resolution.v,
-                                                      calculator_resolution.w,
-                                                      calculator_resolution.x,
-                                                      calculator_resolution.y])
-            resolution['u']['mapping'] = mapping_exp + '.resolution.u'
-            resolution['v']['mapping'] = mapping_exp + '.resolution.v'
-            resolution['w']['mapping'] = mapping_exp + '.resolution.w'
-            resolution['x']['mapping'] = mapping_exp + '.resolution.x'
-            resolution['y']['mapping'] = mapping_exp + '.resolution.y'
-
-            # Measured data points
-            x_obs = np.array(calculator_experiment.meas.ttheta).tolist()
-            y_obs_up = None
-            sy_obs_up = None
-            y_obs_down = None
-            sy_obs_down = None
-            y_obs = None
-            sy_obs = None
-            if calculator_experiment.meas.intensity[0] is not None:
-                y_obs = np.array(calculator_experiment.meas.intensity).tolist()
-                sy_obs = np.array(calculator_experiment.meas.intensity_sigma).tolist()
-            elif calculator_experiment.meas.intensity_up[0] is not None:
-                y_obs_up = np.array(calculator_experiment.meas.intensity_up)
-                sy_obs_up = np.array(calculator_experiment.meas.intensity_up_sigma).tolist()
-                y_obs_down = np.array(calculator_experiment.meas.intensity_down)
-                sy_obs_down = np.array(calculator_experiment.meas.intensity_down_sigma).tolist()
-                y_obs = (y_obs_up + y_obs_down).tolist()
-                y_obs_up = y_obs_up.tolist()
-                y_obs_down = y_obs_down.tolist()
-                sy_obs = np.sqrt(np.square(sy_obs_up) + np.square(sy_obs_down)).tolist()
-
-            data = MeasuredPattern(x_obs, y_obs, sy_obs, y_obs_up, sy_obs_up, y_obs_down, sy_obs_down)
-
-            experiment = self._createProjItemFromObj(Experiment.fromPars,
-                                                     ['name', 'wavelength', 'offset', 'phase',
-                                                      'background', 'resolution', 'measured_pattern'],
-                                                     [calculator_experiment_name, wavelength, offset, scale[0],
-                                                      backgrounds, resolution, data])
-
-            # Fix up phase scale, but it is a terrible way of doing things.....
-            phase_label = calculator_experiment.phase.label[0]
-            experiment['phase'][phase_label] = experiment['phase'][calculator_experiment_name]
-            experiment['phase'][phase_label]['scale'].refine = scale[0].refinement
-            experiment['phase'][phase_label]['scale']['store']['hide'] = scale[0].constraint_flag
-            experiment['phase'][phase_label]['name'] = phase_label
-            experiment['phase'][phase_label]['scale']['mapping'] = mapping_exp + '.phase.scale[0]'
-            del experiment['phase'][calculator_experiment_name]
-            if len(scale) > 1:
-                for idx, item in enumerate(calculator_experiment.phase.item[1:]):
-                    experiment['phase'][item.label] = ExperimentPhase.fromPars(item.label, item.scale)
-                    experiment['phase'][item.label]['scale']['mapping'] = mapping_exp + '.phase.scale[{}]'.format(idx)
-                    experiment['phase'][item.label]['scale'].refine = scale[idx].refinement
-                    experiment['phase'][item.label]['scale']['store']['hide'] = scale[idx].constraint_flag
-                    experiment['phase'][item.label]['name'] = item.label
-            experiment['wavelength']['mapping'] = mapping_exp + '.setup.wavelength'
-            experiment['offset']['mapping'] = mapping_exp + '.setup.offset_ttheta'
-
+            experiment = self._makeExperiment(calculator_experiment, i)
             experiments.append(experiment)
 
         # logging.info(experiments)
@@ -856,11 +855,10 @@ class CryspyCalculator:
             if calculator_experiment.meas.intensity[0] is not None:
                 y_obs = np.array(calculator_experiment.meas.intensity)
                 sy_obs = np.array(calculator_experiment.meas.intensity_sigma)
-                ###y_calc = np.array(calculated_pattern.intensity_total)
                 y_calc_up = np.array(calculated_pattern.intensity_up_total)
-                ###y_calc_down = np.array(calculated_pattern.intensity_down_total)
-                y_calc = y_calc_up  ###+ y_calc_down
-            elif calculator_experiment.meas.intensity_up[0] is not None:
+                y_calc_down = np.array(calculated_pattern.intensity_down_total)
+                y_calc_bkg = np.array(calculated_pattern.intensity_bkg_calc)
+            if calculator_experiment.meas.intensity_up[0] is not None:
                 y_obs_up = np.array(calculator_experiment.meas.intensity_up)
                 sy_obs_up = np.array(calculator_experiment.meas.intensity_up_sigma)
                 y_obs_down = np.array(calculator_experiment.meas.intensity_down)
@@ -869,14 +867,16 @@ class CryspyCalculator:
                 sy_obs = np.sqrt(np.square(sy_obs_up) + np.square(sy_obs_down))
                 y_calc_up = np.array(calculated_pattern.intensity_up_total)
                 y_calc_down = np.array(calculated_pattern.intensity_down_total)
-                y_calc = y_calc_up + y_calc_down
+                y_calc_bkg = np.multiply(np.array(calculated_pattern.intensity_bkg_calc), 2)
+            y_calc = y_calc_up + y_calc_down
             y_obs_upper = y_obs + sy_obs
             y_obs_lower = y_obs - sy_obs
             y_diff_upper = y_obs + sy_obs - y_calc
             y_diff_lower = y_obs - sy_obs - y_calc
 
             limits = Limits(y_obs_lower, y_obs_upper, y_diff_upper, y_diff_lower, x_calc, y_calc)
-            calculated_pattern = CalculatedPattern(x_calc, y_calc, y_diff_lower, y_diff_upper)
+            calculated_pattern = CalculatedPattern(x_calc, y_diff_lower, y_diff_upper, y_calc_up, y_calc_down,
+                                                   y_calc_bkg)
 
             calculations.append(Calculation(calculator_experiment_name,
                                             bragg_peaks, calculated_pattern, limits))
@@ -925,25 +925,32 @@ class CryspyCalculator:
         """Set all the cryspy parameters from project dictionary"""
         self.setPhases(phases)
         self.setExperiments(experiments)
+        cif = self._cryspy_obj.to_cif()
+        self._cryspy_obj = RhoChi().from_cif(cif)
 
     def asCifDict(self) -> dict:
-        """..."""
-        experiments = {}
-        calculations = {}
-        phases = {}
+        """Returns dict of all the CIFs"""
+        main = ""
+        phases = ""
+        experiments = ""
+        calculations = ""
         if isinstance(self._cryspy_obj, cryspy.scripts.cl_rhochi.RhoChi):
-            if self._cryspy_obj.experiments is not None:
-                experiments = "data_" + self._cryspy_obj.experiments[0].data_name + "\n\n" + \
-                              self._cryspy_obj.experiments[0].params_to_cif() + "\n" + self._cryspy_obj.experiments[
-                                  0].data_to_cif()  # temporarily solution, as params_to_cif, data_to_cif and calc_to_cif are not implemented yet in cryspy 0.2.0
-                calculations = self._cryspy_obj.experiments[0].calc_to_cif()
+            # main.cif
+            if self._project_rcif is not None:
+                main = self.blockToCif(self._project_rcif)
+            # samples.cif
             if self._cryspy_obj.crystals is not None:
-                phases = self._cryspy_obj.crystals[0].to_cif()
-        return {
-            'phases': phases,
-            'experiments': experiments,
-            'calculations': calculations
-        }
+                for phase in self._cryspy_obj.crystals:
+                    phases += phase.to_cif() + '\n'
+            # experiments.cif & calculations.cif
+            if self._cryspy_obj.experiments is not None:
+                for experiment in self._cryspy_obj.experiments:
+                    experiments += "data_" + experiment.data_name + "\n\n" + \
+                                   experiment.params_to_cif() + "\n" + \
+                                   experiment.data_to_cif()
+                    calculations += "data_" + experiment.data_name + "\n\n" + \
+                                    experiment.calc_to_cif()
+        return { 'main': main, 'phases': phases, 'experiments': experiments, 'calculations': calculations }
 
     @time_it
     def refine(self) -> Tuple[dict, dict]:
@@ -978,12 +985,26 @@ class CryspyCalculator:
         item = aeval(item_str)
         item.refinement = value
 
+    # TODO this section needs to be modified. Main rcif needs to be moved to interface and this implementation removed
     def getProjectName(self) -> str:
         try:
-            name = self._main_rcif["name"].value
+            name = self._project_rcif["name"].value
         except TypeError:
             name = ''
         return name
+
+    def setProjectName(self, value: str) -> NoReturn:
+        self._project_rcif["name"].value = value
+
+    def getProjectKeywords(self) -> str:
+        try:
+            name = self._project_rcif["keywords"].value
+        except TypeError:
+            name = ''
+        return name
+
+    def setProjectKeywords(self, value: str) -> NoReturn:
+        self._project_rcif["keywords"].value = value
 
     def getPhaseNames(self) -> list:
         return self._phase_names
@@ -1009,112 +1030,172 @@ class CryspyCalculator:
 
     @staticmethod
     def _createPhaseObj(phase: Phase) -> Crystal:
-        this_cell = cryspyCell(length_a=phase['cell']['length_a'].value,
-                               length_b=phase['cell']['length_b'].value,
-                               length_c=phase['cell']['length_c'].value,
-                               angle_alpha=phase['cell']['angle_alpha'].value,
-                               angle_beta=phase['cell']['angle_beta'].value,
-                               angle_gamma=phase['cell']['angle_gamma'].value)
 
-        this_space_group = cpSpaceGroup(name_hm_alt=phase['spacegroup']['space_group_name_HM_alt'].value,
-                                        it_number=phase['spacegroup']['space_group_IT_number'].value,
-                                        it_coordinate_system_code=phase['spacegroup']['origin_choice'].value,
-                                        crystal_system=phase['spacegroup']['crystal_system'].value)
+        def convRefine(cp_in, easy_in, cp_keys, e_keys):
+            for cp_param, e_param in zip(cp_keys, e_keys):
+                if isinstance(easy_in[e_param], Base):
+                    cp_obj = getattr(cp_in, cp_param)
+                    if isinstance(cp_obj, Fitable):
+                        setattr(cp_obj, 'refinement', easy_in[e_param].refine)
+
+        d = dict()
+        d['data_name'] = phase['phasename']
+        cell = dict()
+        cell['length_a'] = phase['cell']['length_a'].value
+        cell['length_b'] = phase['cell']['length_b'].value
+        cell['length_c'] = phase['cell']['length_c'].value
+        cell['angle_alpha'] = phase['cell']['angle_alpha'].value
+        cell['angle_beta'] = phase['cell']['angle_beta'].value
+        cell['angle_gamma'] = phase['cell']['angle_gamma'].value
+        d['cell'] = cryspyCell(**cell)
+        convRefine(d['cell'], phase['cell'],
+                   ['length_a', 'length_b', 'length_c', 'angle_alpha', 'angle_beta', 'angle_gamma'],
+                   ['length_a', 'length_b', 'length_c', 'angle_alpha', 'angle_beta', 'angle_gamma'])
+
+        spg = dict()
+        # spg['name_hm_ref'] = phase['spacegroup']['space_group_name_HM_ref'].value
+        spg['it_number'] = phase['spacegroup']['space_group_IT_number'].value
+        spg['it_coordinate_system_code'] = phase['spacegroup']['origin_choice'].value
+        # spg['crystal_system'] = phase['spacegroup']['crystal_system'].value
+        d['space_group'] = cpSpaceGroup(**spg)
+        convRefine(d['space_group'], phase['spacegroup'],
+                   ['it_coordinate_system_code', 'it_number'],
+                   ['origin_choice', 'space_group_IT_number'])
 
         this_atoms = []
         this_adp = []
         this_msp = []
-        for atomLabel in phase['atoms'].keys():
-            atom = phase['atoms'][atomLabel]
-            this_atoms.append(
-                AtomSite(label=atomLabel, type_symbol=atom['type_symbol'],
-                         fract_x=atom['fract_x'].value, fract_y=atom['fract_y'].value,
-                         fract_z=atom['fract_z'].value,
-                         occupancy=atom['occupancy'].value, adp_type=atom['adp_type'].value,
-                         u_iso_or_equiv=atom['U_iso_or_equiv'].value)
-            )
+        for atom_label in phase['atoms'].keys():
+            atom = phase['atoms'][atom_label]
+            atom_site = dict()
+            atom_site['label'] = atom_label
+            atom_site['type_symbol'] = atom['type_symbol']
+            atom_site['fract_x'] = atom['fract_x'].value
+            atom_site['fract_y'] = atom['fract_y'].value
+            atom_site['fract_z'] = atom['fract_z'].value
+            atom_site['occupancy'] = atom['occupancy'].value
+            atom_site['adp_type'] = atom['adp_type'].value
+            atom_site['u_iso_or_equiv'] = atom['U_iso_or_equiv'].value
+            a_site = AtomSite(**atom_site)
+            convRefine(a_site, atom,
+                       ['type_symbol', 'fract_x', 'fract_y', 'fract_z', 'occupancy', 'adp_type', 'u_iso_or_equiv'],
+                       ['type_symbol', 'fract_x', 'fract_y', 'fract_z', 'occupancy', 'adp_type', 'U_iso_or_equiv'])
+            this_atoms.append(a_site)
             if atom['ADP']['u_11'].value is not None:
-                this_adp.append(
-                    AtomSiteAniso(label=atomLabel, u_11=atom['ADP']['u_11'].value,
-                                  u_22=atom['ADP']['u_22'].value, u_33=atom['ADP']['u_33'].value,
-                                  u_12=atom['ADP']['u_12'].value, u_13=atom['ADP']['u_13'].value,
-                                  u_23=atom['ADP']['u_23'].value)
-                )
+                adp = dict()
+                adp['label'] = atom_label
+                adp['u_11'] = atom['ADP']['u_11'].value
+                adp['u_22'] = atom['ADP']['u_22'].value
+                adp['u_33'] = atom['ADP']['u_33'].value
+                adp['u_12'] = atom['ADP']['u_12'].value
+                adp['u_13'] = atom['ADP']['u_13'].value
+                adp['u_23'] = atom['ADP']['u_23'].value
+                adp = AtomSiteAniso(**adp)
+                convRefine(adp, atom['ADP'],
+                           ['u_11', 'u_22', 'u_33', 'u_12', 'u_13', 'u_23'],
+                           ['u_11', 'u_22', 'u_33', 'u_12', 'u_13', 'u_23'])
+                this_adp.append(adp)
             if atom['MSP']['type'].value is not None:
-                this_msp.append(
-                    AtomSiteSusceptibility(label=atomLabel, chi_type=atom['MSP']['type'].value,
-                                           chi_11=atom['MSP']['chi_11'].value,
-                                           chi_22=atom['MSP']['chi_22'].value, chi_33=atom['MSP']['chi_33'].value,
-                                           chi_12=atom['MSP']['chi_12'].value, chi_13=atom['MSP']['chi_13'].value,
-                                           chi_23=atom['MSP']['chi_23'].value)
-                )
+                msp = dict()
+                msp['label'] = atom_label
+                msp['chi_type'] = atom['MSP']['type'].value
+                msp['chi_11'] = atom['MSP']['chi_11'].value
+                msp['chi_22'] = atom['MSP']['chi_22'].value
+                msp['chi_33'] = atom['MSP']['chi_33'].value
+                msp['chi_12'] = atom['MSP']['chi_12'].value
+                msp['chi_13'] = atom['MSP']['chi_13'].value
+                msp['chi_23'] = atom['MSP']['chi_23'].value
+                msp = AtomSiteSusceptibility(**msp)
+                convRefine(msp, atom['MSP'],
+                           ['chi_11', 'chi_22', 'chi_33', 'chi_12', 'chi_13', 'chi_23'],
+                           ['chi_11', 'chi_22', 'chi_33', 'chi_12', 'chi_13', 'chi_23'])
+                this_msp.append(msp)
 
-        this_atoms = AtomSiteL(this_atoms)
-        this_adp = AtomSiteAnisoL(this_adp)
-        this_msp = AtomSiteSusceptibilityL(this_msp)
+        d['atom_site'] = AtomSiteL(this_atoms)
+        if len(this_adp) > 0:
+            d['atom_site_aniso'] = AtomSiteAnisoL(this_adp)
+        if len(this_msp) > 0:
+            d['atom_site_susceptibility'] = AtomSiteSusceptibilityL(this_msp)
+            # This means that it's magnetic, so it must have a atom_site_scat
+            d['atom_site_scat'] = AtomSiteScatL([AtomSiteScat(label=msp.label) for msp in this_msp])
 
-        phase_obj = Crystal(data_name=phase['phasename'], cell=this_cell, space_group=this_space_group,
-                            atom_site=this_atoms,
-                            atom_site_aniso=this_adp, atom_site_susceptibility=this_msp)
+        phase_obj = Crystal(**d)
         phase_obj.apply_constraint()
         return phase_obj
 
-    @staticmethod
-    def _createExperimentObj(experiment: Experiment) -> Pd:
+    def _createExperimentObj(self, experiment: Experiment) -> Pd:
         # First create a background
-        backgrounds = PdBackgroundL(
-            list(
-                map(
-                    lambda key: PdBackground(ttheta=experiment['background'][key]['ttheta'],
-                                             intensity=experiment['background'][key]['intensity'].value),
-                    experiment['background'].keys()
-                )
-            )
+
+        exp = dict()
+        exp['data_name'] = experiment['name']
+
+        def bg_mapper(key):
+            bg = PdBackground(ttheta=experiment['background'][key]['ttheta'],
+                              intensity=experiment['background'][key]['intensity'].value)
+            bg.intensity.refinement = experiment['background'][key]['intensity'].refine
+            return bg
+
+        bg_keys = [float(key) for key in experiment['background'].keys()]
+        bg_keys.sort()
+        exp['background'] = PdBackgroundL(
+            list(map(lambda key: bg_mapper(str(key)), bg_keys))
         )
 
         # backgrounds = PdBackgroundL(backgrounds)
         # Resolution
-        resolution = PdInstrResolution(u=experiment['resolution']['u'].value,
-                                       v=experiment['resolution']['v'].value,
-                                       w=experiment['resolution']['w'].value,
-                                       x=experiment['resolution']['x'].value,
-                                       y=experiment['resolution']['y'].value)
+        exp['resolution'] = PdInstrResolution(u=experiment['resolution']['u'].value,
+                                              v=experiment['resolution']['v'].value,
+                                              w=experiment['resolution']['w'].value,
+                                              x=experiment['resolution']['x'].value,
+                                              y=experiment['resolution']['y'].value)
+        exp['resolution'].u.refinement = experiment['resolution']['u'].refine
+        exp['resolution'].v.refinement = experiment['resolution']['v'].refine
+        exp['resolution'].w.refinement = experiment['resolution']['w'].refine
+        exp['resolution'].x.refinement = experiment['resolution']['x'].refine
+        exp['resolution'].y.refinement = experiment['resolution']['y'].refine
 
         # Measured pattern
-        pol = lambda data: PdMeas(ttheta=data[0], intensity=data[1], intensity_sigma=data[2],
-                                  intensity_up=data[3], intensity_up_sigma=data[4],
-                                  intensity_down=data[5], intensity_down_sigma=data[6])
+        pol = lambda data: PdMeas(ttheta=data[0],
+                                  intensity_up=data[1], intensity_up_sigma=data[2],
+                                  intensity_down=data[3], intensity_down_sigma=data[4])
 
         non_pol = lambda data: PdMeas(ttheta=data[0], intensity=data[1], intensity_sigma=data[2])
 
         if experiment['measured_pattern'].isPolarised:
             pattern = PdMeasL(list(map(pol, zip(experiment['measured_pattern']['x'],
-                                                experiment['measured_pattern']['y_obs'],
-                                                experiment['measured_pattern']['sy_obs'],
                                                 experiment['measured_pattern']['y_obs_up'],
                                                 experiment['measured_pattern']['sy_obs_up'],
                                                 experiment['measured_pattern']['y_obs_down'],
                                                 experiment['measured_pattern']['sy_obs_down']))))
+            exp['chi2'] = Chi2(sum=experiment['refinement_type'].sum, diff=experiment['refinement_type'].diff, up=False, down=False)
+            exp['diffrn_radiation'] = DiffrnRadiation(polarization=experiment['polarization']['polarization'].value,
+                                                      efficiency=experiment['polarization']['efficiency'].value)
+            exp['diffrn_radiation'].polarization.refinement = experiment['polarization']['polarization'].refine
+            exp['diffrn_radiation'].efficiency.refinement = experiment['polarization']['efficiency'].refine
         else:
             pattern = PdMeasL(list(map(non_pol, zip(experiment['measured_pattern']['x'],
                                                     experiment['measured_pattern']['y_obs'],
                                                     experiment['measured_pattern']['sy_obs']))))
 
+        exp['meas'] = pattern
+
+        def phase_mapper(key):
+            phase = cryspyPhase(label=key, scale=experiment['phase'][key]['scale'].value, igsize=0)
+            phase.scale.refinement = experiment['phase'][key]['scale'].refine
+            return phase
+
         # Associate it to a phase
-        phases = PhaseL(
-            list(
-                map(
-                    lambda key: cryspyPhase(label=key, scale=experiment['phase'][key]['scale'].value, igsize=0),
-                    experiment['phase'].keys()
-                )
-            )
-        )
-
+        exp['phase'] = PhaseL([phase_mapper(key) for key in experiment['phase'].keys()])
         # Setup the instrument...
-        instrument = Setup(wavelength=experiment['wavelength'].value, offset_ttheta=experiment['offset'].value)
+        if experiment['measured_pattern'].isPolarised:
+            exp['setup'] = Setup(wavelength=experiment['wavelength'].value, offset_ttheta=experiment['offset'].value,
+                                 field=experiment['magnetic_field'].value)
 
-        return Pd(data_name=experiment['name'], background=backgrounds, resolution=resolution, meas=pattern,
-                  phase=phases, setup=instrument)
+        else:
+            exp['setup'] = Setup(wavelength=experiment['wavelength'].value, offset_ttheta=experiment['offset'].value)
+        exp['setup'].wavelength.refinement = experiment['wavelength'].refine
+        exp['setup'].offset_ttheta.refinement = experiment['offset'].refine
+        return Pd(**exp)
 
     def associatePhaseToExp(self, exp_name: str, phase_name: str, scale: float, igsize: float = 0.0) -> NoReturn:
         cryspyPhaseObj = cryspyPhase(label=phase_name, scale=scale, igsize=igsize)
@@ -1137,3 +1218,148 @@ class CryspyCalculator:
         # THIS IS A HACK AS CRYSPY IS SGSHRGFHGHRTGYHT
         exp_phases = [item[0] for item in phases.items]
         return exp_phases
+
+    def _makeExperiment(self, calculator_experiment, i=0) -> Experiment:
+
+        mapping_base = 'self._cryspy_obj.experiments'
+        calculator_experiment_name = calculator_experiment.data_name
+        mapping_exp = mapping_base + '[{}]'.format(i)
+
+        # Experimental setup
+        calculator_setup = calculator_experiment.setup
+        wavelength = calculator_setup.wavelength
+        offset = calculator_setup.offset_ttheta
+
+        is_polarised = hasattr(calculator_setup, 'field')
+        magnetic_field = None
+        if is_polarised:
+            magnetic_field = calculator_setup.field
+            chi2 = {'sum': True, 'diff': False, 'up': False, 'down': False}
+            rad = {'polarization': 0, 'efficiency': 1}
+            for obj in calculator_experiment.optional_objs:
+                if isinstance(obj, Chi2):
+                    for key in chi2.keys():
+                        chi2[key] = getattr(obj, key)
+                elif isinstance(obj, DiffrnRadiation):
+                    for key in rad.keys():
+                        rad[key] = getattr(obj, key)
+        # Scale
+        scale = calculator_experiment.phase.scale
+
+        # Background
+        calculator_background = calculator_experiment.background
+        backgrounds = []
+        for ii, (ttheta, intensity) in enumerate(
+                zip(calculator_background.ttheta, calculator_background.intensity)):
+            background = self._createProjItemFromObj(Background.fromPars, ['ttheta', 'intensity'],
+                                                     [ttheta, intensity])
+            background['intensity']['mapping'] = mapping_exp + '.background.intensity[{}]'.format(ii)
+            backgrounds.append(background)
+        backgrounds.sort(key=lambda x: float(x['ttheta']))
+        backgrounds = Backgrounds(backgrounds)
+
+        # Instrument resolution
+        calculator_resolution = calculator_experiment.resolution
+        resolution = self._createProjItemFromObj(Resolution.fromPars,
+                                                 ['u', 'v', 'w', 'x', 'y'],
+                                                 [calculator_resolution.u,
+                                                  calculator_resolution.v,
+                                                  calculator_resolution.w,
+                                                  calculator_resolution.x,
+                                                  calculator_resolution.y])
+        resolution['u']['mapping'] = mapping_exp + '.resolution.u'
+        resolution['v']['mapping'] = mapping_exp + '.resolution.v'
+        resolution['w']['mapping'] = mapping_exp + '.resolution.w'
+        resolution['x']['mapping'] = mapping_exp + '.resolution.x'
+        resolution['y']['mapping'] = mapping_exp + '.resolution.y'
+
+        # Measured data points
+        x_obs = np.array(calculator_experiment.meas.ttheta).tolist()
+        y_obs_up = None
+        sy_obs_up = None
+        y_obs_diff = None
+        sy_obs_diff = None
+        y_obs_down = None
+        sy_obs_down = None
+        y_obs = None
+        sy_obs = None
+        if calculator_experiment.meas.intensity[0] is not None:
+            y_obs = np.array(calculator_experiment.meas.intensity).tolist()
+            sy_obs = np.array(calculator_experiment.meas.intensity_sigma).tolist()
+        elif calculator_experiment.meas.intensity_up[0] is not None:
+            y_obs_up = np.array(calculator_experiment.meas.intensity_up)
+            sy_obs_up = np.array(calculator_experiment.meas.intensity_up_sigma).tolist()
+            y_obs_down = np.array(calculator_experiment.meas.intensity_down)
+            sy_obs_down = np.array(calculator_experiment.meas.intensity_down_sigma).tolist()
+            y_obs = (y_obs_up + y_obs_down).tolist()
+            y_obs_diff = (y_obs_up - y_obs_down).tolist()
+            sy_obs_diff = np.sqrt(np.square(sy_obs_up) + np.square(sy_obs_down)).tolist()
+            y_obs_up = y_obs_up.tolist()
+            y_obs_down = y_obs_down.tolist()
+            sy_obs = np.sqrt(np.square(sy_obs_up) + np.square(sy_obs_down)).tolist()
+
+        data = MeasuredPattern(x_obs, y_obs, sy_obs, y_obs_diff, sy_obs_diff, y_obs_up, sy_obs_up, y_obs_down,
+                               sy_obs_down)
+
+        experiment = self._createProjItemFromObj(Experiment.fromPars,
+                                                 ['name', 'wavelength', 'offset', 'phase',
+                                                  'background', 'resolution', 'measured_pattern', 'magnetic_field'],
+                                                 [calculator_experiment_name, wavelength, offset, scale[0],
+                                                  backgrounds, resolution, data, magnetic_field])
+
+        if data.isPolarised:
+            options = ['sum', 'diff']
+            experiment['refinement_type'].set_object(calculator_experiment.chi2)
+            for option in options:
+                if getattr(calculator_experiment.chi2, option):
+                    setattr(experiment['refinement_type'], option, True)
+            experiment['polarization'][
+                'polarization'].value = calculator_experiment.diffrn_radiation.polarization.value
+            experiment['polarization']['polarization']['store'][
+                'error'] = calculator_experiment.diffrn_radiation.polarization.sigma
+
+            experiment['polarization'][
+                'polarization'].refine = calculator_experiment.diffrn_radiation.polarization.refinement
+            experiment['polarization']['polarization']['store']['hide'] = False
+            experiment['polarization']['polarization']['mapping'] = mapping_exp + '.diffrn_radiation.polarization'
+            experiment['polarization']['efficiency'].value = calculator_experiment.diffrn_radiation.efficiency.value
+            experiment['polarization'][
+                'efficiency'].refine = calculator_experiment.diffrn_radiation.efficiency.refinement
+            experiment['polarization']['efficiency']['store'][
+                'error'] = calculator_experiment.diffrn_radiation.efficiency.sigma
+            experiment['polarization']['efficiency']['store']['hide'] = False
+            experiment['polarization']['efficiency']['mapping'] = mapping_exp + '.diffrn_radiation.efficiency'
+
+            # updateMinMax method is called only when polarization object is created in
+            # Experiment.py (Line 430): polarization=Polarization.default(). The default values
+            # of polarization.polarization and polarization.efficiency = 1.0 at that moment, so
+            # min and max are defined as 0.8 and 1.2, respectively.
+            # Now, we need to reset min and max and call updateMinMax() again!
+            experiment['polarization']['polarization'].min = -np.Inf
+            experiment['polarization']['polarization'].max = np.Inf
+            experiment['polarization']['polarization'].updateMinMax()
+            experiment['polarization']['efficiency'].min = -np.Inf
+            experiment['polarization']['efficiency'].max = np.Inf
+            experiment['polarization']['efficiency'].updateMinMax()
+
+            # Fix up phase scale, but it is a terrible way of doing things.....
+        phase_label = calculator_experiment.phase.label[0]
+        experiment['phase'][phase_label] = experiment['phase'][calculator_experiment_name]
+        experiment['phase'][phase_label]['scale'].refine = scale[0].refinement
+        experiment['phase'][phase_label]['scale']['store']['hide'] = scale[0].constraint_flag
+        experiment['phase'][phase_label]['name'] = phase_label
+        experiment['phase'][phase_label]['scale']['mapping'] = mapping_exp + '.phase.scale[0]'
+        del experiment['phase'][calculator_experiment_name]
+        if len(scale) > 0:
+            for idx, item in enumerate(calculator_experiment.phase.item[0:]):
+                experiment['phase'][item.label] = ExperimentPhase.fromPars(item.label, scale[idx].value)
+                experiment['phase'][item.label]['scale']['mapping'] = mapping_exp + '.phase.scale[{}]'.format(idx)
+                experiment['phase'][item.label]['scale'].refine = scale[idx].refinement
+                experiment['phase'][item.label]['scale']['store']['hide'] = scale[idx].constraint_flag
+                experiment['phase'][item.label]['scale']['store']['error'] = scale[idx].sigma
+                experiment['phase'][item.label]['name'] = item.label
+        experiment['wavelength']['mapping'] = mapping_exp + '.setup.wavelength'
+        experiment['offset']['mapping'] = mapping_exp + '.setup.offset_ttheta'
+        experiment['magnetic_field']['mapping'] = mapping_exp + '.setup.field'
+
+        return experiment

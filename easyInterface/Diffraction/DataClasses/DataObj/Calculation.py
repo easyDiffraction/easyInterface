@@ -73,8 +73,15 @@ class CalculatedPattern(LoggedPathDict):
     """
     Storage container for a calculated pattern
     """
-    def __init__(self, x: list, y_calc: list, y_diff_lower: list, y_diff_upper: list):
-        super().__init__(x=x, y_calc=y_calc, y_diff_lower=y_diff_lower, y_diff_upper=y_diff_upper)
+    def __init__(self, x: list, y_diff_lower: list, y_diff_upper: list, y_calc_up: list, y_calc_down: list = [], y_calc_bkg: list = []):
+        y_calc_down_temp = y_calc_down
+        if len(y_calc_down) == 0:
+            y_calc_down_temp = [0]*len(y_calc_up)
+
+        super().__init__(x=x, y_calc_sum=np.array(y_calc_up) + np.array(y_calc_down_temp), y_calc_diff=np.array(y_calc_up) - np.array(y_calc_down_temp),
+                         y_calc_up=y_calc_up, y_calc_down=y_calc_down,
+                         y_diff_lower=y_diff_lower, y_diff_upper=y_diff_upper,
+                         y_calc_bkg=y_calc_bkg)
         self._log = logging.getLogger(__class__.__module__)
 
     def __repr__(self):
@@ -92,17 +99,17 @@ class Calculation(LoggedPathDict):
     @classmethod
     def default(cls, name: str):
         bragg_peaks = BraggPeaks({})
-        calculated_pattern = CalculatedPattern([0], [0], [0], [0])
+        calculated_pattern = CalculatedPattern([0], [0], [0], [0],[0])
         limits = Limits()
         return cls(name, bragg_peaks, calculated_pattern, limits)
 
     @classmethod
     def fromPars(cls, name: str, bragg_crystals: CrystalBraggPeaks,
-                 y_obs_lower: list, y_obs_upper: list,
-                 tth: list, y_calc: list, y_diff_lower: list, y_diff_upper: list):
+                 y_calc_lower: list, y_calc_upper: list,
+                 tth: list, y_calc: list, y_diff_lower: list, y_diff_upper: list, y_calc_bkg: list):
         bragg_peaks = BraggPeaks(bragg_crystals)
-        calculated_pattern = CalculatedPattern(tth, y_calc, y_diff_lower, y_diff_upper)
-        limits = Limits(y_obs_lower, y_obs_upper, y_diff_upper, y_diff_lower, x_calc=tth, y_calc=y_calc)
+        calculated_pattern = CalculatedPattern(tth, y_calc, y_diff_lower, y_diff_upper, y_calc_bkg)
+        limits = Limits(y_calc_lower, y_calc_upper, y_diff_upper, y_diff_lower, x_calc=tth, y_calc=y_calc)
         return cls(name, bragg_peaks, calculated_pattern, limits)
 
     def __repr__(self):

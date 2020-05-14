@@ -5,9 +5,11 @@ import numpy as np
 import pytest
 
 from copy import deepcopy
+from sys import platform
 
 # module for testing
 from tests.easyInterface.Diffraction.DataClasses.Utils.Helpers import PathDictDerived
+from easyInterface.Diffraction import DEFAULT_FILENAMES
 from easyInterface.Diffraction.Calculators import CryspyCalculator
 from easyInterface.Diffraction.Interface import CalculatorInterface, ProjectDict
 from easyInterface.Diffraction.DataClasses.Utils.InfoObjs import Interface, App, Calculator, Info
@@ -17,9 +19,9 @@ from easyInterface.Diffraction.DataClasses.PhaseObj.Phase import Phases, Phase
 
 test_data = os.path.join('tests', 'Data')
 
-file_path = os.path.join(test_data, 'main.cif')
-phase_path = os.path.join(test_data, 'phases.cif')
-exp_path = os.path.join(test_data, 'experiments.cif')
+file_path = os.path.join(test_data, DEFAULT_FILENAMES['project'])
+phase_path = os.path.join(test_data, DEFAULT_FILENAMES['phases'])
+exp_path = os.path.join(test_data, DEFAULT_FILENAMES['experiments'])
 
 
 @pytest.fixture
@@ -63,7 +65,7 @@ def test_init(cal):
     assert len(cal.project_dict['phases']) == 1
     assert len(cal.project_dict['experiments']) == 1
 
-    assert cal.calculator._main_rcif_path == file_path
+    assert cal.calculator._project_rcif_path == file_path
 
     assert len(cal.project_dict) == 7
 
@@ -228,12 +230,12 @@ def test_setExperimentDefinitionFromString():
     interface.setPhaseDefinition(phase_path)
     with open(exp_path, 'r') as file_reader:
         exp_content = file_reader.read()
-    interface.setExperimentDefinitionFromString(exp_content)
+    interface.addExperimentDefinitionFromString(exp_content)
 
     experiment_dict = interface.project_dict['experiments']
 
     assert len(experiment_dict) == 1
-    assert len(experiment_dict['pd']) == 7
+    assert len(experiment_dict['pd']) == 10
     # wavelength
     assert len(experiment_dict['pd']['wavelength']) == 5
     assert experiment_dict['pd']['wavelength'].value == 0.84
@@ -272,7 +274,7 @@ def test_setExperimentDefinitionFromString():
     assert experiment_dict['pd']['resolution']['v']['store']['hide'] is False
 
     # measured_pattern
-    assert len(experiment_dict['pd']['measured_pattern']) == 7
+    assert len(experiment_dict['pd']['measured_pattern']) == 9
     assert 5.0 in experiment_dict['pd']['measured_pattern']['x']
     assert len(experiment_dict['pd']['measured_pattern'].y_obs_lower) == 381
     assert experiment_dict['pd']['measured_pattern'].y_obs_lower[380] == pytest.approx(762.959046)
@@ -288,7 +290,7 @@ def test_setExperimentsDictFromCryspyObj(cal):
     experiment_dict = cal.project_dict['experiments']
 
     assert len(experiment_dict) == 1
-    assert len(experiment_dict['pd']) == 7
+    assert len(experiment_dict['pd']) == 10
     # wavelength
     assert len(experiment_dict['pd']['wavelength']) == 5
     assert experiment_dict['pd']['wavelength'].value == 0.84
@@ -327,7 +329,7 @@ def test_setExperimentsDictFromCryspyObj(cal):
     assert experiment_dict['pd']['resolution']['v']['store']['hide'] is False
 
     # measured_pattern
-    assert len(experiment_dict['pd']['measured_pattern']) == 7
+    assert len(experiment_dict['pd']['measured_pattern']) == 9
     assert 5.0 in experiment_dict['pd']['measured_pattern']['x']
     assert len(experiment_dict['pd']['measured_pattern'].y_obs_lower) == 381
     assert experiment_dict['pd']['measured_pattern'].y_obs_lower[380] == pytest.approx(762.959046)
@@ -348,19 +350,19 @@ def test_setCalculationsDictFromCryspyObj(cal):
     # bragg_peaks
     assert len(calculation_dict['pd']['bragg_peaks']) == 1
     assert sum(calculation_dict['pd']['bragg_peaks']['Fe3O4']['h']) == 681
-    assert sum(calculation_dict['pd']['bragg_peaks']['Fe3O4']['ttheta']) == pytest.approx(5027.87268)
+    assert sum(calculation_dict['pd']['bragg_peaks']['Fe3O4']['ttheta']) == pytest.approx(4993.5717)
     # calculated_pattern
-    assert len(calculation_dict['pd']['calculated_pattern']) == 4
+    assert len(calculation_dict['pd']['calculated_pattern']) == 8
     assert len(calculation_dict['pd']['calculated_pattern']['x']) == 381
     assert sum(calculation_dict['pd']['calculated_pattern']['x']) == 16002.0
-    assert sum(calculation_dict['pd']['calculated_pattern']['y_diff_upper']) == pytest.approx(37056.915414296)
+    assert sum(calculation_dict['pd']['calculated_pattern']['y_diff_upper']) == pytest.approx(162647.08)
 
     # calculated data limits
     assert len(calculation_dict['pd']['limits']) == 2
     assert calculation_dict['pd']['limits']['main']['x_min'] == 4.0
     assert calculation_dict['pd']['limits']['main']['y_max'] == pytest.approx(6134.188081)
-    assert calculation_dict['pd']['limits']['difference']['y_min'] == pytest.approx(-4087.48283)
-    assert calculation_dict['pd']['limits']['difference']['y_max'] == pytest.approx(4601.62523)
+    assert calculation_dict['pd']['limits']['difference']['y_min'] == pytest.approx(-1647.0144)
+    assert calculation_dict['pd']['limits']['difference']['y_max'] == pytest.approx(5185.9742)
 
 
 def test_phasesCount(cal):
@@ -429,11 +431,17 @@ def refineHelper(cal):
     assert pytest.approx(cal.project_dict['phases']['Fe3O4']['cell']['length_a'].value, 8.36212)
     r = cal.refine()
     rr = {'num_refined_parameters': 1,
-          'refinement_message': 'Optimization terminated successfully.',
-          'nfev': 27,
+          'refinement_message': 'Desired error not necessarily achieved due to precision loss.',
+          'nfev': 256,
           'nit': 5,
-          'njev': 9,
+          'njev': 83,
           }
+    if platform == "darwin":
+        rr['nfev'] = 274
+        rr['njev'] = 89
+    elif platform == 'win32':
+        rr['nfev'] = 271
+        rr['njev'] = 88
     chi_ref = 3.3723747910939683
     chi_found = r['final_chi_sq']
     del r['final_chi_sq']
@@ -481,8 +489,8 @@ def test_setPhaseDefinition(cal):
     phase_ref = cal.getPhase('Fe3O4')
     assert phase_added['phasename'] == phase_ref['phasename']
     assert phase_added['spacegroup']['crystal_system'].value == phase_ref['spacegroup']['crystal_system'].value
-    assert phase_added['spacegroup']['space_group_name_HM_alt'].value == phase_ref['spacegroup'][
-        'space_group_name_HM_alt'].value
+    assert phase_added['spacegroup']['space_group_name_HM_ref'].value == phase_ref['spacegroup'][
+        'space_group_name_HM_ref'].value
     assert phase_added['spacegroup']['space_group_IT_number'].value == phase_ref['spacegroup'][
         'space_group_IT_number'].value
     assert phase_added['spacegroup']['origin_choice'].value == phase_ref['spacegroup']['origin_choice'].value
@@ -505,8 +513,8 @@ def test_addPhaseDefinition(cal):
     phase_ref = cal.getPhase('Fe3O4')
     assert phase_added['phasename'] == phase_ref['phasename']
     assert phase_added['spacegroup']['crystal_system'].value == phase_ref['spacegroup']['crystal_system'].value
-    assert phase_added['spacegroup']['space_group_name_HM_alt'].value == phase_ref['spacegroup'][
-        'space_group_name_HM_alt'].value
+    assert phase_added['spacegroup']['space_group_name_HM_ref'].value == phase_ref['spacegroup'][
+        'space_group_name_HM_ref'].value
     assert phase_added['spacegroup']['space_group_IT_number'].value == phase_ref['spacegroup'][
         'space_group_IT_number'].value
     assert phase_added['spacegroup']['origin_choice'].value == phase_ref['spacegroup']['origin_choice'].value
@@ -628,24 +636,24 @@ def test_cif_writers(cal):
             option = ['main', 'phases', 'experiments']
 
         if 'main' in option:
-            assert os.path.exists(os.path.join(path, 'main.cif'))
-            with open(os.path.join(path, 'main.cif'), 'r') as new_reader:
+            assert os.path.exists(os.path.join(path, DEFAULT_FILENAMES['project']))
+            with open(os.path.join(path, DEFAULT_FILENAMES['project']), 'r') as new_reader:
                 new_data = new_reader.read()
                 assert new_data.find('_name Fe3O4') != -1
-                assert new_data.find('_phases phases.cif') != -1
-                assert new_data.find('_experiments experiments.cif') != -1
+                assert new_data.find('_samples %s' % DEFAULT_FILENAMES['phases']) != -1
+                assert new_data.find('_experiments %s' % DEFAULT_FILENAMES['experiments']) != -1
         elif'phases' in option:
-            assert os.path.exists(os.path.join(path, 'phases.cif'))
-            with open(os.path.join(path, 'phases.cif'), 'r') as new_reader:
+            assert os.path.exists(os.path.join(path, DEFAULT_FILENAMES['phases']))
+            with open(os.path.join(path, DEFAULT_FILENAMES['phases']), 'r') as new_reader:
                 new_data = new_reader.read()
                 assert new_data.find('data_Fe3O4') != -1
                 assert new_data.find('_cell_length_b 8.36212') != -1
-                assert new_data.find('Fe3B Fe3+ 0.5 0.5 0.5 1.0 Uiso d 0.0 16 ') != -1
-                assert new_data.find('Fe3A 2.0 1.0 ') != -1
+                assert new_data.find('Fe3B Fe3+ 0.5 0.5 0.5 1.0 Uiso 0.0 16 d') != -1
+                assert new_data.find('Fe3A 2.0 1.0') != -1
                 assert new_data.find('Fe3A Cani -3.468 -3.468 -3.468 0.0 0.0 0.0') != -1
         elif 'experiments' in option:
-            assert os.path.exists(os.path.join(path, 'experiments.cif'))
-            with open(os.path.join(path, 'experiments.cif'), 'r') as new_reader:
+            assert os.path.exists(os.path.join(path, DEFAULT_FILENAMES['experiments']))
+            with open(os.path.join(path, DEFAULT_FILENAMES['experiments']), 'r') as new_reader:
                 new_data = new_reader.read()
                 assert new_data.find('data_pd') != -1
                 assert new_data.find('_setup_offset_2theta -0.385404') != -1
